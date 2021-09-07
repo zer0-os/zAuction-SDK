@@ -1,0 +1,36 @@
+{
+  "name": "zauction-sdk",
+  "version": "0.0.1",
+  "main": "index.js",
+  "repository": "git@github.com:zer0-os/zAuction-SDK.git",
+  "author": "Zer0 Tech",
+  "license": "MIT",
+  "engines": {
+    "yarn": ">=1.15.2"
+  },
+  "scripts": {
+    "build": "tsc --build --verbose ./tsconfig.build.json",
+    "lint": "eslint --fix src",
+    "test": "mocha -r ts-node/register 'test/**/*.ts' --exit"
+  },
+  "devDependencies": {
+    "@typechain/ethers-v5": "7.0.1",
+    "@types/mocha": "9.0.0",
+    "@types/node": "16.7.13",
+    "@typescript-eslint/eslint-plugin": "4.31.0",
+    "@typescript-eslint/parser": "4.31.0",
+    "eslint": "7.32.0",
+    "eslint-plugin-prettier": "4.0.0",
+    "mocha": "9.1.1",
+    "prettier": "2.3.2",
+    "ts-node": "10.2.1",
+    "typechain": "5.1.2",
+    "typescript": "4.4.2"
+  },
+  "dependencies": {
+    "@ethersproject/abi": "5.4.1",
+    "@ethersproject/bytes": "5.4.0",
+    "@ethersproject/providers": "5.4.5",
+    "ethers": "5.4.6"
+  }
+}
