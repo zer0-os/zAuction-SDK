@@ -12,7 +12,8 @@ export const createInstance = (
   subgraphUri: string,
   zAuctionContractAddress: string
 ) => {
-  const subgraphClient = subgraph.createClient(subgraphUri);
+  const subgraphClient: subgraph.SubgraphClient =
+    subgraph.createClient(subgraphUri);
 
   const instance: Instance = {
     listSales: subgraphClient.listSales,
