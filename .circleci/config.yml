@@ -33,14 +33,23 @@ jobs:
 
 workflows:
   version: 2
-  test-deploy:
+  build:
     jobs:
-      - test
+      - test:
+          filters:
+            branches:
+              ignore: master
+  production:
+    jobs:
+      - test:
+        filters:
+          &filters-production # this yaml anchor is setting these values to "filters-production"
+          branches:
+            ignore: /.*/
+          tags:
+            only: /^v.*/
       - deploy:
           requires:
             - test
           filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v.*/
+            <<: *filters-production # this is calling the previously set yaml anchor
