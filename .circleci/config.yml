@@ -13,9 +13,8 @@ jobs:
     <<: *defaults
     steps:
       - checkout
-      - node/install:
-          install-yarn: true 
-          node-version: '14.17.5'
+      - node/install-packages:
+          pkg-manager: yarn
       - run: yarn build
       - persist_to_workspace:
           root: ~/repo
