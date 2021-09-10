@@ -12,6 +12,7 @@ jobs:
   test:
     <<: *defaults
     steps:
+      - checkout
       - run: yarn build
       - persist_to_workspace:
           root: ~/repo
