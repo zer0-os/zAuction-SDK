@@ -42,12 +42,12 @@ workflows:
   production:
     jobs:
       - test:
-        filters:
-          &filters-production # this yaml anchor is setting these values to "filters-production"
-          branches:
-            ignore: /.*/
-          tags:
-            only: /^v.*/
+          filters:
+            &filters-production # this yaml anchor is setting these values to "filters-production"
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/
       - deploy:
           requires:
             - test
