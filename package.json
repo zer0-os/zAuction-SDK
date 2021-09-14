@@ -9,6 +9,9 @@
   "engines": {
     "yarn": ">=1.15.2"
   },
+  "files": [
+    "lib/"
+  ],
   "scripts": {
     "build": "tsc --build --verbose ./tsconfig.build.json",
     "lint": "eslint --fix src",
