@@ -26,10 +26,10 @@ jobs:
           at: ~/repo
       - run:
           name: Configure yarn
-          command: yarn config set registry https://registry.npmjs.org && npm config set always-auth true
+          command: yarn config set registry https://registry.npmjs.org && npm config set always-auth true && npm config set @zero-tech:registry https://registry.npmjs.org/
       - run:
           name: Auth With NPM
-          command: yarn config set //registry.npmjs.org/:_authToken $NPM_TOKEN
+          command: yarn config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
       - run:
           name: Publish to NPM
           command: yarn publish --access public --non-interactive
