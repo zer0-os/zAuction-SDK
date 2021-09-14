@@ -26,7 +26,7 @@ jobs:
           at: ~/repo
       - run:
           name: Auth With NPM
-          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/repo/.npmrc
+          command: yarn config set //registry.npmjs.org/:_authToken=$NPM_TOKEN
       - run:
           name: Publish to NPM
           command: yarn publish --access public --non-interactive
