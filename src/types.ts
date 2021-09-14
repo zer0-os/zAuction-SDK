@@ -1,3 +1,6 @@
+import { Bid } from "./api/types";
+export { Bid };
+
 export interface TokenSale {
   contract: string;
   tokenId: string;
@@ -7,34 +10,22 @@ export interface TokenSale {
   timestamp: string;
 }
 
-export interface BidParameters {
-  bidder: string;
-  contract: string;
-  tokenId: string;
-  amount: string;
-  startBlock: string;
-  expireBlock: string;
-}
-
-export interface BidMessage extends BidParameters {
-  auctionId: string;
-}
-
-export interface SignableBid {
-  bid: BidMessage;
-  message: string;
-}
-
-export interface SignedBid {
-  bid: BidMessage;
-  signedMessage: string;
-}
-
-export interface Bid extends BidMessage {
-  signedMessage: string;
-  timestamp: string;
-}
-
 export interface TokenBidCollection {
   [tokenId: string]: Bid[];
+}
+
+export type PlaceBidStatusCallback = (status: PlaceBidStatus) => void;
+
+export enum PlaceBidStatus {
+  Encoding,
+  Signing,
+  Submitting,
+  Completed,
+}
+
+export interface NewBidParameters {
+  tokenId: string;
+  bidAmount: string; // in wei
+  startBlock?: string;
+  expireBlock?: string;
 }

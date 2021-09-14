@@ -1,11 +1,6 @@
-import {
-  Bid,
-  BidParameters,
-  SignableBid,
-  SignedBid,
-  TokenBidCollection,
-} from "../types";
+import { TokenBidCollection } from "../types";
 import * as actions from "./actions";
+import { Bid, BidParameters, SignableBid, SignedBid } from "./types";
 
 export interface ApiClient {
   encodeBid: (bidParams: BidParameters) => Promise<SignableBid>;
