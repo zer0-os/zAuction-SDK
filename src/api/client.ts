@@ -27,7 +27,7 @@ export const createClient = (apiUri: string): ApiClient => {
       contract: string,
       tokenIds: string[]
     ): Promise<TokenBidCollection> =>
-      actions.listBidsForTokens(apiUri, tokenIds),
+      actions.listBidsForTokens(apiUri, contract, tokenIds),
     listBidsByAccount: (contract: string, account: string): Promise<Bid[]> =>
       actions.listBidsForAccount(apiUri, account),
   };

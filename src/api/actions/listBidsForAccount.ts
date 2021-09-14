@@ -6,11 +6,15 @@ type AccountBidsDto = BidDto[];
 
 export const listBidsForAccount = async (
   apiUrl: string,
+  contract: string,
   account: string
 ): Promise<Bid[]> => {
   const uri = `${apiUrl}/bids/account/${account}`;
   const response = await makeApiCall<AccountBidsDto>(uri, "GET");
 
-  const bids: Bid[] = response.map((e) => convertBidDtoToBid(e));
+  let bids: Bid[] = response.map((e) => convertBidDtoToBid(e));
+  bids = bids.filter(
+    (e) => e.contract.toLowerCase() === contract.toLowerCase()
+  );
   return bids;
 };
