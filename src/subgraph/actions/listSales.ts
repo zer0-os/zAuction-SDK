@@ -1,13 +1,13 @@
 import { ApolloClient } from "@apollo/client/core";
 import { TokenSalesDto } from "../types";
 import * as queries from "../queries";
-import { NftSale } from "../../types";
+import { TokenSale } from "../../types";
 
 export const listSales = async <T>(
   apolloClient: ApolloClient<T>,
   contract: string,
   tokenId: string
-) => {
+): Promise<TokenSale[]> => {
   const queryResult = await apolloClient.query<TokenSalesDto>({
     query: queries.getTokenSalesForNftQuery,
     variables: {
@@ -20,7 +20,7 @@ export const listSales = async <T>(
     throw queryResult.error;
   }
 
-  const sales: NftSale[] = queryResult.data.tokenSales.map((e) => {
+  const sales: TokenSale[] = queryResult.data.tokenSales.map((e) => {
     return {
       timestamp: e.timestamp,
       tokenId: e.tokenId,
@@ -28,7 +28,7 @@ export const listSales = async <T>(
       saleAmount: e.amount,
       seller: e.seller.id,
       buyer: e.buyer.id,
-    } as NftSale;
+    } as TokenSale;
   });
 
   return sales;

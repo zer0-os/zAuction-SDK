@@ -1,13 +1,15 @@
 import * as apollo from "@apollo/client/core";
 import fetch from "cross-fetch";
-import { NftSale } from "../types";
+import { TokenSale } from "../types";
 import * as actions from "./actions";
 
 export interface SubgraphClient {
-  listSales: (contract: string, tokenId: string) => Promise<NftSale[]>;
+  listSales: (contract: string, tokenId: string) => Promise<TokenSale[]>;
 }
 
-const createApolloClient = (subgraphUri: string) => {
+const createApolloClient = (
+  subgraphUri: string
+): apollo.ApolloClient<apollo.NormalizedCacheObject> => {
   const client = new apollo.ApolloClient({
     link: new apollo.HttpLink({ uri: subgraphUri, fetch }),
     cache: new apollo.InMemoryCache(),
@@ -16,7 +18,7 @@ const createApolloClient = (subgraphUri: string) => {
   return client;
 };
 
-export const createClient = (subgraphUri: string) => {
+export const createClient = (subgraphUri: string): SubgraphClient => {
   const apolloClient = createApolloClient(subgraphUri);
 
   const subgraphClient: SubgraphClient = {

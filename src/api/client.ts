@@ -3,36 +3,33 @@ import {
   BidParameters,
   SignableBid,
   SignedBid,
-  TokenBids,
+  TokenBidCollection,
 } from "../types";
+import * as actions from "./actions";
 
 export interface ApiClient {
   encodeBid: (bidParams: BidParameters) => Promise<SignableBid>;
-  submitBid: (signedBid: SignedBid) => Promise<Bid>;
+  submitBid: (signedBid: SignedBid) => Promise<void>;
   listBidsForTokens: (
     contract: string,
-    tokenId: string[]
-  ) => Promise<TokenBids>;
+    tokenIds: string[]
+  ) => Promise<TokenBidCollection>;
   listBidsByAccount: (contract: string, account: string) => Promise<Bid[]>;
 }
 
-export const createClient = (apiUri: string) => {
+export const createClient = (apiUri: string): ApiClient => {
   const apiClient: ApiClient = {
-    encodeBid: async (bidParams: BidParameters): Promise<SignableBid> => {
-      throw Error(`Not Implemented`);
-    },
-    submitBid: (signedBid: SignedBid): Promise<Bid> => {
-      throw Error(`Not Implemented`);
-    },
+    encodeBid: async (bidParams: BidParameters): Promise<SignableBid> =>
+      actions.encodeBid(apiUri, bidParams),
+    submitBid: (signedBid: SignedBid): Promise<void> =>
+      actions.submitBid(apiUri, signedBid),
     listBidsForTokens: (
       contract: string,
-      tokenId: string[]
-    ): Promise<TokenBids> => {
-      throw Error(`Not Implemented`);
-    },
-    listBidsByAccount: (contract: string, account: string): Promise<Bid[]> => {
-      throw Error(`Not Implemented`);
-    },
+      tokenIds: string[]
+    ): Promise<TokenBidCollection> =>
+      actions.listBidsForTokens(apiUri, tokenIds),
+    listBidsByAccount: (contract: string, account: string): Promise<Bid[]> =>
+      actions.listBidsForAccount(apiUri, account),
   };
 
   return apiClient;

@@ -1,4 +1,4 @@
-export interface NftSale {
+export interface TokenSale {
   contract: string;
   tokenId: string;
   saleAmount: string;
@@ -35,6 +35,6 @@ export interface Bid extends BidMessage {
   timestamp: string;
 }
 
-export interface TokenBids {
+export interface TokenBidCollection {
   [tokenId: string]: Bid[];
 }
