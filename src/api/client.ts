@@ -29,7 +29,7 @@ export const createClient = (apiUri: string): ApiClient => {
     ): Promise<TokenBidCollection> =>
       actions.listBidsForTokens(apiUri, contract, tokenIds),
     listBidsByAccount: (contract: string, account: string): Promise<Bid[]> =>
-      actions.listBidsForAccount(apiUri, account),
+      actions.listBidsForAccount(apiUri, contract, account),
   };
 
   return apiClient;
