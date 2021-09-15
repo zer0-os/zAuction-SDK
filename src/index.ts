@@ -10,7 +10,6 @@ import {
   PlaceBidStatusCallback,
   Bid,
   NewBidParameters,
-  CurrencyToken,
 } from "./types";
 import { getERC721Contract, getZAuctionTradeToken } from "./contracts";
 
