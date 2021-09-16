@@ -1,4 +1,4 @@
-import { SignedBid } from "../../types";
+import { SignedBid } from "../types";
 import { makeApiCall } from "./helpers";
 
 export const submitBid = async (

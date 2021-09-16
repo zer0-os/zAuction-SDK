@@ -16,18 +16,26 @@
     "build": "tsc --build --verbose ./tsconfig.build.json",
     "lint": "eslint --fix src",
     "style": "prettier --write ./src/**/*.ts",
-    "test": "mocha -r ts-node/register 'test/**/*.test.ts' --exit"
+    "test": "mocha -r ts-node/register 'test/**/*.test.ts' --exit",
+    "typechain": "typechain --target ethers-v5 --out-dir src/contracts/types/ \"abi/**/*.json\""
   },
   "devDependencies": {
     "@typechain/ethers-v5": "7.0.1",
+    "@types/chai": "4.2.21",
+    "@types/chai-as-promised": "7.1.4",
     "@types/mocha": "9.0.0",
     "@types/node": "16.7.13",
+    "@types/sinon": "10.0.2",
     "@typescript-eslint/eslint-plugin": "4.31.0",
     "@typescript-eslint/parser": "4.31.0",
+    "chai": "4.3.4",
+    "chai-as-promised": "7.1.1",
     "eslint": "7.32.0",
     "eslint-plugin-prettier": "4.0.0",
+    "ethers": "5.4.6",
     "mocha": "9.1.1",
     "prettier": "2.3.2",
+    "sinon": "11.1.2",
     "ts-node": "10.2.1",
     "typechain": "5.1.2",
     "typescript": "4.4.2"
@@ -38,7 +46,9 @@
     "@ethersproject/bytes": "5.4.0",
     "@ethersproject/providers": "5.4.5",
     "cross-fetch": "3.1.4",
-    "ethers": "5.4.6",
     "graphql": "15.5.3"
+  },
+  "peerDependencies": {
+    "ethers": "^5.4.6"
   }
 }
