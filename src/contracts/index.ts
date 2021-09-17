@@ -9,7 +9,7 @@ import {
 } from "./types";
 
 export const getZAuctionContract = async (
-  web3Provider: ethers.providers.Provider,
+  web3Provider: ethers.providers.Provider | ethers.Signer,
   address: string
 ): Promise<ZAuction> => {
   const contract = ZAuction__factory.connect(address, web3Provider);
@@ -17,7 +17,7 @@ export const getZAuctionContract = async (
 };
 
 export const getERC20Contract = async (
-  web3Provider: ethers.providers.Provider,
+  web3Provider: ethers.providers.Provider | ethers.Signer,
   address: string
 ): Promise<IERC20> => {
   const contract = IERC20__factory.connect(address, web3Provider);
@@ -25,7 +25,7 @@ export const getERC20Contract = async (
 };
 
 export const getERC721Contract = async (
-  web3Provider: ethers.providers.Provider,
+  web3Provider: ethers.providers.Provider | ethers.Signer,
   address: string
 ): Promise<IERC721> => {
   const contract = IERC721__factory.connect(address, web3Provider);
@@ -33,7 +33,7 @@ export const getERC721Contract = async (
 };
 
 export const getZAuctionTradeToken = async (
-  web3Provider: ethers.providers.Provider,
+  web3Provider: ethers.providers.Provider | ethers.Signer,
   zAuctionAddress: string
 ): Promise<IERC20> => {
   const zAuction = await getZAuctionContract(web3Provider, zAuctionAddress);
