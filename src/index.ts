@@ -28,11 +28,11 @@ export const createInstance = (config: Config): Instance => {
 
   const instance: Instance = {
     listSales: (tokenId: string) =>
-      subgraphClient.listSales(config.zAuctionAddress, tokenId),
+      subgraphClient.listSales(config.tokenContract, tokenId),
     listBids: (tokenIds: string[]) =>
-      apiClient.listBidsForTokens(config.zAuctionAddress, tokenIds),
+      apiClient.listBidsForTokens(config.tokenContract, tokenIds),
     listBidsByAccount: (account: string) =>
-      apiClient.listBidsByAccount(config.zAuctionAddress, account),
+      apiClient.listBidsByAccount(config.tokenContract, account),
     placeBid: async (
       params: NewBidParameters,
       signer: ethers.Signer,
