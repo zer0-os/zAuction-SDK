@@ -1,4 +1,3 @@
-import { throws } from "assert/strict";
 import fetch from "cross-fetch";
 import { ethers } from "ethers";
 import { Bid } from "../../types";
