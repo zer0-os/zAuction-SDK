@@ -17,3 +17,25 @@ export const getTokenSalesForNftQuery = gql`
     }
   }
 `;
+
+export const getAllTokenSales = gql`
+  query TokenSales($contract: Bytes!, $count: Int!, $skipCount: Int!) {
+    tokenSales(
+      where: { contractAddress: $contract }
+      first: $count
+      skip: $skipCount
+    ) {
+      id
+      tokenId
+      contractAddress
+      amount
+      timestamp
+      seller {
+        id
+      }
+      buyer {
+        id
+      }
+    }
+  }
+`;

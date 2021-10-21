@@ -29,6 +29,7 @@ export const createInstance = (config: Config): Instance => {
   const instance: Instance = {
     listSales: (tokenId: string) =>
       subgraphClient.listSales(config.tokenContract, tokenId),
+    listAllSales: () => subgraphClient.listAllSales(config.tokenContract),
     listBids: (tokenIds: string[]) =>
       apiClient.listBidsForTokens(config.tokenContract, tokenIds),
     listBidsByAccount: (account: string) =>
