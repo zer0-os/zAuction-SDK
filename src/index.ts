@@ -183,11 +183,23 @@ export const createInstance = (config: Config): Instance => {
         config.zAuctionAddress
       );
 
-      if (signer.getAddress() !== zAuction.owner()) throw Error("Cannot call to set price of a domain that is not yours")
+      if (signer.getAddress() !== zAuction.owner()) throw Error("Cannot set the price of a domain that is not yours")
 
       const tx = await zAuction.setBuyNow(params.amount, params.tokenId);
       return tx;
     },
+
+    cancelBuyNow: async (signer: ethers.Signer, tokenId: string): Promise<ethers.ContractTransaction> => {
+      const zAuction = await getZAuctionContract(
+        signer,
+        config.zAuctionAddress
+      );
+
+      if (signer.getAddress() !== zAuction.owner()) throw Error("Cannot cancel the buy now price of a domain that is not yours")
+
+      const tx = await zAuction.setBuyNow("0", tokenId);
+      return tx;
+    }
   };
 
   return instance;

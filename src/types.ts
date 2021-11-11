@@ -41,6 +41,7 @@ export interface Instance {
     signer: ethers.Signer,
     params: SetBuyNowParams
   ) => Promise<ethers.ContractTransaction>;
+  cancelBuyNow: (signer: ethers.Signer, tokenId: string) => Promise<ethers.ContractTransaction>;
 }
 
 export interface TokenSale {
