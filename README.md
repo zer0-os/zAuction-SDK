@@ -13,6 +13,9 @@
 - [x] Approve zAuction to spend ERC20 tokens for user
 - [x] Approve zAuction to transfer NFT's
 - [x] Accept a bid
+- [x] Buying an NFT immediately
+- [x] Setting the immediate buy price of an NFT
+- [x] Cancelling the ability to buy an NFT immediately
 
 ## Improvements / Optimizations
 
