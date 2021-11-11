@@ -18,6 +18,7 @@ import {
   getZAuctionContract,
   getZAuctionTradeToken,
 } from "./contracts";
+import { isZAuctionApprovedNftTransfer } from "./actions";
 
 export * from "./types";
 
@@ -149,6 +150,19 @@ export const createInstance = (config: Config): Instance => {
         config.zAuctionAddress
       );
 
+      const nftContract = await getERC721Contract(
+        config.web3Provider,
+        config.tokenContract
+      );
+
+      const isApproved = await actions.isZAuctionApprovedNftTransfer(
+        await signer.getAddress(),
+        config.zAuctionAddress,
+        nftContract
+      );
+
+      if (!isApproved) throw Error("User is not approved for NFT Transfer");
+
       const tx = await zAuction.buyNow(
         params.auctionId,
         params.amount,
@@ -169,7 +183,7 @@ export const createInstance = (config: Config): Instance => {
         config.zAuctionAddress
       );
 
-      if (signer.getAddress() !== zAuction.owner()) throw Error("")
+      if (signer.getAddress() !== zAuction.owner()) throw Error("Cannot call to set price of a domain that is not yours")
 
       const tx = await zAuction.setBuyNow(params.amount, params.tokenId);
       return tx;
