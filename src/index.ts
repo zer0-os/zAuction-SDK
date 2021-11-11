@@ -129,7 +129,6 @@ export const createInstance = (config: Config): Instance => {
         bid.auctionId,
         bid.bidder,
         bid.amount,
-        bid.contract,
         bid.tokenId,
         0,
         bid.startBlock,
@@ -138,6 +137,21 @@ export const createInstance = (config: Config): Instance => {
 
       return tx;
     },
+
+    buyNow: async (
+      auctionId: string,
+      amount: string,
+      tokenId: string,
+      startBlock: string,
+      expireBlock: string): Promise<ethers.ContractTransaction> => {
+      // TODO implement
+    },
+
+    setBuyNow: async (
+      amount: string,
+      tokenId: string): Promise<ethers.ContractTransaction> => {
+        // TODO implement
+    }
   };
 
   return instance;

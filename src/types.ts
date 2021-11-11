@@ -33,6 +33,17 @@ export interface Instance {
     bid: Bid,
     signer: ethers.Signer
   ) => Promise<ethers.ContractTransaction>;
+  buyNow: (
+    auctionId: string,
+    amount: string,
+    tokenId: string,
+    startBlock: string,
+    expireBlock: string
+  ) => Promise<ethers.ContractTransaction>;
+  setBuyNow: (
+    amount: string,
+    tokenId: string
+  ) => Promise<ethers.ContractTransaction>;
 }
 
 export interface TokenSale {

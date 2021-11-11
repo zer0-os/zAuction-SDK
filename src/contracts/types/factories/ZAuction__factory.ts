@@ -8,28 +8,12 @@ import type { ZAuction, ZAuctionInterface } from "../ZAuction";
 
 const _abi = [
   {
-    inputs: [
-      {
-        internalType: "contract IERC20",
-        name: "tokenAddress",
-        type: "address",
-      },
-      {
-        internalType: "contract IRegistrar",
-        name: "registrarAddress",
-        type: "address",
-      },
-    ],
-    stateMutability: "nonpayable",
-    type: "constructor",
-  },
-  {
     anonymous: false,
     inputs: [
       {
         indexed: false,
         internalType: "uint256",
-        name: "auctionid",
+        name: "auctionId",
         type: "uint256",
       },
       {
@@ -53,19 +37,19 @@ const _abi = [
       {
         indexed: false,
         internalType: "address",
-        name: "nftaddress",
+        name: "nftAddress",
         type: "address",
       },
       {
         indexed: false,
         internalType: "uint256",
-        name: "tokenid",
+        name: "tokenId",
         type: "uint256",
       },
       {
         indexed: false,
         internalType: "uint256",
-        name: "expireblock",
+        name: "expireBlock",
         type: "uint256",
       },
     ],
@@ -76,25 +60,38 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
+        indexed: false,
+        internalType: "uint256",
+        name: "auctionId",
+        type: "uint256",
+      },
+      {
         indexed: true,
         internalType: "address",
         name: "bidder",
         type: "address",
       },
+    ],
+    name: "BidCancelled",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
       {
         indexed: true,
-        internalType: "uint256",
-        name: "auctionid",
-        type: "uint256",
+        internalType: "address",
+        name: "previousOwner",
+        type: "address",
       },
       {
-        indexed: false,
-        internalType: "uint256",
-        name: "price",
-        type: "uint256",
+        indexed: true,
+        internalType: "address",
+        name: "newOwner",
+        type: "address",
       },
     ],
-    name: "Cancelled",
+    name: "OwnershipTransferred",
     type: "event",
   },
   {
@@ -106,7 +103,7 @@ const _abi = [
       },
       {
         internalType: "uint256",
-        name: "auctionid",
+        name: "auctionId",
         type: "uint256",
       },
       {
@@ -120,13 +117,8 @@ const _abi = [
         type: "uint256",
       },
       {
-        internalType: "address",
-        name: "nftaddress",
-        type: "address",
-      },
-      {
         internalType: "uint256",
-        name: "tokenid",
+        name: "tokenId",
         type: "uint256",
       },
       {
@@ -136,12 +128,12 @@ const _abi = [
       },
       {
         internalType: "uint256",
-        name: "startblock",
+        name: "startBlock",
         type: "uint256",
       },
       {
         internalType: "uint256",
-        name: "expireblock",
+        name: "expireBlock",
         type: "uint256",
       },
     ],
@@ -154,16 +146,64 @@ const _abi = [
     inputs: [
       {
         internalType: "uint256",
-        name: "auctionid",
+        name: "id",
         type: "uint256",
       },
       {
         internalType: "uint256",
-        name: "price",
+        name: "bid",
         type: "uint256",
       },
     ],
-    name: "cancelBidsUnderPrice",
+    name: "calculateMinterRoyalty",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "pure",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "topLevelId",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "bid",
+        type: "uint256",
+      },
+    ],
+    name: "calculateTopLevelDomainFee",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "auctionId",
+        type: "uint256",
+      },
+    ],
+    name: "cancelBid",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -196,7 +236,7 @@ const _abi = [
     inputs: [
       {
         internalType: "uint256",
-        name: "auctionid",
+        name: "auctionId",
         type: "uint256",
       },
       {
@@ -206,12 +246,12 @@ const _abi = [
       },
       {
         internalType: "address",
-        name: "nftaddress",
+        name: "nftAddress",
         type: "address",
       },
       {
         internalType: "uint256",
-        name: "tokenid",
+        name: "tokenId",
         type: "uint256",
       },
       {
@@ -221,12 +261,12 @@ const _abi = [
       },
       {
         internalType: "uint256",
-        name: "startblock",
+        name: "startBlock",
         type: "uint256",
       },
       {
         internalType: "uint256",
-        name: "expireblock",
+        name: "expireBlock",
         type: "uint256",
       },
     ],
@@ -236,6 +276,91 @@ const _abi = [
         internalType: "bytes32",
         name: "data",
         type: "bytes32",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "auctionId",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "bid",
+        type: "uint256",
+      },
+      {
+        internalType: "address",
+        name: "nftAddress",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "minbid",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "startBlock",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "expireBlock",
+        type: "uint256",
+      },
+    ],
+    name: "createLegacyBid",
+    outputs: [
+      {
+        internalType: "bytes32",
+        name: "data",
+        type: "bytes32",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "contract IERC20",
+        name: "tokenAddress",
+        type: "address",
+      },
+      {
+        internalType: "contract IRegistrar",
+        name: "registrarAddress",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "legacyZAuctionAddress",
+        type: "address",
+      },
+    ],
+    name: "initialize",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "owner",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
       },
     ],
     stateMutability: "view",
@@ -279,6 +404,31 @@ const _abi = [
     type: "function",
   },
   {
+    inputs: [],
+    name: "renounceOwnership",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "id",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    name: "setTopLevelDomainFee",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
     inputs: [
       {
         internalType: "bytes32",
@@ -308,6 +458,76 @@ const _abi = [
       },
     ],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    name: "topLevelDomainFee",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    name: "topLevelDomainIdCache",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "id",
+        type: "uint256",
+      },
+    ],
+    name: "topLevelDomainIdOf",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "newOwner",
+        type: "address",
+      },
+    ],
+    name: "transferOwnership",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
 ];
