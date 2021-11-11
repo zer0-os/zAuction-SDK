@@ -10,6 +10,8 @@ import {
   Config,
   Instance,
   Bid,
+  BuyNowParams,
+  SetBuyNowParams,
 } from "./types";
 import {
   getERC721Contract,
@@ -139,19 +141,39 @@ export const createInstance = (config: Config): Instance => {
     },
 
     buyNow: async (
-      auctionId: string,
-      amount: string,
-      tokenId: string,
-      startBlock: string,
-      expireBlock: string): Promise<ethers.ContractTransaction> => {
-      // TODO implement
+      signer: ethers.Signer,
+      params: BuyNowParams
+    ): Promise<ethers.ContractTransaction> => {
+      const zAuction = await getZAuctionContract(
+        signer,
+        config.zAuctionAddress
+      );
+
+      const tx = await zAuction.buyNow(
+        params.auctionId,
+        params.amount,
+        params.tokenId,
+        params.startBlock,
+        params.expireBlock
+      );
+
+      return tx;
     },
 
     setBuyNow: async (
-      amount: string,
-      tokenId: string): Promise<ethers.ContractTransaction> => {
-        // TODO implement
-    }
+      signer: ethers.Signer,
+      params: SetBuyNowParams
+    ): Promise<ethers.ContractTransaction> => {
+      const zAuction = await getZAuctionContract(
+        signer,
+        config.zAuctionAddress
+      );
+
+      if (signer.getAddress() !== zAuction.owner()) throw Error("")
+
+      const tx = await zAuction.setBuyNow(params.amount, params.tokenId);
+      return tx;
+    },
   };
 
   return instance;
