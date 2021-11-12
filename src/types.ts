@@ -34,12 +34,12 @@ export interface Instance {
     signer: ethers.Signer
   ) => Promise<ethers.ContractTransaction>;
   buyNow: (
-    signer: ethers.Signer,
-    params: BuyNowParams
+    params: BuyNowParams,
+    signer: ethers.Signer
   ) => Promise<ethers.ContractTransaction>;
-  setBuyNow: (
-    signer: ethers.Signer,
-    params: SetBuyNowParams
+  setBuyNowPrice: (
+    params: SetBuyNowParams,
+    signer: ethers.Signer
   ) => Promise<ethers.ContractTransaction>;
   cancelBuyNow: (signer: ethers.Signer, tokenId: string) => Promise<ethers.ContractTransaction>;
 }
