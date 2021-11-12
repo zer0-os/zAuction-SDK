@@ -229,8 +229,8 @@ export const createInstance = (config: Config): Instance => {
     },
 
     cancelBuyNow: async (
-      signer: ethers.Signer,
-      tokenId: string
+      tokenId: string,
+      signer: ethers.Signer
     ): Promise<ethers.ContractTransaction> => {
       const zAuction = await getZAuctionContract(
         signer,
