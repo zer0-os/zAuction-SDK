@@ -11,7 +11,6 @@ import {
   Instance,
   Bid,
   BuyNowParams,
-  SetBuyNowParams,
 } from "./types";
 import {
   getERC721Contract,
@@ -183,18 +182,15 @@ export const createInstance = (config: Config): Instance => {
       );
 
       const tx = await zAuction.buyNow(
-        params.auctionId,
         params.amount,
-        params.tokenId,
-        params.startBlock,
-        params.expireBlock
+        params.tokenId
       );
 
       return tx;
     },
 
     setBuyNowPrice: async (
-      params: SetBuyNowParams,
+      params: BuyNowParams,
       signer: ethers.Signer
     ): Promise<ethers.ContractTransaction> => {
       const nftContract = await getERC721Contract(

@@ -412,11 +412,8 @@ export class ZAuction extends BaseContract {
   ): Promise<ContractTransaction>;
 
   buyNow(
-    auctionId: BigNumberish,
     amount: BigNumberish,
     tokenId: BigNumberish,
-    startBlock: BigNumberish,
-    expireBlock: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
