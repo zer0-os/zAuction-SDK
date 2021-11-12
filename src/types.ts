@@ -33,6 +33,15 @@ export interface Instance {
     bid: Bid,
     signer: ethers.Signer
   ) => Promise<ethers.ContractTransaction>;
+  buyNow: (
+    params: BuyNowParams,
+    signer: ethers.Signer
+  ) => Promise<ethers.ContractTransaction>;
+  setBuyNowPrice: (
+    params: SetBuyNowParams,
+    signer: ethers.Signer
+  ) => Promise<ethers.ContractTransaction>;
+  cancelBuyNow: (tokenId: string, signer: ethers.Signer) => Promise<ethers.ContractTransaction>;
 }
 
 export interface TokenSale {
@@ -66,4 +75,14 @@ export interface NewBidParameters {
   bidAmount: string; // in wei
   startBlock?: string;
   expireBlock?: string;
+}
+
+export interface SetBuyNowParams {
+  amount: string;
+  tokenId: string;
+}
+export interface BuyNowParams extends SetBuyNowParams {
+  auctionId: string,
+  startBlock: string,
+  expireBlock: string
 }

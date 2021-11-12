@@ -10,6 +10,8 @@ import {
   Config,
   Instance,
   Bid,
+  BuyNowParams,
+  SetBuyNowParams,
 } from "./types";
 import {
   getERC721Contract,
@@ -129,13 +131,126 @@ export const createInstance = (config: Config): Instance => {
         bid.auctionId,
         bid.bidder,
         bid.amount,
-        bid.contract,
         bid.tokenId,
         0,
         bid.startBlock,
         bid.expireBlock
       );
 
+      return tx;
+    },
+
+    buyNow: async (
+      params: BuyNowParams,
+      signer: ethers.Signer
+    ): Promise<ethers.ContractTransaction> => {
+      const nftContract = await getERC721Contract(
+        config.web3Provider,
+        config.tokenContract
+      );
+
+      const seller = await nftContract.ownerOf(params.tokenId);
+
+      const isApproved = await actions.isZAuctionApprovedNftTransfer(
+        seller,
+        config.zAuctionAddress,
+        nftContract
+      );
+
+      if (!isApproved)
+        throw Error("Seller did not approve zAuction to transfer NFT");
+
+      const buyer = await signer.getAddress();
+
+      const erc20Token = await getZAuctionTradeToken(
+        config.web3Provider,
+        config.zAuctionAddress
+      );
+
+      const allowance = await actions.getZAuctionTradeTokenAllowance(
+        buyer,
+        config.zAuctionAddress,
+        erc20Token
+      );
+
+      // Ensure buyer has approved zAuction to transfer tokens on their behalf
+      if (allowance < ethers.BigNumber.from(params.amount))
+        throw Error("zAuction is not approved to transfer this many tokens");
+
+      const zAuction = await getZAuctionContract(
+        signer,
+        config.zAuctionAddress
+      );
+
+      const tx = await zAuction.buyNow(
+        params.auctionId,
+        params.amount,
+        params.tokenId,
+        params.startBlock,
+        params.expireBlock
+      );
+
+      return tx;
+    },
+
+    setBuyNowPrice: async (
+      params: SetBuyNowParams,
+      signer: ethers.Signer
+    ): Promise<ethers.ContractTransaction> => {
+      const nftContract = await getERC721Contract(
+        config.web3Provider,
+        config.tokenContract
+      );
+
+      const seller = await nftContract.ownerOf(params.tokenId);
+      const givenSeller = await signer.getAddress();
+
+      if (givenSeller !== seller)
+        throw Error("Cannot set the price of a domain that is not yours");
+
+      // Seller must have approved zAuction to transfer their NFT(s)
+      // before being able to set a buy price
+      const isApproved = await actions.isZAuctionApprovedNftTransfer(
+        seller,
+        config.zAuctionAddress,
+        nftContract
+      );
+
+      if (!isApproved)
+        throw Error("Seller did not approve zAuction to transfer NFT");
+
+      const zAuction = await getZAuctionContract(
+        signer,
+        config.zAuctionAddress
+      );
+
+      const tx = await zAuction.setBuyNow(params.amount, params.tokenId);
+      return tx;
+    },
+
+    cancelBuyNow: async (
+      tokenId: string,
+      signer: ethers.Signer
+    ): Promise<ethers.ContractTransaction> => {
+      const zAuction = await getZAuctionContract(
+        signer,
+        config.zAuctionAddress
+      );
+
+      const nftContract = await getERC721Contract(
+        config.web3Provider,
+        config.tokenContract
+      );
+
+      const seller = await nftContract.ownerOf(tokenId);
+      const givenSeller = await signer.getAddress();
+
+      if (givenSeller !== seller)
+        throw Error(
+          "Cannot cancel the buy now price of a domain that is not yours"
+        );
+
+      const tx = await zAuction.setBuyNow("0", tokenId);
       return tx;
     },
   };

@@ -21,14 +21,28 @@ import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
 interface ZAuctionInterface extends ethers.utils.Interface {
   functions: {
-    "acceptBid(bytes,uint256,address,uint256,address,uint256,uint256,uint256,uint256)": FunctionFragment;
-    "cancelBidsUnderPrice(uint256,uint256)": FunctionFragment;
+    "acceptBid(bytes,uint256,address,uint256,uint256,uint256,uint256,uint256)": FunctionFragment;
+    "buyNow(uint256,uint256,uint256,uint256,uint256)": FunctionFragment;
+    "buyPrice(uint256)": FunctionFragment;
+    "calculateMinterRoyalty(uint256,uint256)": FunctionFragment;
+    "calculateTopLevelDomainFee(uint256,uint256)": FunctionFragment;
+    "cancelBid(address,uint256)": FunctionFragment;
     "consumed(address,uint256)": FunctionFragment;
     "createBid(uint256,uint256,address,uint256,uint256,uint256,uint256)": FunctionFragment;
+    "createLegacyBid(uint256,uint256,address,uint256,uint256,uint256,uint256)": FunctionFragment;
+    "initialize(address,address,address)": FunctionFragment;
+    "owner()": FunctionFragment;
     "recover(bytes32,bytes)": FunctionFragment;
     "registrar()": FunctionFragment;
+    "renounceOwnership()": FunctionFragment;
+    "setBuyNow(uint256,uint256)": FunctionFragment;
+    "setTopLevelDomainFee(uint256,uint256)": FunctionFragment;
     "toEthSignedMessageHash(bytes32)": FunctionFragment;
     "token()": FunctionFragment;
+    "topLevelDomainFee(uint256)": FunctionFragment;
+    "topLevelDomainIdCache(uint256)": FunctionFragment;
+    "topLevelDomainIdOf(uint256)": FunctionFragment;
+    "transferOwnership(address)": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -38,7 +52,6 @@ interface ZAuctionInterface extends ethers.utils.Interface {
       BigNumberish,
       string,
       BigNumberish,
-      string,
       BigNumberish,
       BigNumberish,
       BigNumberish,
@@ -46,8 +59,30 @@ interface ZAuctionInterface extends ethers.utils.Interface {
     ]
   ): string;
   encodeFunctionData(
-    functionFragment: "cancelBidsUnderPrice",
+    functionFragment: "buyNow",
+    values: [
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "buyPrice",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "calculateMinterRoyalty",
     values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "calculateTopLevelDomainFee",
+    values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "cancelBid",
+    values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "consumed",
@@ -66,38 +101,125 @@ interface ZAuctionInterface extends ethers.utils.Interface {
     ]
   ): string;
   encodeFunctionData(
+    functionFragment: "createLegacyBid",
+    values: [
+      BigNumberish,
+      BigNumberish,
+      string,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "initialize",
+    values: [string, string, string]
+  ): string;
+  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
+  encodeFunctionData(
     functionFragment: "recover",
     values: [BytesLike, BytesLike]
   ): string;
   encodeFunctionData(functionFragment: "registrar", values?: undefined): string;
   encodeFunctionData(
+    functionFragment: "renounceOwnership",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setBuyNow",
+    values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setTopLevelDomainFee",
+    values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "toEthSignedMessageHash",
     values: [BytesLike]
   ): string;
   encodeFunctionData(functionFragment: "token", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "topLevelDomainFee",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "topLevelDomainIdCache",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "topLevelDomainIdOf",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "transferOwnership",
+    values: [string]
+  ): string;
 
   decodeFunctionResult(functionFragment: "acceptBid", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "buyNow", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "buyPrice", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "cancelBidsUnderPrice",
+    functionFragment: "calculateMinterRoyalty",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "calculateTopLevelDomainFee",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "cancelBid", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "consumed", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "createBid", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "createLegacyBid",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "recover", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "registrar", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "renounceOwnership",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "setBuyNow", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "setTopLevelDomainFee",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "toEthSignedMessageHash",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "token", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "topLevelDomainFee",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "topLevelDomainIdCache",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "topLevelDomainIdOf",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "transferOwnership",
+    data: BytesLike
+  ): Result;
 
   events: {
     "BidAccepted(uint256,address,address,uint256,address,uint256,uint256)": EventFragment;
-    "Cancelled(address,uint256,uint256)": EventFragment;
+    "BidCancelled(uint256,address)": EventFragment;
+    "DomainBought(uint256,address,address,uint256,address,uint256,uint256)": EventFragment;
+    "OwnershipTransferred(address,address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "BidAccepted"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "Cancelled"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "BidCancelled"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "DomainBought"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
 }
 
 export class ZAuction extends BaseContract {
@@ -146,20 +268,45 @@ export class ZAuction extends BaseContract {
   functions: {
     acceptBid(
       signature: BytesLike,
-      auctionid: BigNumberish,
+      auctionId: BigNumberish,
       bidder: string,
       bid: BigNumberish,
-      nftaddress: string,
-      tokenid: BigNumberish,
+      tokenId: BigNumberish,
       minbid: BigNumberish,
-      startblock: BigNumberish,
-      expireblock: BigNumberish,
+      startBlock: BigNumberish,
+      expireBlock: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    cancelBidsUnderPrice(
-      auctionid: BigNumberish,
-      price: BigNumberish,
+    buyNow(
+      auctionId: BigNumberish,
+      amount: BigNumberish,
+      tokenId: BigNumberish,
+      startBlock: BigNumberish,
+      expireBlock: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    buyPrice(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    calculateMinterRoyalty(
+      id: BigNumberish,
+      bid: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    calculateTopLevelDomainFee(
+      topLevelId: BigNumberish,
+      bid: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    cancelBid(
+      account: string,
+      auctionId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -170,15 +317,35 @@ export class ZAuction extends BaseContract {
     ): Promise<[boolean]>;
 
     createBid(
-      auctionid: BigNumberish,
+      auctionId: BigNumberish,
       bid: BigNumberish,
-      nftaddress: string,
-      tokenid: BigNumberish,
+      nftAddress: string,
+      tokenId: BigNumberish,
       minbid: BigNumberish,
-      startblock: BigNumberish,
-      expireblock: BigNumberish,
+      startBlock: BigNumberish,
+      expireBlock: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[string] & { data: string }>;
+
+    createLegacyBid(
+      auctionId: BigNumberish,
+      bid: BigNumberish,
+      nftAddress: string,
+      tokenId: BigNumberish,
+      minbid: BigNumberish,
+      startBlock: BigNumberish,
+      expireBlock: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[string] & { data: string }>;
+
+    initialize(
+      tokenAddress: string,
+      registrarAddress: string,
+      legacyZAuctionAddress: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    owner(overrides?: CallOverrides): Promise<[string]>;
 
     recover(
       hash: BytesLike,
@@ -188,30 +355,88 @@ export class ZAuction extends BaseContract {
 
     registrar(overrides?: CallOverrides): Promise<[string]>;
 
+    renounceOwnership(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    setBuyNow(
+      amount: BigNumberish,
+      tokenId: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    setTopLevelDomainFee(
+      id: BigNumberish,
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     toEthSignedMessageHash(
       hash: BytesLike,
       overrides?: CallOverrides
     ): Promise<[string]>;
 
     token(overrides?: CallOverrides): Promise<[string]>;
+
+    topLevelDomainFee(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    topLevelDomainIdCache(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    topLevelDomainIdOf(
+      id: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
   };
 
   acceptBid(
     signature: BytesLike,
-    auctionid: BigNumberish,
+    auctionId: BigNumberish,
     bidder: string,
     bid: BigNumberish,
-    nftaddress: string,
-    tokenid: BigNumberish,
+    tokenId: BigNumberish,
     minbid: BigNumberish,
-    startblock: BigNumberish,
-    expireblock: BigNumberish,
+    startBlock: BigNumberish,
+    expireBlock: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  cancelBidsUnderPrice(
-    auctionid: BigNumberish,
-    price: BigNumberish,
+  buyNow(
+    auctionId: BigNumberish,
+    amount: BigNumberish,
+    tokenId: BigNumberish,
+    startBlock: BigNumberish,
+    expireBlock: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  buyPrice(arg0: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+
+  calculateMinterRoyalty(
+    id: BigNumberish,
+    bid: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  calculateTopLevelDomainFee(
+    topLevelId: BigNumberish,
+    bid: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  cancelBid(
+    account: string,
+    auctionId: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -222,15 +447,35 @@ export class ZAuction extends BaseContract {
   ): Promise<boolean>;
 
   createBid(
-    auctionid: BigNumberish,
+    auctionId: BigNumberish,
     bid: BigNumberish,
-    nftaddress: string,
-    tokenid: BigNumberish,
+    nftAddress: string,
+    tokenId: BigNumberish,
     minbid: BigNumberish,
-    startblock: BigNumberish,
-    expireblock: BigNumberish,
+    startBlock: BigNumberish,
+    expireBlock: BigNumberish,
     overrides?: CallOverrides
   ): Promise<string>;
+
+  createLegacyBid(
+    auctionId: BigNumberish,
+    bid: BigNumberish,
+    nftAddress: string,
+    tokenId: BigNumberish,
+    minbid: BigNumberish,
+    startBlock: BigNumberish,
+    expireBlock: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
+  initialize(
+    tokenAddress: string,
+    registrarAddress: string,
+    legacyZAuctionAddress: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  owner(overrides?: CallOverrides): Promise<string>;
 
   recover(
     hash: BytesLike,
@@ -240,6 +485,22 @@ export class ZAuction extends BaseContract {
 
   registrar(overrides?: CallOverrides): Promise<string>;
 
+  renounceOwnership(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  setBuyNow(
+    amount: BigNumberish,
+    tokenId: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  setTopLevelDomainFee(
+    id: BigNumberish,
+    amount: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   toEthSignedMessageHash(
     hash: BytesLike,
     overrides?: CallOverrides
@@ -247,23 +508,65 @@ export class ZAuction extends BaseContract {
 
   token(overrides?: CallOverrides): Promise<string>;
 
+  topLevelDomainFee(
+    arg0: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  topLevelDomainIdCache(
+    arg0: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  topLevelDomainIdOf(
+    id: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  transferOwnership(
+    newOwner: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   callStatic: {
     acceptBid(
       signature: BytesLike,
-      auctionid: BigNumberish,
+      auctionId: BigNumberish,
       bidder: string,
       bid: BigNumberish,
-      nftaddress: string,
-      tokenid: BigNumberish,
+      tokenId: BigNumberish,
       minbid: BigNumberish,
-      startblock: BigNumberish,
-      expireblock: BigNumberish,
+      startBlock: BigNumberish,
+      expireBlock: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    cancelBidsUnderPrice(
-      auctionid: BigNumberish,
-      price: BigNumberish,
+    buyNow(
+      auctionId: BigNumberish,
+      amount: BigNumberish,
+      tokenId: BigNumberish,
+      startBlock: BigNumberish,
+      expireBlock: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    buyPrice(arg0: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+
+    calculateMinterRoyalty(
+      id: BigNumberish,
+      bid: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    calculateTopLevelDomainFee(
+      topLevelId: BigNumberish,
+      bid: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    cancelBid(
+      account: string,
+      auctionId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -274,15 +577,35 @@ export class ZAuction extends BaseContract {
     ): Promise<boolean>;
 
     createBid(
-      auctionid: BigNumberish,
+      auctionId: BigNumberish,
       bid: BigNumberish,
-      nftaddress: string,
-      tokenid: BigNumberish,
+      nftAddress: string,
+      tokenId: BigNumberish,
       minbid: BigNumberish,
-      startblock: BigNumberish,
-      expireblock: BigNumberish,
+      startBlock: BigNumberish,
+      expireBlock: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
+
+    createLegacyBid(
+      auctionId: BigNumberish,
+      bid: BigNumberish,
+      nftAddress: string,
+      tokenId: BigNumberish,
+      minbid: BigNumberish,
+      startBlock: BigNumberish,
+      expireBlock: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    initialize(
+      tokenAddress: string,
+      registrarAddress: string,
+      legacyZAuctionAddress: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    owner(overrides?: CallOverrides): Promise<string>;
 
     recover(
       hash: BytesLike,
@@ -292,63 +615,147 @@ export class ZAuction extends BaseContract {
 
     registrar(overrides?: CallOverrides): Promise<string>;
 
+    renounceOwnership(overrides?: CallOverrides): Promise<void>;
+
+    setBuyNow(
+      amount: BigNumberish,
+      tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setTopLevelDomainFee(
+      id: BigNumberish,
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     toEthSignedMessageHash(
       hash: BytesLike,
       overrides?: CallOverrides
     ): Promise<string>;
 
     token(overrides?: CallOverrides): Promise<string>;
+
+    topLevelDomainFee(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    topLevelDomainIdCache(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    topLevelDomainIdOf(
+      id: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
   };
 
   filters: {
     BidAccepted(
-      auctionid?: null,
+      auctionId?: null,
       bidder?: string | null,
       seller?: string | null,
       amount?: null,
-      nftaddress?: null,
-      tokenid?: null,
-      expireblock?: null
+      nftAddress?: null,
+      tokenId?: null,
+      expireBlock?: null
     ): TypedEventFilter<
       [BigNumber, string, string, BigNumber, string, BigNumber, BigNumber],
       {
-        auctionid: BigNumber;
+        auctionId: BigNumber;
         bidder: string;
         seller: string;
         amount: BigNumber;
-        nftaddress: string;
-        tokenid: BigNumber;
-        expireblock: BigNumber;
+        nftAddress: string;
+        tokenId: BigNumber;
+        expireBlock: BigNumber;
       }
     >;
 
-    Cancelled(
-      bidder?: string | null,
-      auctionid?: BigNumberish | null,
-      price?: null
+    BidCancelled(
+      auctionId?: null,
+      bidder?: string | null
     ): TypedEventFilter<
-      [string, BigNumber, BigNumber],
-      { bidder: string; auctionid: BigNumber; price: BigNumber }
+      [BigNumber, string],
+      { auctionId: BigNumber; bidder: string }
+    >;
+
+    DomainBought(
+      auctionId?: null,
+      bidder?: string | null,
+      seller?: string | null,
+      amount?: null,
+      nftAddress?: null,
+      tokenId?: null,
+      expireBlock?: null
+    ): TypedEventFilter<
+      [BigNumber, string, string, BigNumber, string, BigNumber, BigNumber],
+      {
+        auctionId: BigNumber;
+        bidder: string;
+        seller: string;
+        amount: BigNumber;
+        nftAddress: string;
+        tokenId: BigNumber;
+        expireBlock: BigNumber;
+      }
+    >;
+
+    OwnershipTransferred(
+      previousOwner?: string | null,
+      newOwner?: string | null
+    ): TypedEventFilter<
+      [string, string],
+      { previousOwner: string; newOwner: string }
     >;
   };
 
   estimateGas: {
     acceptBid(
       signature: BytesLike,
-      auctionid: BigNumberish,
+      auctionId: BigNumberish,
       bidder: string,
       bid: BigNumberish,
-      nftaddress: string,
-      tokenid: BigNumberish,
+      tokenId: BigNumberish,
       minbid: BigNumberish,
-      startblock: BigNumberish,
-      expireblock: BigNumberish,
+      startBlock: BigNumberish,
+      expireBlock: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    cancelBidsUnderPrice(
-      auctionid: BigNumberish,
-      price: BigNumberish,
+    buyNow(
+      auctionId: BigNumberish,
+      amount: BigNumberish,
+      tokenId: BigNumberish,
+      startBlock: BigNumberish,
+      expireBlock: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    buyPrice(arg0: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+
+    calculateMinterRoyalty(
+      id: BigNumberish,
+      bid: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    calculateTopLevelDomainFee(
+      topLevelId: BigNumberish,
+      bid: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    cancelBid(
+      account: string,
+      auctionId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -359,15 +766,35 @@ export class ZAuction extends BaseContract {
     ): Promise<BigNumber>;
 
     createBid(
-      auctionid: BigNumberish,
+      auctionId: BigNumberish,
       bid: BigNumberish,
-      nftaddress: string,
-      tokenid: BigNumberish,
+      nftAddress: string,
+      tokenId: BigNumberish,
       minbid: BigNumberish,
-      startblock: BigNumberish,
-      expireblock: BigNumberish,
+      startBlock: BigNumberish,
+      expireBlock: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    createLegacyBid(
+      auctionId: BigNumberish,
+      bid: BigNumberish,
+      nftAddress: string,
+      tokenId: BigNumberish,
+      minbid: BigNumberish,
+      startBlock: BigNumberish,
+      expireBlock: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    initialize(
+      tokenAddress: string,
+      registrarAddress: string,
+      legacyZAuctionAddress: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    owner(overrides?: CallOverrides): Promise<BigNumber>;
 
     recover(
       hash: BytesLike,
@@ -377,31 +804,92 @@ export class ZAuction extends BaseContract {
 
     registrar(overrides?: CallOverrides): Promise<BigNumber>;
 
+    renounceOwnership(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    setBuyNow(
+      amount: BigNumberish,
+      tokenId: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    setTopLevelDomainFee(
+      id: BigNumberish,
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     toEthSignedMessageHash(
       hash: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     token(overrides?: CallOverrides): Promise<BigNumber>;
+
+    topLevelDomainFee(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    topLevelDomainIdCache(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    topLevelDomainIdOf(
+      id: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
     acceptBid(
       signature: BytesLike,
-      auctionid: BigNumberish,
+      auctionId: BigNumberish,
       bidder: string,
       bid: BigNumberish,
-      nftaddress: string,
-      tokenid: BigNumberish,
+      tokenId: BigNumberish,
       minbid: BigNumberish,
-      startblock: BigNumberish,
-      expireblock: BigNumberish,
+      startBlock: BigNumberish,
+      expireBlock: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    cancelBidsUnderPrice(
-      auctionid: BigNumberish,
-      price: BigNumberish,
+    buyNow(
+      auctionId: BigNumberish,
+      amount: BigNumberish,
+      tokenId: BigNumberish,
+      startBlock: BigNumberish,
+      expireBlock: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    buyPrice(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    calculateMinterRoyalty(
+      id: BigNumberish,
+      bid: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    calculateTopLevelDomainFee(
+      topLevelId: BigNumberish,
+      bid: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    cancelBid(
+      account: string,
+      auctionId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -412,15 +900,35 @@ export class ZAuction extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     createBid(
-      auctionid: BigNumberish,
+      auctionId: BigNumberish,
       bid: BigNumberish,
-      nftaddress: string,
-      tokenid: BigNumberish,
+      nftAddress: string,
+      tokenId: BigNumberish,
       minbid: BigNumberish,
-      startblock: BigNumberish,
-      expireblock: BigNumberish,
+      startBlock: BigNumberish,
+      expireBlock: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    createLegacyBid(
+      auctionId: BigNumberish,
+      bid: BigNumberish,
+      nftAddress: string,
+      tokenId: BigNumberish,
+      minbid: BigNumberish,
+      startBlock: BigNumberish,
+      expireBlock: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    initialize(
+      tokenAddress: string,
+      registrarAddress: string,
+      legacyZAuctionAddress: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     recover(
       hash: BytesLike,
@@ -430,11 +938,47 @@ export class ZAuction extends BaseContract {
 
     registrar(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    renounceOwnership(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setBuyNow(
+      amount: BigNumberish,
+      tokenId: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setTopLevelDomainFee(
+      id: BigNumberish,
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     toEthSignedMessageHash(
       hash: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     token(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    topLevelDomainFee(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    topLevelDomainIdCache(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    topLevelDomainIdOf(
+      id: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
   };
 }
