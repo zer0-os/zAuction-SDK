@@ -33,6 +33,7 @@ export interface Instance {
     bid: Bid,
     signer: ethers.Signer
   ) => Promise<ethers.ContractTransaction>;
+  cancelBid: (auctionId: string, signer: ethers.Signer) => Promise<ethers.ContractTransaction>;
   buyNow: (
     params: BuyNowParams,
     signer: ethers.Signer

@@ -138,6 +138,20 @@ export const createInstance = (config: Config): Instance => {
 
       return tx;
     },
+    cancelBid: async (
+      auctionId: string,
+      signer: ethers.Signer
+    ): Promise<ethers.ContractTransaction> => {
+      const zAuction = await getZAuctionContract(
+        signer,
+        config.zAuctionAddress
+      );
+
+      const account = await signer.getAddress();
+
+      const tx = await zAuction.cancelBid(account, auctionId);
+      return tx;
+    },
 
     buyNow: async (
       params: BuyNowParams,
@@ -181,10 +195,7 @@ export const createInstance = (config: Config): Instance => {
         config.zAuctionAddress
       );
 
-      const tx = await zAuction.buyNow(
-        params.amount,
-        params.tokenId
-      );
+      const tx = await zAuction.buyNow(params.amount, params.tokenId);
 
       return tx;
     },
