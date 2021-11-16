@@ -138,19 +138,28 @@ export const createInstance = (config: Config): Instance => {
 
       return tx;
     },
+
     cancelBid: async (
       auctionId: string,
-      signer: ethers.Signer
-    ): Promise<ethers.ContractTransaction> => {
-      const zAuction = await getZAuctionContract(
-        signer,
-        config.zAuctionAddress
-      );
-
-      const account = await signer.getAddress();
-
-      const tx = await zAuction.cancelBid(account, auctionId);
-      return tx;
+      signedBidMessage: string,
+      cancelOnChain: boolean,
+      signer?: ethers.Signer
+    ) => {
+      // Always cancel the bid through the API
+      const encodedCancelMessage = await apiClient.encodeCancelBid(signedBidMessage);
+      await apiClient.submitCancelBid(encodedCancelMessage, signedBidMessage)
+      
+      // If enabled, also cancel the bid with the zAuction smart contract
+      if (cancelOnChain && signer) {
+        const zAuction = await getZAuctionContract(
+          signer,
+          config.zAuctionAddress
+        );
+  
+        const account = await signer.getAddress();
+  
+        await zAuction.cancelBid(account, auctionId);
+      }
     },
 
     buyNow: async (

@@ -33,7 +33,12 @@ export interface Instance {
     bid: Bid,
     signer: ethers.Signer
   ) => Promise<ethers.ContractTransaction>;
-  cancelBid: (auctionId: string, signer: ethers.Signer) => Promise<ethers.ContractTransaction>;
+  cancelBid: (
+    auctionId: string,
+    signedBidMessage: string,
+    cancelOnChain: boolean,
+    signer?: ethers.Signer
+  ) => Promise<void>;
   buyNow: (
     params: BuyNowParams,
     signer: ethers.Signer
@@ -42,7 +47,10 @@ export interface Instance {
     params: BuyNowParams,
     signer: ethers.Signer
   ) => Promise<ethers.ContractTransaction>;
-  cancelBuyNow: (tokenId: string, signer: ethers.Signer) => Promise<ethers.ContractTransaction>;
+  cancelBuyNow: (
+    tokenId: string,
+    signer: ethers.Signer
+  ) => Promise<ethers.ContractTransaction>;
 }
 
 export interface TokenSale {
