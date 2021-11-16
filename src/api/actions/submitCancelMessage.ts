@@ -1,4 +1,3 @@
-import { SignedBid } from "../types";
 import { makeApiCall } from "./helpers";
 
 export const submitCancelMessage = async (

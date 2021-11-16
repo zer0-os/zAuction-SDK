@@ -1,4 +1,3 @@
-import { BidMessage, BidParameters, SignableBid } from "../types";
 import { makeApiCall } from "./helpers";
 
 interface EncodeCancelBidDto {
