@@ -152,7 +152,7 @@ export const createInstance = (config: Config): Instance => {
       await apiClient.submitCancelBid(signedCancelMessage, signedBidMessage);
       
       // If enabled, also cancel the bid with the zAuction smart contract
-      if (cancelOnChain && signer) {
+      if (cancelOnChain) {
         const zAuction = await getZAuctionContract(
           signer,
           config.zAuctionAddress
