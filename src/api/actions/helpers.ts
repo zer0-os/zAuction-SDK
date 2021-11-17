@@ -6,7 +6,8 @@ import { BidDto } from "../types";
 export const makeApiCall = async <T>(
   url: string,
   method: "GET" | "POST",
-  body?: string | Record<string, unknown>
+  body?: string | Record<string, unknown>,
+  softFail?: boolean
 ): Promise<T> => {
   const headers: Record<string, string> = {};
 
@@ -23,7 +24,7 @@ export const makeApiCall = async <T>(
     headers,
   });
 
-  if (res.status !== 200) {
+  if (res.status !== 200 && !softFail) {
     throw Error(`Request failed with code ${res.status}: ${await res.text()}`);
   }
 
