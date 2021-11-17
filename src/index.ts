@@ -143,11 +143,13 @@ export const createInstance = (config: Config): Instance => {
       auctionId: string,
       signedBidMessage: string,
       cancelOnChain: boolean,
-      signer?: ethers.Signer
+      signer: ethers.Signer
     ) => {
       // Always cancel the bid through the API
       const encodedCancelMessage = await apiClient.encodeCancelBid(signedBidMessage);
-      await apiClient.submitCancelBid(encodedCancelMessage, signedBidMessage)
+      const signedCancelMessage = await signer.signMessage(encodedCancelMessage);
+
+      await apiClient.submitCancelBid(signedCancelMessage, signedBidMessage);
       
       // If enabled, also cancel the bid with the zAuction smart contract
       if (cancelOnChain && signer) {
