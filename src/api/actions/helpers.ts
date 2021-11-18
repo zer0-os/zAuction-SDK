@@ -7,7 +7,8 @@ export const makeApiCall = async <T>(
   url: string,
   method: "GET" | "POST",
   body?: string | Record<string, unknown>,
-  softFail?: boolean
+  softFail?: boolean,
+  softFailMessage?: string
 ): Promise<T> => {
   const headers: Record<string, string> = {};
 
@@ -28,8 +29,14 @@ export const makeApiCall = async <T>(
     throw Error(`Request failed with code ${res.status}: ${await res.text()}`);
   }
 
-  const returnedBody = await res.json();
-  return returnedBody as T;
+  if (softFail) {
+    const returnedBody = await res.json();
+    returnedBody["softFailMessage"] = softFailMessage;
+    return returnedBody as T;
+  } else {
+    const returnedBody = await res.json();
+    return returnedBody as T;
+  }
 };
 
 export const convertBidDtoToBid = (bid: BidDto): Bid => {

@@ -7,9 +7,18 @@ export const submitCancelMessage = async (
 ): Promise<void> => {
   const uri = `${apiUrl}/bid/cancel`;
 
-  // Soft fail if the bid isn't found
-  await makeApiCall(uri, "POST", {
-    cancelMessageSignature: signedCancelMessage,
-    bidMessageSignature: signedBidMessage,
-  }, true);
+  const softFailMessage =
+    "Already cancelled in the API but allowing execution to continue to cancel in the contract as well";
+
+  // Soft fail if the bid isn't found in the API
+  await makeApiCall(
+    uri,
+    "POST",
+    {
+      cancelMessageSignature: signedCancelMessage,
+      bidMessageSignature: signedBidMessage,
+    },
+    true,
+    softFailMessage
+  );
 };
