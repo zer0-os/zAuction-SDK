@@ -17,7 +17,6 @@ import {
   getZAuctionContract,
   getZAuctionTradeToken,
 } from "./contracts";
-import { ZAuction } from "./contracts/types";
 
 export * from "./types";
 
