@@ -22,8 +22,7 @@ import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 interface ZAuctionInterface extends ethers.utils.Interface {
   functions: {
     "acceptBid(bytes,uint256,address,uint256,uint256,uint256,uint256,uint256)": FunctionFragment;
-    "buyNow(uint256,uint256,uint256,uint256,uint256)": FunctionFragment;
-    "buyPrice(uint256)": FunctionFragment;
+    "buyNow(uint256,uint256)": FunctionFragment;
     "calculateMinterRoyalty(uint256,uint256)": FunctionFragment;
     "calculateTopLevelDomainFee(uint256,uint256)": FunctionFragment;
     "cancelBid(address,uint256)": FunctionFragment;
@@ -32,10 +31,11 @@ interface ZAuctionInterface extends ethers.utils.Interface {
     "createLegacyBid(uint256,uint256,address,uint256,uint256,uint256,uint256)": FunctionFragment;
     "initialize(address,address,address)": FunctionFragment;
     "owner()": FunctionFragment;
+    "priceInfo(uint256)": FunctionFragment;
     "recover(bytes32,bytes)": FunctionFragment;
     "registrar()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
-    "setBuyNow(uint256,uint256)": FunctionFragment;
+    "setBuyPrice(uint256,uint256)": FunctionFragment;
     "setTopLevelDomainFee(uint256,uint256)": FunctionFragment;
     "toEthSignedMessageHash(bytes32)": FunctionFragment;
     "token()": FunctionFragment;
@@ -60,17 +60,7 @@ interface ZAuctionInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "buyNow",
-    values: [
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish
-    ]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "buyPrice",
-    values: [BigNumberish]
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "calculateMinterRoyalty",
@@ -118,6 +108,10 @@ interface ZAuctionInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
+    functionFragment: "priceInfo",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "recover",
     values: [BytesLike, BytesLike]
   ): string;
@@ -127,7 +121,7 @@ interface ZAuctionInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "setBuyNow",
+    functionFragment: "setBuyPrice",
     values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
@@ -158,7 +152,6 @@ interface ZAuctionInterface extends ethers.utils.Interface {
 
   decodeFunctionResult(functionFragment: "acceptBid", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "buyNow", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "buyPrice", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "calculateMinterRoyalty",
     data: BytesLike
@@ -176,13 +169,17 @@ interface ZAuctionInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "priceInfo", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "recover", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "registrar", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "setBuyNow", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "setBuyPrice",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "setTopLevelDomainFee",
     data: BytesLike
@@ -212,13 +209,13 @@ interface ZAuctionInterface extends ethers.utils.Interface {
   events: {
     "BidAccepted(uint256,address,address,uint256,address,uint256,uint256)": EventFragment;
     "BidCancelled(uint256,address)": EventFragment;
-    "DomainBought(uint256,address,address,uint256,address,uint256,uint256)": EventFragment;
+    "DomainSold(address,address,uint256,address,uint256)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "BidAccepted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "BidCancelled"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "DomainBought"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "DomainSold"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
 }
 
@@ -279,18 +276,10 @@ export class ZAuction extends BaseContract {
     ): Promise<ContractTransaction>;
 
     buyNow(
-      auctionId: BigNumberish,
       amount: BigNumberish,
       tokenId: BigNumberish,
-      startBlock: BigNumberish,
-      expireBlock: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
-
-    buyPrice(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
 
     calculateMinterRoyalty(
       id: BigNumberish,
@@ -347,6 +336,11 @@ export class ZAuction extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<[string]>;
 
+    priceInfo(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber, string] & { price: BigNumber; holder: string }>;
+
     recover(
       hash: BytesLike,
       signature: BytesLike,
@@ -359,7 +353,7 @@ export class ZAuction extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    setBuyNow(
+    setBuyPrice(
       amount: BigNumberish,
       tokenId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -417,8 +411,6 @@ export class ZAuction extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  buyPrice(arg0: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-
   calculateMinterRoyalty(
     id: BigNumberish,
     bid: BigNumberish,
@@ -474,6 +466,11 @@ export class ZAuction extends BaseContract {
 
   owner(overrides?: CallOverrides): Promise<string>;
 
+  priceInfo(
+    arg0: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<[BigNumber, string] & { price: BigNumber; holder: string }>;
+
   recover(
     hash: BytesLike,
     signature: BytesLike,
@@ -486,7 +483,7 @@ export class ZAuction extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  setBuyNow(
+  setBuyPrice(
     amount: BigNumberish,
     tokenId: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -539,15 +536,10 @@ export class ZAuction extends BaseContract {
     ): Promise<void>;
 
     buyNow(
-      auctionId: BigNumberish,
       amount: BigNumberish,
       tokenId: BigNumberish,
-      startBlock: BigNumberish,
-      expireBlock: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    buyPrice(arg0: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
     calculateMinterRoyalty(
       id: BigNumberish,
@@ -604,6 +596,11 @@ export class ZAuction extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<string>;
 
+    priceInfo(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber, string] & { price: BigNumber; holder: string }>;
+
     recover(
       hash: BytesLike,
       signature: BytesLike,
@@ -614,7 +611,7 @@ export class ZAuction extends BaseContract {
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
-    setBuyNow(
+    setBuyPrice(
       amount: BigNumberish,
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -684,24 +681,20 @@ export class ZAuction extends BaseContract {
       { auctionId: BigNumber; bidder: string }
     >;
 
-    DomainBought(
-      auctionId?: null,
-      bidder?: string | null,
+    DomainSold(
+      buyer?: string | null,
       seller?: string | null,
       amount?: null,
       nftAddress?: null,
-      tokenId?: null,
-      expireBlock?: null
+      tokenId?: BigNumberish | null
     ): TypedEventFilter<
-      [BigNumber, string, string, BigNumber, string, BigNumber, BigNumber],
+      [string, string, BigNumber, string, BigNumber],
       {
-        auctionId: BigNumber;
-        bidder: string;
+        buyer: string;
         seller: string;
         amount: BigNumber;
         nftAddress: string;
         tokenId: BigNumber;
-        expireBlock: BigNumber;
       }
     >;
 
@@ -728,15 +721,10 @@ export class ZAuction extends BaseContract {
     ): Promise<BigNumber>;
 
     buyNow(
-      auctionId: BigNumberish,
       amount: BigNumberish,
       tokenId: BigNumberish,
-      startBlock: BigNumberish,
-      expireBlock: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
-
-    buyPrice(arg0: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
     calculateMinterRoyalty(
       id: BigNumberish,
@@ -793,6 +781,11 @@ export class ZAuction extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
+    priceInfo(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     recover(
       hash: BytesLike,
       signature: BytesLike,
@@ -805,7 +798,7 @@ export class ZAuction extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    setBuyNow(
+    setBuyPrice(
       amount: BigNumberish,
       tokenId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -859,17 +852,9 @@ export class ZAuction extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     buyNow(
-      auctionId: BigNumberish,
       amount: BigNumberish,
       tokenId: BigNumberish,
-      startBlock: BigNumberish,
-      expireBlock: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    buyPrice(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     calculateMinterRoyalty(
@@ -927,6 +912,11 @@ export class ZAuction extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    priceInfo(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     recover(
       hash: BytesLike,
       signature: BytesLike,
@@ -939,7 +929,7 @@ export class ZAuction extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    setBuyNow(
+    setBuyPrice(
       amount: BigNumberish,
       tokenId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }

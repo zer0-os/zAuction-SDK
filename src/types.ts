@@ -43,6 +43,10 @@ export interface Instance {
     params: BuyNowParams,
     signer: ethers.Signer
   ) => Promise<ethers.ContractTransaction>;
+  getBuyNowPrice: (
+    tokenId: string,
+    signer: ethers.Signer
+  ) => Promise<any>;
   setBuyNowPrice: (
     params: BuyNowParams,
     signer: ethers.Signer

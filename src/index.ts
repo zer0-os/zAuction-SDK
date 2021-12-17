@@ -17,6 +17,7 @@ import {
   getZAuctionContract,
   getZAuctionTradeToken,
 } from "./contracts";
+import { ZAuction } from "./contracts/types";
 
 export * from "./types";
 
@@ -150,16 +151,16 @@ export const createInstance = (config: Config): Instance => {
       const signedCancelMessage = await signer.signMessage(encodedCancelMessage);
 
       await apiClient.submitCancelBid(signedCancelMessage, signedBidMessage);
-      
+
       // If enabled, also cancel the bid with the zAuction smart contract
       if (cancelOnChain) {
         const zAuction = await getZAuctionContract(
           signer,
           config.zAuctionAddress
         );
-  
+
         const account = await signer.getAddress();
-  
+
         await zAuction.cancelBid(account, auctionId);
       }
     },
@@ -211,6 +212,19 @@ export const createInstance = (config: Config): Instance => {
       return tx;
     },
 
+    // IF no return value then that domain is not on sale
+    getBuyNowPrice: async (
+      tokenId: string,
+      signer: ethers.Signer
+    ): Promise<any> => {
+      const zAuction = await getZAuctionContract(
+        signer,
+        config.zAuctionAddress
+      )
+
+      const listing = await zAuction.priceInfo(tokenId);
+      return listing.price;
+    },
     setBuyNowPrice: async (
       params: BuyNowParams,
       signer: ethers.Signer
@@ -242,7 +256,7 @@ export const createInstance = (config: Config): Instance => {
         config.zAuctionAddress
       );
 
-      const tx = await zAuction.setBuyNow(params.amount, params.tokenId);
+      const tx = await zAuction.setBuyPrice(params.amount, params.tokenId);
       return tx;
     },
 
@@ -268,7 +282,7 @@ export const createInstance = (config: Config): Instance => {
           "Cannot cancel the buy now price of a domain that is not yours"
         );
 
-      const tx = await zAuction.setBuyNow("0", tokenId);
+      const tx = await zAuction.setBuyPrice(ethers.BigNumber.from("0"), tokenId);
       return tx;
     },
   };
