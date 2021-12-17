@@ -144,7 +144,7 @@ export const createInstance = (config: Config): Instance => {
       signedBidMessage: string,
       cancelOnChain: boolean,
       signer: ethers.Signer
-    ) => {
+    ): Promise<ethers.ContractTransaction | void> => {
       // Always cancel the bid through the API
       const encodedCancelMessage = await apiClient.encodeCancelBid(signedBidMessage);
       const signedCancelMessage = await signer.signMessage(encodedCancelMessage);
@@ -160,7 +160,8 @@ export const createInstance = (config: Config): Instance => {
 
         const account = await signer.getAddress();
 
-        await zAuction.cancelBid(account, auctionId);
+        const tx = await zAuction.cancelBid(account, auctionId);
+        return tx;
       }
     },
 
