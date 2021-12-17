@@ -216,6 +216,7 @@ export const createInstance = (config: Config): Instance => {
       tokenId: string,
       signer: ethers.Signer
     ): Promise<any> => {
+      if (!tokenId) throw Error("Must provide a valid tokenId");
       const zAuction = await getZAuctionContract(
         signer,
         config.zAuctionAddress
