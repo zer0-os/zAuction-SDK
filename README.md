@@ -15,6 +15,7 @@
 - [x] Accept a bid
 - [x] Buying an NFT immediately
 - [x] Setting the immediate buy price of an NFT
+- [x] Getting the immediate buy price of an NFT
 - [x] Cancelling the ability to buy an NFT immediately
 
 ## Improvements / Optimizations
