@@ -46,7 +46,7 @@ export interface Instance {
   getBuyNowPrice: (
     tokenId: string,
     signer: ethers.Signer
-  ) => Promise<any>;
+  ) => Promise<ethers.BigNumber>;
   setBuyNowPrice: (
     params: BuyNowParams,
     signer: ethers.Signer
