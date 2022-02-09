@@ -46,7 +46,7 @@ export interface Instance {
   getBuyNowPrice: (
     tokenId: string,
     signer: ethers.Signer
-  ) => Promise<ethers.BigNumber>;
+  ) => Promise<Listing>;
   setBuyNowPrice: (
     params: BuyNowParams,
     signer: ethers.Signer
@@ -93,4 +93,9 @@ export interface NewBidParameters {
 export interface BuyNowParams {
   amount: string;
   tokenId: string;
+}
+
+export interface Listing {
+  price: ethers.BigNumber;
+  holder: string;
 }
