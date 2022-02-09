@@ -11,6 +11,7 @@ import {
   Instance,
   Bid,
   BuyNowParams,
+  Listing,
 } from "./types";
 import {
   getERC721Contract,
@@ -216,15 +217,17 @@ export const createInstance = (config: Config): Instance => {
     getBuyNowPrice: async (
       tokenId: string,
       signer: ethers.Signer
-    ): Promise<ethers.BigNumber> => {
+    ): Promise<Listing> => {
       if (!tokenId) throw Error("Must provide a valid tokenId");
       const zAuction = await getZAuctionContract(
         signer,
         config.zAuctionAddress
       )
-
-      const listing = await zAuction.priceInfo(tokenId);
-      return listing.price;
+      // getBuyNowPrice should return the listing because we also
+      // want to be able to confirm the holder is the domain owner
+      // in the zNS-SDK downstream
+      const listing: Listing = await zAuction.priceInfo(tokenId);
+      return listing;
     },
     setBuyNowPrice: async (
       params: BuyNowParams,
