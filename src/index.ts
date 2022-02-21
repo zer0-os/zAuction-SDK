@@ -147,8 +147,12 @@ export const createInstance = (config: Config): Instance => {
       signer: ethers.Signer
     ): Promise<ethers.ContractTransaction | void> => {
       // Always cancel the bid through the API
-      const encodedCancelMessage = await apiClient.encodeCancelBid(signedBidMessage);
-      const signedCancelMessage = await signer.signMessage(encodedCancelMessage);
+      const encodedCancelMessage = await apiClient.encodeCancelBid(
+        signedBidMessage
+      );
+      const signedCancelMessage = await signer.signMessage(
+        encodedCancelMessage
+      );
 
       await apiClient.submitCancelBid(signedCancelMessage, signedBidMessage);
 
@@ -200,7 +204,7 @@ export const createInstance = (config: Config): Instance => {
       );
 
       // Ensure buyer has approved zAuction to transfer tokens on their behalf
-      if (allowance < ethers.BigNumber.from(params.amount))
+      if (allowance.lt(ethers.BigNumber.from(params.amount)))
         throw Error("zAuction is not approved to transfer this many tokens");
 
       const zAuction = await getZAuctionContract(
@@ -222,7 +226,7 @@ export const createInstance = (config: Config): Instance => {
       const zAuction = await getZAuctionContract(
         signer,
         config.zAuctionAddress
-      )
+      );
       // getBuyNowPrice should return the listing because we also
       // want to be able to confirm the holder is the domain owner
       // in the zNS-SDK downstream
@@ -286,7 +290,10 @@ export const createInstance = (config: Config): Instance => {
           "Cannot cancel the buy now price of a domain that is not yours"
         );
 
-      const tx = await zAuction.setBuyPrice(ethers.BigNumber.from("0"), tokenId);
+      const tx = await zAuction.setBuyPrice(
+        ethers.BigNumber.from("0"),
+        tokenId
+      );
       return tx;
     },
   };
