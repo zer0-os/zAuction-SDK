@@ -9,7 +9,7 @@ export const encodeCancelMessage = async (
   signedBidMessage: string
 ): Promise<string> => {
   const uri = `${apiUrl}/bid/cancel/encode`;
-  const response = await makeApiCall<EncodeCancelBidDto>(uri, "GET", {
+  const response = await makeApiCall<EncodeCancelBidDto>(uri, "POST", {
     bidMessageSignature: signedBidMessage,
   });
 
