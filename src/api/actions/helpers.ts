@@ -16,6 +16,7 @@ export const makeApiCall = async <T>(
     if (typeof body !== "string") {
       body = JSON.stringify(body);
       headers["Content-Type"] = "application/json";
+      headers["Access-Control-Allow-Origin"] = "*";
     }
   }
 
