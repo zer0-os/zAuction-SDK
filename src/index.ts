@@ -12,6 +12,7 @@ import {
   Bid,
   BuyNowParams,
   Listing,
+  zNSHub,
 } from "./types";
 import {
   getERC721Contract,
@@ -230,7 +231,9 @@ export const createInstance = (config: Config): Instance => {
       // getBuyNowPrice should return the listing because we also
       // want to be able to confirm the holder is the domain owner
       // in the zNS-SDK downstream
-      const listing: Listing = await zAuction.priceInfo(tokenId);
+      const znsHub: zNSHub = await zAuction.hub() as unknown as zNSHub;
+      const registrar = await znsHub.getRegistrarForDomain(tokenId);
+      const listing: Listing = await zAuction.priceInfo(registrar, tokenId);
       return listing;
     },
     setBuyNowPrice: async (

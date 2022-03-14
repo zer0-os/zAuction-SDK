@@ -13,7 +13,7 @@ const _abi = [
       {
         indexed: false,
         internalType: "uint256",
-        name: "auctionId",
+        name: "bidNonce",
         type: "uint256",
       },
       {
@@ -62,7 +62,7 @@ const _abi = [
       {
         indexed: false,
         internalType: "uint256",
-        name: "auctionId",
+        name: "bidNonce",
         type: "uint256",
       },
       {
@@ -73,6 +73,25 @@ const _abi = [
       },
     ],
     name: "BidCancelled",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    name: "BuyNowPriceSet",
     type: "event",
   },
   {
@@ -140,7 +159,7 @@ const _abi = [
       },
       {
         internalType: "uint256",
-        name: "auctionId",
+        name: "bidNonce",
         type: "uint256",
       },
       {
@@ -254,7 +273,7 @@ const _abi = [
       },
       {
         internalType: "uint256",
-        name: "auctionId",
+        name: "bidNonce",
         type: "uint256",
       },
     ],
@@ -291,7 +310,7 @@ const _abi = [
     inputs: [
       {
         internalType: "uint256",
-        name: "auctionId",
+        name: "bidNonce",
         type: "uint256",
       },
       {
@@ -337,49 +356,13 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "auctionId",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "bid",
-        type: "uint256",
-      },
-      {
-        internalType: "address",
-        name: "nftAddress",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "tokenId",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "minbid",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "startBlock",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "expireBlock",
-        type: "uint256",
-      },
-    ],
-    name: "createLegacyBid",
+    inputs: [],
+    name: "hub",
     outputs: [
       {
-        internalType: "bytes32",
-        name: "data",
-        type: "bytes32",
+        internalType: "contract IZNSHub",
+        name: "",
+        type: "address",
       },
     ],
     stateMutability: "view",
@@ -397,15 +380,23 @@ const _abi = [
         name: "registrarAddress",
         type: "address",
       },
-      {
-        internalType: "address",
-        name: "legacyZAuctionAddress",
-        type: "address",
-      },
     ],
     name: "initialize",
     outputs: [],
     stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "legacyRegistrar",
+    outputs: [
+      {
+        internalType: "contract IRegistrar",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
   {
@@ -423,6 +414,11 @@ const _abi = [
   },
   {
     inputs: [
+      {
+        internalType: "contract IRegistrar",
+        name: "",
+        type: "address",
+      },
       {
         internalType: "uint256",
         name: "",
@@ -471,19 +467,6 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "registrar",
-    outputs: [
-      {
-        internalType: "contract IRegistrar",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
     name: "renounceOwnership",
     outputs: [],
     stateMutability: "nonpayable",
@@ -521,6 +504,19 @@ const _abi = [
       },
     ],
     name: "setTopLevelDomainFee",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "contract IZNSHub",
+        name: "hubAddress",
+        type: "address",
+      },
+    ],
+    name: "setZNSHub",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
