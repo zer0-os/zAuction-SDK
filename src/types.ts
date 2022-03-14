@@ -34,7 +34,7 @@ export interface Instance {
     signer: ethers.Signer
   ) => Promise<ethers.ContractTransaction>;
   cancelBid: (
-    auctionId: string,
+    uniqueBidId: string,
     signedBidMessage: string,
     cancelOnChain: boolean,
     signer: ethers.Signer

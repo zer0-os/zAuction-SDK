@@ -128,7 +128,7 @@ export const createInstance = (config: Config): Instance => {
 
       const tx = await zAuction.acceptBid(
         bid.signedMessage,
-        bid.auctionId,
+        bid.uniqueBidId,
         bid.bidder,
         bid.amount,
         bid.tokenId,
@@ -141,7 +141,7 @@ export const createInstance = (config: Config): Instance => {
     },
 
     cancelBid: async (
-      auctionId: string,
+      uniqueBidId: string,
       signedBidMessage: string,
       cancelOnChain: boolean,
       signer: ethers.Signer
@@ -165,7 +165,7 @@ export const createInstance = (config: Config): Instance => {
 
         const account = await signer.getAddress();
 
-        const tx = await zAuction.cancelBid(account, auctionId);
+        const tx = await zAuction.cancelBid(account, uniqueBidId);
         return tx;
       }
     },

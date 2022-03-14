@@ -9,7 +9,7 @@ export const submitBid = async (
 
   await makeApiCall(uri, "POST", {
     account: signedBid.bid.bidder,
-    auctionId: signedBid.bid.auctionId,
+    uniqueBidId: signedBid.bid.uniqueBidId,
     tokenId: signedBid.bid.tokenId,
     contractAddress: signedBid.bid.contract,
     bidAmount: signedBid.bid.amount,
