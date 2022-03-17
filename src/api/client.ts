@@ -28,13 +28,12 @@ export const createClient = (apiUri: string): ApiClient => {
     submitCancelBid: async (
       signedCancelMessage: string,
       signedBidMessage: string
-    ): Promise<void> => {
+    ): Promise<void> =>
       actions.submitCancelMessage(
         apiUri,
         signedCancelMessage,
         signedBidMessage
-      );
-    },
+      ),
     listBidsForTokens: (
       contract: string,
       tokenIds: string[]
