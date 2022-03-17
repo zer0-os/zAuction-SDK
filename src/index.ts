@@ -41,15 +41,18 @@ export const createInstance = (config: Config): Instance => {
       signer: ethers.Signer,
       statusCallback?: PlaceBidStatusCallback
     ) =>
-      actions.placeBid({
-        bid: params,
-        contract: config.tokenContract,
-        bidder: await signer.getAddress(),
-        encodeBid: apiClient.encodeBid,
-        signMessage: signer.signMessage,
-        submitBid: apiClient.submitBid,
-        statusCallback,
-      }),
+      actions.placeBid(
+        {
+          bid: params,
+          contract: config.tokenContract,
+          bidder: await signer.getAddress(),
+          encodeBid: apiClient.encodeBid,
+          signMessage: signer.signMessage,
+          submitBid: apiClient.submitBid,
+          statusCallback,
+        },
+        signer
+      ),
     isZAuctionApprovedToTransferNft: async (
       account: string
     ): Promise<boolean> => {

@@ -7,7 +7,7 @@ export interface Config {
   subgraphUri: string;
   zAuctionAddress: string;
   tokenContract: string;
-  web3Provider: ethers.providers.Web3Provider;
+  web3Provider: ethers.providers.Provider;
 }
 
 export interface Instance {
@@ -19,7 +19,7 @@ export interface Instance {
     params: NewBidParameters,
     signer: ethers.Signer,
     statusCallback?: PlaceBidStatusCallback
-  ) => Promise<void>;
+  ) => Promise<Bid>;
   isZAuctionApprovedToTransferNft: (account: string) => Promise<boolean>;
   getZAuctionSpendAllowance: (account: string) => Promise<ethers.BigNumber>;
   getTradeTokenAddress: () => Promise<string>;
@@ -38,15 +38,12 @@ export interface Instance {
     signedBidMessage: string,
     cancelOnChain: boolean,
     signer: ethers.Signer
-  ) => Promise<ethers.ContractTransaction | void>
+  ) => Promise<ethers.ContractTransaction | void>;
   buyNow: (
     params: BuyNowParams,
     signer: ethers.Signer
   ) => Promise<ethers.ContractTransaction>;
-  getBuyNowPrice: (
-    tokenId: string,
-    signer: ethers.Signer
-  ) => Promise<Listing>;
+  getBuyNowPrice: (tokenId: string, signer: ethers.Signer) => Promise<Listing>;
   setBuyNowPrice: (
     params: BuyNowParams,
     signer: ethers.Signer

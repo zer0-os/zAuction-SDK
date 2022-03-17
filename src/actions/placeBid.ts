@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { BidParameters, SignableBid, SignedBid } from "../api/types";
+import { Bid, BidParameters, SignableBid, SignedBid } from "../api/types";
 
 import {
   PlaceBidStatus,
@@ -25,8 +25,9 @@ interface PlaceBidActionParameters {
 }
 
 export const placeBid = async (
-  params: PlaceBidActionParameters
-): Promise<void> => {
+  params: PlaceBidActionParameters,
+  signer: ethers.Signer
+): Promise<Bid> => {
   params.statusCallback ? params.statusCallback(PlaceBidStatus.Encoding) : null;
 
   let signableBid: Maybe<SignableBid>;
@@ -41,6 +42,7 @@ export const placeBid = async (
       expireBlock: params.bid.expireBlock ?? "9999999999",
     } as BidParameters);
   } catch (e) {
+    console.error(e);
     throw Error(`Failed to encode bid: ${e}`);
   }
 
@@ -48,7 +50,7 @@ export const placeBid = async (
 
   let signedBidMessage: Maybe<string>;
   try {
-    signedBidMessage = await params.signMessage(
+    signedBidMessage = await signer.signMessage(
       ethers.utils.arrayify(signableBid.message)
     );
   } catch (e) {
@@ -59,16 +61,27 @@ export const placeBid = async (
     ? params.statusCallback(PlaceBidStatus.Submitting)
     : null;
 
+  const signedBid = {
+    bid: signableBid.bid,
+    signedMessage: signedBidMessage,
+  } as SignedBid;
+
   try {
-    await params.submitBid({
-      bid: signableBid.bid,
-      signedMessage: signedBidMessage,
-    } as SignedBid);
+    await params.submitBid(signedBid);
   } catch (e) {
+    console.error(e);
     throw Error(`Failed to submit bid: ${e}`);
   }
 
   params.statusCallback
     ? params.statusCallback(PlaceBidStatus.Completed)
     : null;
+
+  const createdBid: Bid = {
+    ...signedBid.bid,
+    signedMessage: signedBid.signedMessage,
+    timestamp: new Date().getTime().toString(),
+  };
+
+  return createdBid;
 };
