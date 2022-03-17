@@ -10,17 +10,6 @@ export interface Config {
   web3Provider: ethers.providers.Web3Provider;
 }
 
-export interface zNSHub {
-  addRegistrar: (rootDomainId: string, registrar: string) => Promise<void>;
-  isController: (controllerAddress: string) => Promise<boolean>;
-  getRegistrarForDomain:(domainId: string) => Promise<string>;
-  ownerOf: (domainId: string) => Promise<string>;
-  domainExists: (domainId: string) => Promise<boolean>;
-  owner: () => Promise<string>;
-  registrarBeacon:() => Promise<string>;
-  parentOf: (domainId: string) => Promise<string>;
-}
-
 export interface Instance {
   listSales: (tokenId: string) => Promise<TokenSale[]>;
   listAllSales: () => Promise<TokenSaleCollection>;

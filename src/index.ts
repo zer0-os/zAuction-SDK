@@ -12,7 +12,6 @@ import {
   Bid,
   BuyNowParams,
   Listing,
-  zNSHub,
 } from "./types";
 import {
   getERC721Contract,
