@@ -227,7 +227,7 @@ export const createInstance = (config: Config): Instance => {
         signer,
         config.zAuctionAddress
       );
-      // getBuyNowPrice should return the listing because we also
+      // getBuyNowPrice returns the listing because we also
       // want to be able to confirm the holder is the domain owner
       // in the zNS-SDK downstream
       const listing: Listing = await zAuction.priceInfo(tokenId);

@@ -10,7 +10,7 @@ import {
 
 export const getZAuctionContract = async (
   web3Provider: ethers.providers.Provider | ethers.Signer,
-  address: string
+  address: string // to change on new deployment
 ): Promise<ZAuction> => {
   const contract = ZAuction__factory.connect(address, web3Provider);
   return contract;
