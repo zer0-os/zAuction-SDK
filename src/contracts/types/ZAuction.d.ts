@@ -32,7 +32,7 @@ interface ZAuctionInterface extends ethers.utils.Interface {
     "initialize(address,address)": FunctionFragment;
     "legacyRegistrar()": FunctionFragment;
     "owner()": FunctionFragment;
-    "priceInfo(address,uint256)": FunctionFragment;
+    "priceInfo(uint256)": FunctionFragment;
     "recover(bytes32,bytes)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "setBuyPrice(uint256,uint256)": FunctionFragment;
@@ -103,7 +103,7 @@ interface ZAuctionInterface extends ethers.utils.Interface {
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "priceInfo",
-    values: [string, BigNumberish]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "recover",
@@ -326,8 +326,7 @@ export class ZAuction extends BaseContract {
     owner(overrides?: CallOverrides): Promise<[string]>;
 
     priceInfo(
-      arg0: string,
-      arg1: BigNumberish,
+      arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[BigNumber, string] & { price: BigNumber; holder: string }>;
 
@@ -452,8 +451,7 @@ export class ZAuction extends BaseContract {
   owner(overrides?: CallOverrides): Promise<string>;
 
   priceInfo(
-    arg0: string,
-    arg1: BigNumberish,
+    arg0: BigNumberish,
     overrides?: CallOverrides
   ): Promise<[BigNumber, string] & { price: BigNumber; holder: string }>;
 
@@ -578,8 +576,7 @@ export class ZAuction extends BaseContract {
     owner(overrides?: CallOverrides): Promise<string>;
 
     priceInfo(
-      arg0: string,
-      arg1: BigNumberish,
+      arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[BigNumber, string] & { price: BigNumber; holder: string }>;
 
@@ -764,8 +761,7 @@ export class ZAuction extends BaseContract {
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
     priceInfo(
-      arg0: string,
-      arg1: BigNumberish,
+      arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -891,8 +887,7 @@ export class ZAuction extends BaseContract {
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     priceInfo(
-      arg0: string,
-      arg1: BigNumberish,
+      arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

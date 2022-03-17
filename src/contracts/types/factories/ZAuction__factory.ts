@@ -415,11 +415,6 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "contract IRegistrar",
-        name: "",
-        type: "address",
-      },
-      {
         internalType: "uint256",
         name: "",
         type: "uint256",
