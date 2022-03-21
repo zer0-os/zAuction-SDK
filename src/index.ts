@@ -126,7 +126,7 @@ export const createInstance = (config: Config): Instance => {
         config.zAuctionAddress
       );
 
-      const tx = await zAuction.acceptBid(
+      const tx = await zAuction.connect(signer).acceptBid(
         bid.signedMessage,
         bid.auctionId,
         bid.bidder,
@@ -165,7 +165,7 @@ export const createInstance = (config: Config): Instance => {
 
         const account = await signer.getAddress();
 
-        const tx = await zAuction.cancelBid(account, auctionId);
+        const tx = await zAuction.connect(signer).cancelBid(account, auctionId);
         return tx;
       }
     },
@@ -212,7 +212,7 @@ export const createInstance = (config: Config): Instance => {
         config.zAuctionAddress
       );
 
-      const tx = await zAuction.buyNow(params.amount, params.tokenId);
+      const tx = await zAuction.connect(signer).buyNow(params.amount, params.tokenId);
 
       return tx;
     },
@@ -220,11 +220,11 @@ export const createInstance = (config: Config): Instance => {
     // IF no return value then that domain is not on sale
     getBuyNowPrice: async (
       tokenId: string,
-      signer: ethers.Signer
     ): Promise<Listing> => {
       if (!tokenId) throw Error("Must provide a valid tokenId");
+
       const zAuction = await getZAuctionContract(
-        signer,
+        config.web3Provider,
         config.zAuctionAddress
       );
       // getBuyNowPrice should return the listing because we also
@@ -264,7 +264,7 @@ export const createInstance = (config: Config): Instance => {
         config.zAuctionAddress
       );
 
-      const tx = await zAuction.setBuyPrice(params.amount, params.tokenId);
+      const tx = await zAuction.connect(signer).setBuyPrice(params.amount, params.tokenId);
       return tx;
     },
 
@@ -290,7 +290,7 @@ export const createInstance = (config: Config): Instance => {
           "Cannot cancel the buy now price of a domain that is not yours"
         );
 
-      const tx = await zAuction.setBuyPrice(
+      const tx = await zAuction.connect(signer).setBuyPrice(
         ethers.BigNumber.from("0"),
         tokenId
       );

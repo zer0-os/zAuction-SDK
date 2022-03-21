@@ -38,15 +38,12 @@ export interface Instance {
     signedBidMessage: string,
     cancelOnChain: boolean,
     signer: ethers.Signer
-  ) => Promise<ethers.ContractTransaction | void>
+  ) => Promise<ethers.ContractTransaction | void>;
   buyNow: (
     params: BuyNowParams,
     signer: ethers.Signer
   ) => Promise<ethers.ContractTransaction>;
-  getBuyNowPrice: (
-    tokenId: string,
-    signer: ethers.Signer
-  ) => Promise<Listing>;
+  getBuyNowPrice: (tokenId: string) => Promise<Listing>;
   setBuyNowPrice: (
     params: BuyNowParams,
     signer: ethers.Signer
