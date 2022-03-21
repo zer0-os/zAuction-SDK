@@ -28,8 +28,8 @@ interface ZAuctionInterface extends ethers.utils.Interface {
     "cancelBid(address,uint256)": FunctionFragment;
     "consumed(address,uint256)": FunctionFragment;
     "createBid(uint256,uint256,address,uint256,uint256,uint256,uint256)": FunctionFragment;
-    "createLegacyBid(uint256,uint256,address,uint256,uint256,uint256,uint256)": FunctionFragment;
-    "initialize(address,address,address)": FunctionFragment;
+    "hub()": FunctionFragment;
+    "initialize(address,address)": FunctionFragment;
     "owner()": FunctionFragment;
     "priceInfo(uint256)": FunctionFragment;
     "recover(bytes32,bytes)": FunctionFragment;
@@ -37,6 +37,7 @@ interface ZAuctionInterface extends ethers.utils.Interface {
     "renounceOwnership()": FunctionFragment;
     "setBuyPrice(uint256,uint256)": FunctionFragment;
     "setTopLevelDomainFee(uint256,uint256)": FunctionFragment;
+    "setZNSHub(address)": FunctionFragment;
     "toEthSignedMessageHash(bytes32)": FunctionFragment;
     "token()": FunctionFragment;
     "topLevelDomainFee(uint256)": FunctionFragment;
@@ -90,21 +91,10 @@ interface ZAuctionInterface extends ethers.utils.Interface {
       BigNumberish
     ]
   ): string;
-  encodeFunctionData(
-    functionFragment: "createLegacyBid",
-    values: [
-      BigNumberish,
-      BigNumberish,
-      string,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish
-    ]
-  ): string;
+  encodeFunctionData(functionFragment: "hub", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "initialize",
-    values: [string, string, string]
+    values: [string, string]
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
@@ -128,6 +118,7 @@ interface ZAuctionInterface extends ethers.utils.Interface {
     functionFragment: "setTopLevelDomainFee",
     values: [BigNumberish, BigNumberish]
   ): string;
+  encodeFunctionData(functionFragment: "setZNSHub", values: [string]): string;
   encodeFunctionData(
     functionFragment: "toEthSignedMessageHash",
     values: [BytesLike]
@@ -163,10 +154,7 @@ interface ZAuctionInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "cancelBid", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "consumed", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "createBid", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "createLegacyBid",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "hub", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "priceInfo", data: BytesLike): Result;
@@ -184,6 +172,7 @@ interface ZAuctionInterface extends ethers.utils.Interface {
     functionFragment: "setTopLevelDomainFee",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "setZNSHub", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "toEthSignedMessageHash",
     data: BytesLike
@@ -209,12 +198,14 @@ interface ZAuctionInterface extends ethers.utils.Interface {
   events: {
     "BidAccepted(uint256,address,address,uint256,address,uint256,uint256)": EventFragment;
     "BidCancelled(uint256,address)": EventFragment;
+    "BuyNowPriceSet(uint256,uint256)": EventFragment;
     "DomainSold(address,address,uint256,address,uint256)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "BidAccepted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "BidCancelled"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "BuyNowPriceSet"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "DomainSold"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
 }
@@ -265,7 +256,7 @@ export class ZAuction extends BaseContract {
   functions: {
     acceptBid(
       signature: BytesLike,
-      auctionId: BigNumberish,
+      bidNonce: BigNumberish,
       bidder: string,
       bid: BigNumberish,
       tokenId: BigNumberish,
@@ -295,7 +286,7 @@ export class ZAuction extends BaseContract {
 
     cancelBid(
       account: string,
-      auctionId: BigNumberish,
+      bidNonce: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -306,7 +297,7 @@ export class ZAuction extends BaseContract {
     ): Promise<[boolean]>;
 
     createBid(
-      auctionId: BigNumberish,
+      bidNonce: BigNumberish,
       bid: BigNumberish,
       nftAddress: string,
       tokenId: BigNumberish,
@@ -316,21 +307,11 @@ export class ZAuction extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string] & { data: string }>;
 
-    createLegacyBid(
-      auctionId: BigNumberish,
-      bid: BigNumberish,
-      nftAddress: string,
-      tokenId: BigNumberish,
-      minbid: BigNumberish,
-      startBlock: BigNumberish,
-      expireBlock: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[string] & { data: string }>;
+    hub(overrides?: CallOverrides): Promise<[string]>;
 
     initialize(
       tokenAddress: string,
       registrarAddress: string,
-      legacyZAuctionAddress: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -365,6 +346,11 @@ export class ZAuction extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    setZNSHub(
+      hubAddress: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     toEthSignedMessageHash(
       hash: BytesLike,
       overrides?: CallOverrides
@@ -395,7 +381,7 @@ export class ZAuction extends BaseContract {
 
   acceptBid(
     signature: BytesLike,
-    auctionId: BigNumberish,
+    bidNonce: BigNumberish,
     bidder: string,
     bid: BigNumberish,
     tokenId: BigNumberish,
@@ -425,7 +411,7 @@ export class ZAuction extends BaseContract {
 
   cancelBid(
     account: string,
-    auctionId: BigNumberish,
+    bidNonce: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -436,7 +422,7 @@ export class ZAuction extends BaseContract {
   ): Promise<boolean>;
 
   createBid(
-    auctionId: BigNumberish,
+    bidNonce: BigNumberish,
     bid: BigNumberish,
     nftAddress: string,
     tokenId: BigNumberish,
@@ -446,21 +432,11 @@ export class ZAuction extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string>;
 
-  createLegacyBid(
-    auctionId: BigNumberish,
-    bid: BigNumberish,
-    nftAddress: string,
-    tokenId: BigNumberish,
-    minbid: BigNumberish,
-    startBlock: BigNumberish,
-    expireBlock: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<string>;
+  hub(overrides?: CallOverrides): Promise<string>;
 
   initialize(
     tokenAddress: string,
     registrarAddress: string,
-    legacyZAuctionAddress: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -495,6 +471,11 @@ export class ZAuction extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  setZNSHub(
+    hubAddress: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   toEthSignedMessageHash(
     hash: BytesLike,
     overrides?: CallOverrides
@@ -525,7 +506,7 @@ export class ZAuction extends BaseContract {
   callStatic: {
     acceptBid(
       signature: BytesLike,
-      auctionId: BigNumberish,
+      bidNonce: BigNumberish,
       bidder: string,
       bid: BigNumberish,
       tokenId: BigNumberish,
@@ -555,7 +536,7 @@ export class ZAuction extends BaseContract {
 
     cancelBid(
       account: string,
-      auctionId: BigNumberish,
+      bidNonce: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -566,7 +547,7 @@ export class ZAuction extends BaseContract {
     ): Promise<boolean>;
 
     createBid(
-      auctionId: BigNumberish,
+      bidNonce: BigNumberish,
       bid: BigNumberish,
       nftAddress: string,
       tokenId: BigNumberish,
@@ -576,21 +557,11 @@ export class ZAuction extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string>;
 
-    createLegacyBid(
-      auctionId: BigNumberish,
-      bid: BigNumberish,
-      nftAddress: string,
-      tokenId: BigNumberish,
-      minbid: BigNumberish,
-      startBlock: BigNumberish,
-      expireBlock: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<string>;
+    hub(overrides?: CallOverrides): Promise<string>;
 
     initialize(
       tokenAddress: string,
       registrarAddress: string,
-      legacyZAuctionAddress: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -623,6 +594,8 @@ export class ZAuction extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    setZNSHub(hubAddress: string, overrides?: CallOverrides): Promise<void>;
+
     toEthSignedMessageHash(
       hash: BytesLike,
       overrides?: CallOverrides
@@ -653,7 +626,7 @@ export class ZAuction extends BaseContract {
 
   filters: {
     BidAccepted(
-      auctionId?: null,
+      bidNonce?: null,
       bidder?: string | null,
       seller?: string | null,
       amount?: null,
@@ -663,7 +636,7 @@ export class ZAuction extends BaseContract {
     ): TypedEventFilter<
       [BigNumber, string, string, BigNumber, string, BigNumber, BigNumber],
       {
-        auctionId: BigNumber;
+        bidNonce: BigNumber;
         bidder: string;
         seller: string;
         amount: BigNumber;
@@ -674,11 +647,19 @@ export class ZAuction extends BaseContract {
     >;
 
     BidCancelled(
-      auctionId?: null,
+      bidNonce?: null,
       bidder?: string | null
     ): TypedEventFilter<
       [BigNumber, string],
-      { auctionId: BigNumber; bidder: string }
+      { bidNonce: BigNumber; bidder: string }
+    >;
+
+    BuyNowPriceSet(
+      tokenId?: BigNumberish | null,
+      amount?: null
+    ): TypedEventFilter<
+      [BigNumber, BigNumber],
+      { tokenId: BigNumber; amount: BigNumber }
     >;
 
     DomainSold(
@@ -710,7 +691,7 @@ export class ZAuction extends BaseContract {
   estimateGas: {
     acceptBid(
       signature: BytesLike,
-      auctionId: BigNumberish,
+      bidNonce: BigNumberish,
       bidder: string,
       bid: BigNumberish,
       tokenId: BigNumberish,
@@ -740,7 +721,7 @@ export class ZAuction extends BaseContract {
 
     cancelBid(
       account: string,
-      auctionId: BigNumberish,
+      bidNonce: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -751,7 +732,7 @@ export class ZAuction extends BaseContract {
     ): Promise<BigNumber>;
 
     createBid(
-      auctionId: BigNumberish,
+      bidNonce: BigNumberish,
       bid: BigNumberish,
       nftAddress: string,
       tokenId: BigNumberish,
@@ -761,21 +742,11 @@ export class ZAuction extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    createLegacyBid(
-      auctionId: BigNumberish,
-      bid: BigNumberish,
-      nftAddress: string,
-      tokenId: BigNumberish,
-      minbid: BigNumberish,
-      startBlock: BigNumberish,
-      expireBlock: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    hub(overrides?: CallOverrides): Promise<BigNumber>;
 
     initialize(
       tokenAddress: string,
       registrarAddress: string,
-      legacyZAuctionAddress: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -810,6 +781,11 @@ export class ZAuction extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    setZNSHub(
+      hubAddress: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     toEthSignedMessageHash(
       hash: BytesLike,
       overrides?: CallOverrides
@@ -841,7 +817,7 @@ export class ZAuction extends BaseContract {
   populateTransaction: {
     acceptBid(
       signature: BytesLike,
-      auctionId: BigNumberish,
+      bidNonce: BigNumberish,
       bidder: string,
       bid: BigNumberish,
       tokenId: BigNumberish,
@@ -871,7 +847,7 @@ export class ZAuction extends BaseContract {
 
     cancelBid(
       account: string,
-      auctionId: BigNumberish,
+      bidNonce: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -882,7 +858,7 @@ export class ZAuction extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     createBid(
-      auctionId: BigNumberish,
+      bidNonce: BigNumberish,
       bid: BigNumberish,
       nftAddress: string,
       tokenId: BigNumberish,
@@ -892,21 +868,11 @@ export class ZAuction extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    createLegacyBid(
-      auctionId: BigNumberish,
-      bid: BigNumberish,
-      nftAddress: string,
-      tokenId: BigNumberish,
-      minbid: BigNumberish,
-      startBlock: BigNumberish,
-      expireBlock: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    hub(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     initialize(
       tokenAddress: string,
       registrarAddress: string,
-      legacyZAuctionAddress: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -938,6 +904,11 @@ export class ZAuction extends BaseContract {
     setTopLevelDomainFee(
       id: BigNumberish,
       amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setZNSHub(
+      hubAddress: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
