@@ -388,6 +388,19 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "legacyRegistrar",
+    outputs: [
+      {
+        internalType: "contract IRegistrar",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "owner",
     outputs: [
       {
@@ -445,19 +458,6 @@ const _abi = [
       },
     ],
     stateMutability: "pure",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "registrar",
-    outputs: [
-      {
-        internalType: "contract IRegistrar",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
     type: "function",
   },
   {
