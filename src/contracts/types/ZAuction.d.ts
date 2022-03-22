@@ -30,10 +30,10 @@ interface ZAuctionInterface extends ethers.utils.Interface {
     "createBid(uint256,uint256,address,uint256,uint256,uint256,uint256)": FunctionFragment;
     "hub()": FunctionFragment;
     "initialize(address,address)": FunctionFragment;
-    "legacyRegistrar()": FunctionFragment;
     "owner()": FunctionFragment;
     "priceInfo(uint256)": FunctionFragment;
     "recover(bytes32,bytes)": FunctionFragment;
+    "registrar()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "setBuyPrice(uint256,uint256)": FunctionFragment;
     "setTopLevelDomainFee(uint256,uint256)": FunctionFragment;
@@ -96,10 +96,6 @@ interface ZAuctionInterface extends ethers.utils.Interface {
     functionFragment: "initialize",
     values: [string, string]
   ): string;
-  encodeFunctionData(
-    functionFragment: "legacyRegistrar",
-    values?: undefined
-  ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "priceInfo",
@@ -109,6 +105,7 @@ interface ZAuctionInterface extends ethers.utils.Interface {
     functionFragment: "recover",
     values: [BytesLike, BytesLike]
   ): string;
+  encodeFunctionData(functionFragment: "registrar", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
     values?: undefined
@@ -159,13 +156,10 @@ interface ZAuctionInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "createBid", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "hub", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "legacyRegistrar",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "priceInfo", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "recover", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "registrar", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
     data: BytesLike
@@ -321,8 +315,6 @@ export class ZAuction extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    legacyRegistrar(overrides?: CallOverrides): Promise<[string]>;
-
     owner(overrides?: CallOverrides): Promise<[string]>;
 
     priceInfo(
@@ -335,6 +327,8 @@ export class ZAuction extends BaseContract {
       signature: BytesLike,
       overrides?: CallOverrides
     ): Promise<[string]>;
+
+    registrar(overrides?: CallOverrides): Promise<[string]>;
 
     renounceOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -446,8 +440,6 @@ export class ZAuction extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  legacyRegistrar(overrides?: CallOverrides): Promise<string>;
-
   owner(overrides?: CallOverrides): Promise<string>;
 
   priceInfo(
@@ -460,6 +452,8 @@ export class ZAuction extends BaseContract {
     signature: BytesLike,
     overrides?: CallOverrides
   ): Promise<string>;
+
+  registrar(overrides?: CallOverrides): Promise<string>;
 
   renounceOwnership(
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -571,8 +565,6 @@ export class ZAuction extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    legacyRegistrar(overrides?: CallOverrides): Promise<string>;
-
     owner(overrides?: CallOverrides): Promise<string>;
 
     priceInfo(
@@ -585,6 +577,8 @@ export class ZAuction extends BaseContract {
       signature: BytesLike,
       overrides?: CallOverrides
     ): Promise<string>;
+
+    registrar(overrides?: CallOverrides): Promise<string>;
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
@@ -756,8 +750,6 @@ export class ZAuction extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    legacyRegistrar(overrides?: CallOverrides): Promise<BigNumber>;
-
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
     priceInfo(
@@ -770,6 +762,8 @@ export class ZAuction extends BaseContract {
       signature: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    registrar(overrides?: CallOverrides): Promise<BigNumber>;
 
     renounceOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -882,8 +876,6 @@ export class ZAuction extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    legacyRegistrar(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     priceInfo(
@@ -896,6 +888,8 @@ export class ZAuction extends BaseContract {
       signature: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    registrar(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     renounceOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
