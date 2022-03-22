@@ -187,10 +187,15 @@ export const createInstance = (config: Config): Instance => {
         nftContract
       );
 
-      if (!isApproved)
+      if (!isApproved) {
         throw Error("Seller did not approve zAuction to transfer NFT");
+      }
 
       const buyer = await signer.getAddress();
+
+      if (seller === buyer) {
+        throw Error("Cannot sell a domain to yourself")
+      }
 
       const erc20Token = await getZAuctionTradeToken(
         config.web3Provider,
@@ -204,15 +209,24 @@ export const createInstance = (config: Config): Instance => {
       );
 
       // Ensure buyer has approved zAuction to transfer tokens on their behalf
-      if (allowance.lt(ethers.BigNumber.from(params.amount)))
+      if (allowance.lt(ethers.BigNumber.from(params.amount))) {
         throw Error("zAuction is not approved to transfer this many tokens");
+      }
 
       const zAuction = await getZAuctionContract(
         signer,
         config.zAuctionAddress
       );
+      
+      const price = (await zAuction.priceInfo(params.tokenId)).price
+      if(price.eq("0")) {
+        throw Error("Domain is not for sale")
+      }
+      if (!price.eq(ethers.BigNumber.from(params.amount))) {
+        throw Error("Incorrect buyNow price given");
+      }
 
-      const tx = await zAuction.buyNow(params.amount, params.tokenId);
+      const tx = await zAuction.connect(signer).buyNow(ethers.BigNumber.from(params.amount), params.tokenId);
 
       return tx;
     },
