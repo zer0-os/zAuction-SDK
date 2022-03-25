@@ -6,6 +6,7 @@ export interface Config {
   apiUri: string;
   subgraphUri: string;
   zAuctionAddress: string;
+  zAuctionLegacyAddress: string;
   tokenContract: string;
   web3Provider: ethers.providers.Web3Provider;
 }

@@ -129,9 +129,13 @@ export const createInstance = (config: Config): Instance => {
       bid: Bid,
       signer: ethers.Signer
     ): Promise<ethers.ContractTransaction> => {
+
+      // route to legacy if version 1.0
+      const zAuctionAddress = bid.version === "1.0" ? config.zAuctionLegacyAddress : config.zAuctionAddress;
+
       const zAuction = await getZAuctionContract(
         signer,
-        config.zAuctionAddress
+        zAuctionAddress
       );
 
       const tx = await zAuction.connect(signer).acceptBid(
