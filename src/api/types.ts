@@ -1,7 +1,7 @@
 export interface BidParamsDto {
   nftId: string;
   account: string;
-  auctionId: string;
+  bidNonce: string;
   bidAmount: string;
   minimumBid: string;
   contractAddress: string;
@@ -25,7 +25,7 @@ export interface BidParameters {
 }
 
 export interface BidMessage extends BidParameters {
-  auctionId: string;
+  bidNonce: string;
 }
 
 export interface SignableBid {

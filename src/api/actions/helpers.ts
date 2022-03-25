@@ -42,7 +42,7 @@ export const makeApiCall = async <T>(
 
 export const convertBidDtoToBid = (bid: BidDto): Bid => {
   const localBid: Bid = {
-    auctionId: bid.auctionId,
+    bidNonce: bid.bidNonce,
     bidder: bid.account,
     contract: bid.contractAddress,
     tokenId: bid.tokenId,
