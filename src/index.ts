@@ -40,7 +40,14 @@ export const createInstance = (config: Config): Instance => {
       params: NewBidParameters,
       signer: ethers.Signer,
       statusCallback?: PlaceBidStatusCallback
-    ) =>
+    ) => {
+      let address;
+      try {
+        address = await signer
+      } catch(e) {
+        throw Error("Cannot get address from this signer.")
+      }
+
       actions.placeBid({
         bid: params,
         contract: config.tokenContract,
@@ -49,7 +56,8 @@ export const createInstance = (config: Config): Instance => {
         signMessage: signer.signMessage,
         submitBid: apiClient.submitBid,
         statusCallback,
-      }),
+      })
+    },
     isZAuctionApprovedToTransferNft: async (
       account: string
     ): Promise<boolean> => {
@@ -128,7 +136,7 @@ export const createInstance = (config: Config): Instance => {
 
       const tx = await zAuction.connect(signer).acceptBid(
         bid.signedMessage,
-        bid.auctionId,
+        bid.bidNonce,
         bid.bidder,
         bid.amount,
         bid.tokenId,
@@ -141,7 +149,7 @@ export const createInstance = (config: Config): Instance => {
     },
 
     cancelBid: async (
-      auctionId: string,
+      bidNonce: string,
       signedBidMessage: string,
       cancelOnChain: boolean,
       signer: ethers.Signer
@@ -165,7 +173,7 @@ export const createInstance = (config: Config): Instance => {
 
         const account = await signer.getAddress();
 
-        const tx = await zAuction.connect(signer).cancelBid(account, auctionId);
+        const tx = await zAuction.connect(signer).cancelBid(account, bidNonce);
         return tx;
       }
     },

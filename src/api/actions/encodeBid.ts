@@ -3,7 +3,7 @@ import { makeApiCall } from "./helpers";
 
 interface EncodeBidDto {
   payload: string;
-  auctionId: string;
+  bidNonce: string;
   nftId: string;
 }
 
@@ -23,7 +23,7 @@ export const encodeBid = async (
 
   const bidToSign: SignableBid = {
     bid: {
-      auctionId: response.auctionId,
+      bidNonce: response.bidNonce,
       ...bidParams,
     } as BidMessage,
     message: response.payload,
