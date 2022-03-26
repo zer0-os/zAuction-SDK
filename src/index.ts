@@ -43,9 +43,9 @@ export const createInstance = (config: Config): Instance => {
     ) => {
       let address;
       try {
-        address = await signer
-      } catch(e) {
-        throw Error("Cannot get address from this signer.")
+        address = await signer;
+      } catch (e) {
+        throw Error("Cannot get address from this signer.");
       }
 
       actions.placeBid({
@@ -56,7 +56,7 @@ export const createInstance = (config: Config): Instance => {
         signMessage: signer.signMessage,
         submitBid: apiClient.submitBid,
         statusCallback,
-      })
+      });
     },
     isZAuctionApprovedToTransferNft: async (
       account: string
@@ -128,29 +128,8 @@ export const createInstance = (config: Config): Instance => {
     acceptBid: async (
       bid: Bid,
       signer: ethers.Signer
-    ): Promise<ethers.ContractTransaction> => {
-
-      // route to legacy if version 1.0
-      const zAuctionAddress = bid.version === "1.0" ? config.zAuctionLegacyAddress : config.zAuctionAddress;
-
-      const zAuction = await getZAuctionContract(
-        signer,
-        zAuctionAddress
-      );
-
-      const tx = await zAuction.connect(signer).acceptBid(
-        bid.signedMessage,
-        bid.bidNonce,
-        bid.bidder,
-        bid.amount,
-        bid.tokenId,
-        0,
-        bid.startBlock,
-        bid.expireBlock
-      );
-
-      return tx;
-    },
+    ): Promise<ethers.ContractTransaction> =>
+      actions.acceptBid(bid, signer, config),
 
     cancelBid: async (
       bidNonce: string,
@@ -206,7 +185,7 @@ export const createInstance = (config: Config): Instance => {
       const buyer = await signer.getAddress();
 
       if (seller === buyer) {
-        throw Error("Cannot sell a domain to yourself")
+        throw Error("Cannot sell a domain to yourself");
       }
 
       const erc20Token = await getZAuctionTradeToken(
@@ -229,24 +208,24 @@ export const createInstance = (config: Config): Instance => {
         signer,
         config.zAuctionAddress
       );
-      
-      const price = (await zAuction.priceInfo(params.tokenId)).price
-      if(price.eq("0")) {
-        throw Error("Domain is not for sale")
+
+      const price = (await zAuction.priceInfo(params.tokenId)).price;
+      if (price.eq("0")) {
+        throw Error("Domain is not for sale");
       }
       if (!price.eq(ethers.BigNumber.from(params.amount))) {
         throw Error("Incorrect buyNow price given");
       }
 
-      const tx = await zAuction.connect(signer).buyNow(ethers.BigNumber.from(params.amount), params.tokenId);
+      const tx = await zAuction
+        .connect(signer)
+        .buyNow(ethers.BigNumber.from(params.amount), params.tokenId);
 
       return tx;
     },
 
     // IF no return value then that domain is not on sale
-    getBuyNowPrice: async (
-      tokenId: string,
-    ): Promise<Listing> => {
+    getBuyNowPrice: async (tokenId: string): Promise<Listing> => {
       if (!tokenId) throw Error("Must provide a valid tokenId");
 
       const zAuction = await getZAuctionContract(
@@ -290,7 +269,9 @@ export const createInstance = (config: Config): Instance => {
         config.zAuctionAddress
       );
 
-      const tx = await zAuction.connect(signer).setBuyPrice(params.amount, params.tokenId);
+      const tx = await zAuction
+        .connect(signer)
+        .setBuyPrice(params.amount, params.tokenId);
       return tx;
     },
 
@@ -316,10 +297,9 @@ export const createInstance = (config: Config): Instance => {
           "Cannot cancel the buy now price of a domain that is not yours"
         );
 
-      const tx = await zAuction.connect(signer).setBuyPrice(
-        ethers.BigNumber.from("0"),
-        tokenId
-      );
+      const tx = await zAuction
+        .connect(signer)
+        .setBuyPrice(ethers.BigNumber.from("0"), tokenId);
       return tx;
     },
   };

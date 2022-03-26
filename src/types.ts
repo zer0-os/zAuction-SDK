@@ -7,6 +7,7 @@ export interface Config {
   subgraphUri: string;
   zAuctionAddress: string;
   zAuctionLegacyAddress: string;
+  // The NFT contract
   tokenContract: string;
   web3Provider: ethers.providers.Web3Provider;
 }
