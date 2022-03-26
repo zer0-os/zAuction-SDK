@@ -53,7 +53,7 @@ export const createInstance = (config: Config): Instance => {
         contract: config.tokenContract,
         bidder: await signer.getAddress(),
         encodeBid: apiClient.encodeBid,
-        signMessage: signer.signMessage,
+        signMessage: (e) => signer.signMessage(e),
         submitBid: apiClient.submitBid,
         statusCallback,
       });
