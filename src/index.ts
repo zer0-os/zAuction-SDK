@@ -84,22 +84,6 @@ export const createInstance = (config: Config): Instance => {
       return isApproved;
     },
 
-    isZAuctionApprovedToTransferNft: async (
-      account: string
-    ): Promise<boolean> => {
-      const nftContract = await getERC721Contract(
-        config.web3Provider,
-        config.tokenContract
-      );
-
-      const isApproved = await actions.isZAuctionApprovedNftTransfer(
-        account,
-        config.zAuctionAddress,
-        nftContract
-      );
-
-      return isApproved;
-    },
     getZAuctionSpendAllowanceByBid: async (
       account: string,
       bid: Bid
@@ -125,22 +109,6 @@ export const createInstance = (config: Config): Instance => {
       return allowance;
     },
 
-    getZAuctionSpendAllowance: async (
-      account: string
-    ): Promise<ethers.BigNumber> => {
-      const erc20Token = await getZAuctionTradeToken(
-        config.web3Provider,
-        config.zAuctionAddress
-      );
-
-      const allowance = await actions.getZAuctionTradeTokenAllowance(
-        account,
-        config.zAuctionAddress,
-        erc20Token
-      );
-
-      return allowance;
-    },
     getTradeTokenAddress: async (): Promise<string> => {
       const erc20Token = await getZAuctionTradeToken(
         config.web3Provider,
@@ -171,22 +139,6 @@ export const createInstance = (config: Config): Instance => {
       return tx;
     },
 
-    approveZAuctionSpendTradeTokens: async (
-      signer: ethers.Signer
-    ): Promise<ethers.ContractTransaction> => {
-      const erc20Token = await getZAuctionTradeToken(
-        signer,
-        config.zAuctionAddress
-      );
-
-      const tx = await erc20Token.approve(
-        config.zAuctionAddress,
-        ethers.constants.MaxUint256
-      );
-
-      return tx;
-    },
-
     approveZAuctionTransferNftByBid: async (
       signer: ethers.Signer,
       bid: Bid
@@ -201,19 +153,6 @@ export const createInstance = (config: Config): Instance => {
       const nftContract = await getERC721Contract(signer, config.tokenContract);
 
       const tx = await nftContract.setApprovalForAll(zAuctionAddress, true);
-
-      return tx;
-    },
-
-    approveZAuctionTransferNft: async (
-      signer: ethers.Signer
-    ): Promise<ethers.ContractTransaction> => {
-      const nftContract = await getERC721Contract(signer, config.tokenContract);
-
-      const tx = await nftContract.setApprovalForAll(
-        config.zAuctionAddress,
-        true
-      );
 
       return tx;
     },

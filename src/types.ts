@@ -23,18 +23,10 @@ export interface Instance {
     statusCallback?: PlaceBidStatusCallback
   ) => Promise<void>;
   isZAuctionApprovedToTransferNftByBid: (account: string, bid: Bid) => Promise<boolean>;
-  isZAuctionApprovedToTransferNft: (account: string) => Promise<boolean>;
-  getZAuctionSpendAllowance: (account: string) => Promise<ethers.BigNumber>;
   getZAuctionSpendAllowanceByBid: (account: string, bid: Bid) => Promise<ethers.BigNumber>;
   getTradeTokenAddress: () => Promise<string>;
   approveZAuctionSpendTradeTokensByBid: (
     signer: ethers.Signer, bid: Bid
-  ) => Promise<ethers.ContractTransaction>;
-  approveZAuctionSpendTradeTokens: (
-    signer: ethers.Signer
-  ) => Promise<ethers.ContractTransaction>;
-  approveZAuctionTransferNft: (
-    signer: ethers.Signer
   ) => Promise<ethers.ContractTransaction>;
   approveZAuctionTransferNftByBid: (
     signer: ethers.Signer, bid: Bid
