@@ -13,6 +13,7 @@ export interface BidParamsDto {
 export interface BidDto extends BidParamsDto {
   date: number;
   signedMessage: string;
+  version: "1.0" | "2.0";
 }
 
 export interface BidParameters {
@@ -41,5 +42,5 @@ export interface SignedBid {
 export interface Bid extends BidMessage {
   signedMessage: string;
   timestamp: string;
-  version: "1.0" | "2.0"
+  version: "1.0" | "2.0";
 }

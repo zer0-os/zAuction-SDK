@@ -51,6 +51,7 @@ export const convertBidDtoToBid = (bid: BidDto): Bid => {
     expireBlock: bid.expireBlock,
     signedMessage: bid.signedMessage,
     timestamp: bid.date.toString(),
+    version: bid.version,
   };
 
   return localBid;
