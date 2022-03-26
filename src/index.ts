@@ -128,27 +128,8 @@ export const createInstance = (config: Config): Instance => {
     acceptBid: async (
       bid: Bid,
       signer: ethers.Signer
-    ): Promise<ethers.ContractTransaction> => {
-      const zAuction = await getZAuctionContract(
-        signer,
-        config.zAuctionAddress
-      );
-
-      const tx = await zAuction
-        .connect(signer)
-        .acceptBid(
-          bid.signedMessage,
-          bid.bidNonce,
-          bid.bidder,
-          bid.amount,
-          bid.tokenId,
-          0,
-          bid.startBlock,
-          bid.expireBlock
-        );
-
-      return tx;
-    },
+    ): Promise<ethers.ContractTransaction> =>
+      actions.acceptBid(bid, signer, config),
 
     cancelBid: async (
       bidNonce: string,

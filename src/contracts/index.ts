@@ -5,6 +5,8 @@ import {
   IERC721,
   IERC721__factory,
   ZAuction,
+  ZAuctionV1,
+  ZAuctionV1__factory,
   ZAuction__factory,
 } from "./types";
 
@@ -13,6 +15,14 @@ export const getZAuctionContract = async (
   address: string // to change on new deployment
 ): Promise<ZAuction> => {
   const contract = ZAuction__factory.connect(address, web3Provider);
+  return contract;
+};
+
+export const getZAuctionV1Contract = async (
+  web3Provider: ethers.providers.Provider | ethers.Signer,
+  address: string // to change on new deployment
+): Promise<ZAuctionV1> => {
+  const contract = ZAuctionV1__factory.connect(address, web3Provider);
   return contract;
 };
 
