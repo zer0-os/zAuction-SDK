@@ -58,9 +58,18 @@ export const createInstance = (config: Config): Instance => {
         statusCallback,
       });
     },
-    isZAuctionApprovedToTransferNft: async (
-      account: string
+
+    isZAuctionApprovedToTransferNftByBid: async (
+      account: string,
+      bid: Bid
     ): Promise<boolean> => {
+      const isVersion1 = bid.version === "1.0";
+
+      // route to legacy if version 1.0
+      const zAuctionAddress = isVersion1
+        ? config.zAuctionLegacyAddress
+        : config.zAuctionAddress;
+
       const nftContract = await getERC721Contract(
         config.web3Provider,
         config.tokenContract
@@ -68,28 +77,38 @@ export const createInstance = (config: Config): Instance => {
 
       const isApproved = await actions.isZAuctionApprovedNftTransfer(
         account,
-        config.zAuctionAddress,
+        zAuctionAddress,
         nftContract
       );
 
       return isApproved;
     },
-    getZAuctionSpendAllowance: async (
-      account: string
+
+    getZAuctionSpendAllowanceByBid: async (
+      account: string,
+      bid: Bid
     ): Promise<ethers.BigNumber> => {
+      const isVersion1 = bid.version === "1.0";
+
+      // route to legacy if version 1.0
+      const zAuctionAddress = isVersion1
+        ? config.zAuctionLegacyAddress
+        : config.zAuctionAddress;
+
       const erc20Token = await getZAuctionTradeToken(
         config.web3Provider,
-        config.zAuctionAddress
+        zAuctionAddress
       );
 
       const allowance = await actions.getZAuctionTradeTokenAllowance(
         account,
-        config.zAuctionAddress,
+        zAuctionAddress,
         erc20Token
       );
 
       return allowance;
     },
+
     getTradeTokenAddress: async (): Promise<string> => {
       const erc20Token = await getZAuctionTradeToken(
         config.web3Provider,
@@ -98,33 +117,46 @@ export const createInstance = (config: Config): Instance => {
 
       return erc20Token.address;
     },
-    approveZAuctionSpendTradeTokens: async (
-      signer: ethers.Signer
+
+    approveZAuctionSpendTradeTokensByBid: async (
+      signer: ethers.Signer,
+      bid: Bid
     ): Promise<ethers.ContractTransaction> => {
-      const erc20Token = await getZAuctionTradeToken(
-        signer,
-        config.zAuctionAddress
-      );
+      const isVersion1 = bid.version === "1.0";
+
+      // route to legacy if version 1.0
+      const zAuctionAddress = isVersion1
+        ? config.zAuctionLegacyAddress
+        : config.zAuctionAddress;
+
+      const erc20Token = await getZAuctionTradeToken(signer, zAuctionAddress);
 
       const tx = await erc20Token.approve(
-        config.zAuctionAddress,
+        zAuctionAddress,
         ethers.constants.MaxUint256
       );
 
       return tx;
     },
-    approveZAuctionTransferNft: async (
-      signer: ethers.Signer
+
+    approveZAuctionTransferNftByBid: async (
+      signer: ethers.Signer,
+      bid: Bid
     ): Promise<ethers.ContractTransaction> => {
+      const isVersion1 = bid.version === "1.0";
+
+      // route to legacy if version 1.0
+      const zAuctionAddress = isVersion1
+        ? config.zAuctionLegacyAddress
+        : config.zAuctionAddress;
+
       const nftContract = await getERC721Contract(signer, config.tokenContract);
 
-      const tx = await nftContract.setApprovalForAll(
-        config.zAuctionAddress,
-        true
-      );
+      const tx = await nftContract.setApprovalForAll(zAuctionAddress, true);
 
       return tx;
     },
+
     acceptBid: async (
       bid: Bid,
       signer: ethers.Signer
