@@ -9,7 +9,7 @@ export const listBidsForAccount = async (
   contract: string,
   account: string
 ): Promise<Bid[]> => {
-  const uri = `${apiUrl}/bids/accounts/${account.toLowerCase()}`;
+  const uri = `${apiUrl}/bids/accounts/${account}`;
   const response = await makeApiCall<AccountBidsDto>(uri, "GET");
 
   let bids: Bid[] = response.map((e) => convertBidDtoToBid(e));
