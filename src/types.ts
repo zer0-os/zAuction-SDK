@@ -45,11 +45,9 @@ export interface Instance {
   approveZAuctionSpendTradeTokensByBid: (
     signer: ethers.Signer,
     bid: Bid,
-    registrar: IERC721
   ) => Promise<ethers.ContractTransaction>;
   approveZAuctionSpendTradeTokens: (
     signer: ethers.Signer,
-    registrar: IERC721
   ) => Promise<ethers.ContractTransaction>;
   approveZAuctionTransferNft: (
     registrar: IERC721
