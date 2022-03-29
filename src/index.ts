@@ -48,7 +48,7 @@ export const createInstance = (config: Config): Instance => {
         throw Error("Cannot get address from this signer.");
       }
 
-      actions.placeBid({
+      await actions.placeBid({
         bid: params,
         contract: config.tokenContract,
         bidder: await signer.getAddress(),
