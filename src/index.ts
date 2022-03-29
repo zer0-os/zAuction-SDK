@@ -18,6 +18,7 @@ import {
   getZAuctionContract,
   getZAuctionTradeToken,
 } from "./contracts";
+import { IERC721 } from "./contracts/types";
 
 export * from "./types";
 
@@ -61,7 +62,8 @@ export const createInstance = (config: Config): Instance => {
 
     isZAuctionApprovedToTransferNftByBid: async (
       account: string,
-      bid: Bid
+      bid: Bid,
+      registrar: IERC721
     ): Promise<boolean> => {
       const isVersion1 = bid.version === "1.0";
 
@@ -70,10 +72,7 @@ export const createInstance = (config: Config): Instance => {
         ? config.zAuctionLegacyAddress
         : config.zAuctionAddress;
 
-      const nftContract = await getERC721Contract(
-        config.web3Provider,
-        config.tokenContract
-      );
+      const nftContract = registrar;
 
       const isApproved = await actions.isZAuctionApprovedNftTransfer(
         account,
@@ -85,12 +84,10 @@ export const createInstance = (config: Config): Instance => {
     },
 
     isZAuctionApprovedToTransferNft: async (
-      account: string
+      account: string,
+      registrar: IERC721
     ): Promise<boolean> => {
-      const nftContract = await getERC721Contract(
-        config.web3Provider,
-        config.tokenContract
-      );
+      const nftContract = registrar;
 
       const isApproved = await actions.isZAuctionApprovedNftTransfer(
         account,
@@ -188,8 +185,8 @@ export const createInstance = (config: Config): Instance => {
     },
 
     approveZAuctionTransferNftByBid: async (
-      signer: ethers.Signer,
-      bid: Bid
+      bid: Bid,
+      registrar: IERC721
     ): Promise<ethers.ContractTransaction> => {
       const isVersion1 = bid.version === "1.0";
 
@@ -198,7 +195,7 @@ export const createInstance = (config: Config): Instance => {
         ? config.zAuctionLegacyAddress
         : config.zAuctionAddress;
 
-      const nftContract = await getERC721Contract(signer, config.tokenContract);
+      const nftContract = registrar;
 
       const tx = await nftContract.setApprovalForAll(zAuctionAddress, true);
 
@@ -206,9 +203,9 @@ export const createInstance = (config: Config): Instance => {
     },
 
     approveZAuctionTransferNft: async (
-      signer: ethers.Signer
+      registrar: IERC721
     ): Promise<ethers.ContractTransaction> => {
-      const nftContract = await getERC721Contract(signer, config.tokenContract);
+      const nftContract = registrar;
 
       const tx = await nftContract.setApprovalForAll(
         config.zAuctionAddress,

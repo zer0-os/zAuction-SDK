@@ -1,5 +1,6 @@
 import { ethers } from "ethers";
 import { Bid } from "./api/types";
+import { IERC721 } from "./contracts/types";
 export { Bid };
 
 export interface Config {
@@ -22,22 +23,40 @@ export interface Instance {
     signer: ethers.Signer,
     statusCallback?: PlaceBidStatusCallback
   ) => Promise<void>;
-  isZAuctionApprovedToTransferNftByBid: (account: string, bid: Bid) => Promise<boolean>;
-  isZAuctionApprovedToTransferNft: (account: string) => Promise<boolean>;
-  getZAuctionSpendAllowance: (account: string) => Promise<ethers.BigNumber>;
-  getZAuctionSpendAllowanceByBid: (account: string, bid: Bid) => Promise<ethers.BigNumber>;
+  isZAuctionApprovedToTransferNftByBid: (
+    account: string,
+    bid: Bid,
+    registrar: IERC721
+  ) => Promise<boolean>;
+  isZAuctionApprovedToTransferNft: (
+    account: string,
+    registrar: IERC721
+  ) => Promise<boolean>;
+  getZAuctionSpendAllowance: (
+    account: string,
+    registrar: IERC721
+  ) => Promise<ethers.BigNumber>;
+  getZAuctionSpendAllowanceByBid: (
+    account: string,
+    bid: Bid,
+    registrar: IERC721
+  ) => Promise<ethers.BigNumber>;
   getTradeTokenAddress: () => Promise<string>;
   approveZAuctionSpendTradeTokensByBid: (
-    signer: ethers.Signer, bid: Bid
+    signer: ethers.Signer,
+    bid: Bid,
+    registrar: IERC721
   ) => Promise<ethers.ContractTransaction>;
   approveZAuctionSpendTradeTokens: (
-    signer: ethers.Signer
+    signer: ethers.Signer,
+    registrar: IERC721
   ) => Promise<ethers.ContractTransaction>;
   approveZAuctionTransferNft: (
-    signer: ethers.Signer
+    registrar: IERC721
   ) => Promise<ethers.ContractTransaction>;
   approveZAuctionTransferNftByBid: (
-    signer: ethers.Signer, bid: Bid
+    bid: Bid,
+    registrar: IERC721
   ) => Promise<ethers.ContractTransaction>;
   acceptBid: (
     bid: Bid,
