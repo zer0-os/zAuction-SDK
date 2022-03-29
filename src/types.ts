@@ -1,6 +1,5 @@
 import { ethers } from "ethers";
 import { Bid } from "./api/types";
-import { IERC721 } from "./contracts/types";
 export { Bid };
 
 export interface Config {
