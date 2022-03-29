@@ -7,14 +7,16 @@ export const acceptBid = async (
   signer: ethers.Signer,
   config: Config
 ): Promise<ethers.ContractTransaction> => {
-  const isVersion1 = bid.version === "1.0";
+  // TODO move to archive or delete a bid when accepted
+  // If not explicitly v2 bid, then assume v1
+  const isVersion2 = bid.version === "2.0";
 
   // route to legacy if version 1.0
-  const zAuctionAddress = isVersion1
-    ? config.zAuctionLegacyAddress
-    : config.zAuctionAddress;
+  const zAuctionAddress = isVersion2
+    ? config.zAuctionAddress
+    : config.zAuctionLegacyAddress;
 
-  if (isVersion1) {
+  if (!isVersion2) {
     const zAuction = await getZAuctionV1Contract(signer, zAuctionAddress);
 
     const tx = await zAuction
@@ -24,11 +26,11 @@ export const acceptBid = async (
         bid.bidNonce,
         bid.bidder,
         bid.amount,
-        config.tokenContract,
+        config.tokenContract, // comment out for v2
         bid.tokenId,
-        0,
+        ethers.BigNumber.from("0"), // minimum bid as string
         bid.startBlock,
-        bid.expireBlock
+        bid.expireBlock,
       );
 
     return tx;
