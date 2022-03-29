@@ -25,36 +25,25 @@ export interface Instance {
   ) => Promise<void>;
   isZAuctionApprovedToTransferNftByBid: (
     account: string,
-    bid: Bid,
-    registrar: IERC721
+    bid: Bid
   ) => Promise<boolean>;
-  isZAuctionApprovedToTransferNft: (
-    account: string,
-    registrar: IERC721
-  ) => Promise<boolean>;
-  getZAuctionSpendAllowance: (
-    account: string,
-    registrar: IERC721
-  ) => Promise<ethers.BigNumber>;
+  isZAuctionApprovedToTransferNft: (account: string) => Promise<boolean>;
+  getZAuctionSpendAllowance: (account: string) => Promise<ethers.BigNumber>;
   getZAuctionSpendAllowanceByBid: (
     account: string,
-    bid: Bid,
-    registrar: IERC721
+    bid: Bid
   ) => Promise<ethers.BigNumber>;
   getTradeTokenAddress: () => Promise<string>;
   approveZAuctionSpendTradeTokensByBid: (
     signer: ethers.Signer,
-    bid: Bid,
+    bid: Bid
   ) => Promise<ethers.ContractTransaction>;
   approveZAuctionSpendTradeTokens: (
-    signer: ethers.Signer,
+    signer: ethers.Signer
   ) => Promise<ethers.ContractTransaction>;
-  approveZAuctionTransferNft: (
-    registrar: IERC721
-  ) => Promise<ethers.ContractTransaction>;
+  approveZAuctionTransferNft: () => Promise<ethers.ContractTransaction>;
   approveZAuctionTransferNftByBid: (
-    bid: Bid,
-    registrar: IERC721
+    bid: Bid
   ) => Promise<ethers.ContractTransaction>;
   acceptBid: (
     bid: Bid,
