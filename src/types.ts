@@ -34,15 +34,18 @@ export interface Instance {
   ) => Promise<ethers.BigNumber>;
   getTradeTokenAddress: () => Promise<string>;
   approveZAuctionSpendTradeTokensByBid: (
-    signer: ethers.Signer,
-    bid: Bid
+    bid: Bid,
+    signer: ethers.Signer
   ) => Promise<ethers.ContractTransaction>;
   approveZAuctionSpendTradeTokens: (
     signer: ethers.Signer
   ) => Promise<ethers.ContractTransaction>;
-  approveZAuctionTransferNft: () => Promise<ethers.ContractTransaction>;
+  approveZAuctionTransferNft: (
+    signer: ethers.Signer
+  ) => Promise<ethers.ContractTransaction>;
   approveZAuctionTransferNftByBid: (
-    bid: Bid
+    bid: Bid,
+    signer: ethers.Signer
   ) => Promise<ethers.ContractTransaction>;
   acceptBid: (
     bid: Bid,

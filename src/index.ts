@@ -18,7 +18,6 @@ import {
   getZAuctionContract,
   getZAuctionTradeToken,
 } from "./contracts";
-import { IERC721 } from "./contracts/types";
 
 export * from "./types";
 
@@ -29,7 +28,7 @@ export const createInstance = (config: Config): Instance => {
 
   const apiClient: api.ApiClient = api.createClient(config.apiUri);
 
-  const instance: Instance = {
+  const instance = {
     listSales: (tokenId: string) =>
       subgraphClient.listSales(config.tokenContract, tokenId),
     listAllSales: () => subgraphClient.listAllSales(config.tokenContract),
@@ -152,8 +151,8 @@ export const createInstance = (config: Config): Instance => {
     },
 
     approveZAuctionSpendTradeTokensByBid: async (
-      signer: ethers.Signer,
-      bid: Bid
+      bid: Bid,
+      signer: ethers.Signer
     ): Promise<ethers.ContractTransaction> => {
       const isVersion1 = bid.version === "1.0";
 
@@ -164,10 +163,9 @@ export const createInstance = (config: Config): Instance => {
 
       const erc20Token = await getZAuctionTradeToken(signer, zAuctionAddress);
 
-      const tx = await erc20Token.approve(
-        zAuctionAddress,
-        ethers.constants.MaxUint256
-      );
+      const tx = await erc20Token
+        .connect(signer)
+        .approve(zAuctionAddress, ethers.constants.MaxUint256);
 
       return tx;
     },
@@ -180,16 +178,16 @@ export const createInstance = (config: Config): Instance => {
         config.zAuctionAddress
       );
 
-      const tx = await erc20Token.approve(
-        config.zAuctionAddress,
-        ethers.constants.MaxUint256
-      );
+      const tx = await erc20Token
+        .connect(signer)
+        .approve(config.zAuctionAddress, ethers.constants.MaxUint256);
 
       return tx;
     },
 
     approveZAuctionTransferNftByBid: async (
-      bid: Bid
+      bid: Bid,
+      signer: ethers.Signer
     ): Promise<ethers.ContractTransaction> => {
       const isVersion1 = bid.version === "1.0";
 
@@ -198,30 +196,26 @@ export const createInstance = (config: Config): Instance => {
         ? config.zAuctionLegacyAddress
         : config.zAuctionAddress;
 
-      const nftContract = await getERC721Contract(
-        config.web3Provider,
-        config.tokenContract
-      );
+      const nftContract = await getERC721Contract(signer, config.tokenContract);
 
-      const tx = await nftContract.setApprovalForAll(zAuctionAddress, true);
+      const tx = await nftContract
+        .connect(signer)
+        .setApprovalForAll(zAuctionAddress, true);
 
       return tx;
     },
 
-    approveZAuctionTransferNft:
-      async (): Promise<ethers.ContractTransaction> => {
-        const nftContract = await getERC721Contract(
-          config.web3Provider,
-          config.tokenContract
-        );
+    approveZAuctionTransferNft: async (
+      signer: ethers.Signer
+    ): Promise<ethers.ContractTransaction> => {
+      const nftContract = await getERC721Contract(signer, config.tokenContract);
 
-        const tx = await nftContract.setApprovalForAll(
-          config.zAuctionAddress,
-          true
-        );
+      const tx = await nftContract
+        .connect(signer)
+        .setApprovalForAll(config.zAuctionAddress, true);
 
-        return tx;
-      },
+      return tx;
+    },
 
     acceptBid: async (
       bid: Bid,
