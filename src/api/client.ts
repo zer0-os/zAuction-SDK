@@ -11,7 +11,6 @@ export interface ApiClient {
     bidMessageSignature: string
   ) => Promise<void>;
   listBidsForTokens: (
-    contract: string,
     tokenIds: string[]
   ) => Promise<TokenBidCollection>;
   listBidsByAccount: (account: string) => Promise<Bid[]>;
@@ -36,10 +35,9 @@ export const createClient = (apiUri: string): ApiClient => {
       );
     },
     listBidsForTokens: (
-      contract: string,
       tokenIds: string[]
     ): Promise<TokenBidCollection> =>
-      actions.listBidsForTokens(apiUri, contract, tokenIds),
+      actions.listBidsForTokens(apiUri, tokenIds),
     listBidsByAccount: (account: string): Promise<Bid[]> =>
       actions.listBidsForAccount(apiUri, account),
   };

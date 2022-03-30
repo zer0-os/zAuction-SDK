@@ -33,7 +33,7 @@ export const createInstance = (config: Config): Instance => {
       subgraphClient.listSales(config.tokenContract, tokenId),
     listAllSales: () => subgraphClient.listAllSales(config.tokenContract),
     listBids: (tokenIds: string[]) =>
-      apiClient.listBidsForTokens(config.tokenContract, tokenIds),
+      apiClient.listBidsForTokens(tokenIds),
     listBidsByAccount: (account: string) =>
       apiClient.listBidsByAccount(account),
     placeBid: async (
