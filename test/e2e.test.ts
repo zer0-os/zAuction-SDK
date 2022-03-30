@@ -61,11 +61,13 @@ describe("SDK test", () => {
     // we should have a `/api/bid/accepted` that takes in a bid and moves it or deletes it so can't reuse
     const sdk = createInstance(config);
 
+    const wilderPancakesDomainId = "0x6e35a7ecbf6b6368bb8d42ee9b3dcfc8404857635036e60196931d4458c07622"
+    const happyDogsYayDomain = "0xef19e4b21819162b1083f981cf7330e784b8cd98b0a603bd5dd02e1fc5bc7fc4"
     // Confirm
     const bids: Bid[] = await sdk.listBidsByAccount(mainAccount);
     console.log(bids.length);
 
-    const bidsNfts = await sdk.listBids(["0x6e35a7ecbf6b6368bb8d42ee9b3dcfc8404857635036e60196931d4458c07622"])
+    const bidsNfts = await sdk.listBids([happyDogsYayDomain])
 
     const singleBids: Bid[] = bids.filter(bid => bid.bidNonce === "22162161372");
     const bidToAccept = singleBids[0];
@@ -87,9 +89,9 @@ describe("SDK test", () => {
 
     // Signer in this case is the seller of the domain
     // const tx = await sdk.acceptBid(bidToAccept, mainWallet);
-  const tx = await sdk.acceptBid(bidToAccept, mainWallet);
-  if(!tx) throw Error("void")
-  const receipt = await tx.wait(1);
-  console.log(receipt);
+  // const tx = await sdk.acceptBid(bidToAccept, mainWallet);
+  // if(!tx) throw Error("void")
+  // const receipt = await tx.wait(1);
+  // console.log(receipt);
   });
 });
