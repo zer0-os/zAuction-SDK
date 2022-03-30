@@ -35,7 +35,7 @@ export const createInstance = (config: Config): Instance => {
     listBids: (tokenIds: string[]) =>
       apiClient.listBidsForTokens(config.tokenContract, tokenIds),
     listBidsByAccount: (account: string) =>
-      apiClient.listBidsByAccount(config.tokenContract, account),
+      apiClient.listBidsByAccount(account),
     placeBid: async (
       params: NewBidParameters,
       signer: ethers.Signer,
