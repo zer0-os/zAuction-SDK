@@ -39,16 +39,22 @@ describe("SDK test", () => {
     const pk2 = process.env.ASTRO_PRIVATE_KEY;
     if (!pk2) throw Error("no seller private key");
 
+    const pk3 = process.env.CPTD_PRIVATE_KEY;
+    if(!pk3) throw Error("no sirree")
+
     const mainWallet = new ethers.Wallet(pk, provider);
     const astroWallet = new ethers.Wallet(pk2, provider);
+    const cptdWallet = new ethers.Wallet(pk3, provider)
 
     const config: Config = {
-      apiUri: "https://zauction-api-rinkeby-v1.herokuapp.com/api",
+      // not actually mainnet
+      apiUri: "https://zauction-api-mainnet-v2.herokuapp.com/api",
       subgraphUri:
         "https://api.thegraph.com/subgraphs/name/zer0-os/zauction-rinkeby",
       zAuctionAddress: "0xb2416Aed6f5439Ffa0eCCAaa2b643f3D9828f86B",
       zAuctionLegacyAddress: "0x376030f58c76ECC288a4fce8F88273905544bC07",
-      tokenContract: "0xa4F6C921f914ff7972D7C55c15f015419326e0Ca", // will be changed to hub not single registrar
+      // tokenContract: "0x73124d6436a30C998628D980C9c2643aa2021944",
+      tokenContract: "0xa4F6C921f914ff7972D7C55c15f015419326e0Ca", // will be changed to hub not single registrar?
       web3Provider: provider as Web3Provider,
     };
 
@@ -56,26 +62,34 @@ describe("SDK test", () => {
     const sdk = createInstance(config);
 
     // Confirm
-    const bids: Bid[] = await sdk.listBidsByAccount(astroTestAccount);
+    const bids: Bid[] = await sdk.listBidsByAccount(mainAccount);
     console.log(bids.length);
 
-    const singleBids: Bid[] = bids.filter(bid => bid.bidNonce === "33467257623");
+    const bidsNfts = await sdk.listBids(["0x6e35a7ecbf6b6368bb8d42ee9b3dcfc8404857635036e60196931d4458c07622"])
+
+    const singleBids: Bid[] = bids.filter(bid => bid.bidNonce === "22162161372");
     const bidToAccept = singleBids[0];
 
     // Must call the first time, make sure both the seller and the buyer are approved
-    // const tx0 = await sdk.approveZAuctionSpendTradeTokensByBid(mainWallet, bidToAccept)
+    // const tx0 = await sdk.approveZAuctionSpendTradeTokensByBid(bidToAccept, cptdWallet);
     // const receipt0 = await tx0.wait(1);
-    // const tx1 = await sdk.approveZAuctionTransferNftByBid(mainWallet, bidToAccept);
+    // const tx1 = await sdk.approveZAuctionTransferNftByBid(bidToAccept, cptdWallet);
     // const receipt1 = await tx1.wait(1);
-    // const tx2 = await sdk.approveZAuctionSpendTradeTokensByBid(astroWallet, bidToAccept)
+    // const tx2 = await sdk.approveZAuctionSpendTradeTokensByBid(bidToAccept, mainWallet);
     // const receipt2 = await tx2.wait(1);
-    // const tx3 = await sdk.approveZAuctionTransferNftByBid(astroWallet, bidToAccept);
+    // const tx3 = await sdk.approveZAuctionTransferNftByBid(bidToAccept, mainWallet);
     // const receipt3 = await tx3.wait(1);
 
-    // Signer in this case is the seller of the domain
-    const tx = await sdk.acceptBid(bidToAccept, mainWallet);
+    // const tx4 = await sdk.approveZAuctionSpendTradeTokensByBid(bidToAccept, astroWallet);
+    // const receipt4 = await tx2.wait(1);
+    // const tx5 = await sdk.approveZAuctionTransferNftByBid(bidToAccept, astroWallet);
+    // const receipt5 = await tx3.wait(1);
 
-    const receipt = await tx.wait(1);
-    console.log(receipt);
+    // Signer in this case is the seller of the domain
+    // const tx = await sdk.acceptBid(bidToAccept, mainWallet);
+  const tx = await sdk.acceptBid(bidToAccept, mainWallet);
+  if(!tx) throw Error("void")
+  const receipt = await tx.wait(1);
+  console.log(receipt);
   });
 });
