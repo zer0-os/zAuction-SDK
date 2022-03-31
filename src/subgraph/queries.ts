@@ -18,6 +18,23 @@ export const getTokenSalesForNftQuery = gql`
   }
 `;
 
+export const getBuyNowTokenSales = gql`
+  query DomainTokenSolds($contract: Bytes!, $tokenId: BigInt!) {
+    domainTokenSolds(where: { tokenId: $tokenId, contractAddress: $contract }) {
+      id
+      buyer {
+        id
+      }
+      seller {
+        id
+      }
+      amount
+      tokenId
+      contractAddress
+    }
+  }
+`;
+
 export const getAllTokenSales = gql`
   query TokenSales($contract: Bytes!, $count: Int!, $skipCount: Int!) {
     tokenSales(

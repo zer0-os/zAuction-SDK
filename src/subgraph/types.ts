@@ -15,3 +15,16 @@ export interface TokenSaleDto {
 export interface TokenSalesDto {
   tokenSales: TokenSaleDto[];
 }
+
+export interface TokenBuyNowSaleDto {
+  id: string;
+  buyer: AccountDto;
+  seller: AccountDto;
+  amount: string;
+  tokenId: string;
+  contractAddress: string;
+}
+
+export interface TokenBuyNowSalesDto {
+  tokenBuyNowSales: TokenBuyNowSaleDto[];
+}
