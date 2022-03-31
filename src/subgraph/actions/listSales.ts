@@ -11,7 +11,7 @@ export const listSales = async <T>(
   const queryResult = await apolloClient.query<TokenSalesDto>({
     query: queries.getTokenSalesForNftQuery,
     variables: {
-      contract,
+      contract: contract.toLowerCase(),
       tokenId,
     },
   });

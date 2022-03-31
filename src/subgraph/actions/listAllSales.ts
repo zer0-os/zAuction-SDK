@@ -17,7 +17,7 @@ export const listAllSales = async <T>(
     const queryResult = await apolloClient.query<TokenSalesDto>({
       query: queries.getAllTokenSales,
       variables: {
-        contract,
+        contract: contract.toLowerCase(),
         count,
         skipCount,
       },

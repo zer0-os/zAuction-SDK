@@ -1,7 +1,7 @@
 import { ApolloClient } from "@apollo/client/core";
 import { TokenBuyNowSalesDto } from "../types";
 import * as queries from "../queries";
-import { TokenBuy, TokenSale } from "../../types";
+import { TokenBuy } from "../../types";
 
 export const listBuyNowSales = async <T>(
   apolloClient: ApolloClient<T>,
@@ -12,8 +12,8 @@ export const listBuyNowSales = async <T>(
   const queryResult = await apolloClient.query<TokenBuyNowSalesDto>({
     query: queries.getBuyNowTokenSales,
     variables: {
-      contractAddress,
-      tokenId,
+      contractAddress: contractAddress.toLowerCase(),
+      tokenId
     },
   });
 
@@ -21,7 +21,7 @@ export const listBuyNowSales = async <T>(
     throw queryResult.error;
   }
 
-  const buys: TokenBuy[] = queryResult.data.tokenBuyNowSales.map((e) => {
+  const buys: TokenBuy[] = queryResult.data.domainTokenSolds.map((e) => {
     return {
       tokenId: e.tokenId,
       contract: e.contractAddress,

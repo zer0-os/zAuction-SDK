@@ -57,19 +57,18 @@ describe("SDK test", () => {
     const sdk = createInstance(config);
     const main = "0xaE3153c9F5883FD2E78031ca2716520748c521dB"
     const mainbids = await sdk.listBidsByAccount(main);
+
     const wilderPancakes = "0x6e35a7ecbf6b6368bb8d42ee9b3dcfc8404857635036e60196931d4458c07622"
-    const buyNowSales = await sdk.listBuyNowSales(wilderPancakes)
+    const buyNowSales = await sdk.listBuyNowSales(wilderPancakes);
 
-    console.log(mainbids)
     const domainFromBrett = "0xada136a490b49f140280941197b1c56cdc9668ec9c8b515c8f00d116b9942c09"
-
     const wilderPancakesDomainId = "0x6e35a7ecbf6b6368bb8d42ee9b3dcfc8404857635036e60196931d4458c07622"
     const happyDogsYayDomain = "0xef19e4b21819162b1083f981cf7330e784b8cd98b0a603bd5dd02e1fc5bc7fc4"
     // Confirm
     const bids: Bid[] = await sdk.listBidsByAccount(mainAccount);
     console.log(bids.length);
 
-    const bidsNfts = await sdk.listBids([domainFromBrett])
+    const bidsNfts = await sdk.listBids([wilderPancakesDomainId])
 
     const singleBids: Bid[] = bids.filter(bid => bid.bidNonce === "22162161372");
     const bidToAccept = singleBids[0];

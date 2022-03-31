@@ -26,5 +26,5 @@ export interface TokenBuyNowSaleDto {
 }
 
 export interface TokenBuyNowSalesDto {
-  tokenBuyNowSales: TokenBuyNowSaleDto[];
+  domainTokenSolds: TokenBuyNowSaleDto[];
 }
