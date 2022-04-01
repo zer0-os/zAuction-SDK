@@ -14,6 +14,7 @@ export interface Config {
 
 export interface Instance {
   listSales: (tokenId: string) => Promise<TokenSale[]>;
+  listBuyNowSales: (tokenId: string) => Promise<TokenBuy[]>;
   listAllSales: () => Promise<TokenSaleCollection>;
   listBids: (tokenIds: string[]) => Promise<TokenBidCollection>;
   listBidsByAccount: (account: string) => Promise<Bid[]>;
@@ -79,6 +80,14 @@ export interface TokenSale {
   buyer: string;
   seller: string;
   timestamp: string;
+}
+
+export interface TokenBuy {
+  buyer: string;
+  seller: string;
+  amount: string;
+  contract: string;
+  tokenId: string;
 }
 
 export interface TokenSaleCollection {

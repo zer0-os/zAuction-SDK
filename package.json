@@ -16,7 +16,7 @@
     "build": "tsc --build --verbose ./tsconfig.build.json",
     "lint": "eslint --fix src",
     "style": "prettier --write ./src/**/*.ts",
-    "test": "mocha -r ts-node/register 'test/**/*.test.ts' --exit",
+    "test": "mocha -r ts-node/register 'test/**/*.test.ts' --exit --timeout 150000",
     "typechain": "typechain --target ethers-v5 --out-dir src/contracts/types/ \"abi/**/*.json\""
   },
   "devDependencies": {
@@ -30,6 +30,7 @@
     "@typescript-eslint/parser": "4.31.0",
     "chai": "4.3.4",
     "chai-as-promised": "7.1.1",
+    "dotenv": "16.0.0",
     "eslint": "7.32.0",
     "eslint-plugin-prettier": "4.0.0",
     "ethers": "5.4.6",
