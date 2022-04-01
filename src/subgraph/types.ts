@@ -23,6 +23,7 @@ export interface TokenBuyNowSaleDto {
   amount: string;
   tokenId: string;
   contractAddress: string;
+  timestamp: string;
 }
 
 export interface TokenBuyNowSalesDto {

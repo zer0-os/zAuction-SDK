@@ -27,6 +27,7 @@ export const listBuyNowSales = async <T>(
       amount: e.amount,
       seller: e.seller.id,
       buyer: e.buyer.id,
+      timestamp: e.timestamp
     } as TokenBuy;
   });
 
