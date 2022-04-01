@@ -3,13 +3,9 @@ import * as dotenv from "dotenv";
 
 dotenv.config();
 
-import * as actions from "../src/actions";
 import { Config, createInstance } from "../src";
 import { Web3Provider } from "@ethersproject/providers";
-import { makeApiCall } from "../src/api/actions/helpers";
-import { Bid, BidDto } from "../src/api/types";
-import { expect } from "chai";
-import { timeStamp } from "console";
+import { Bid } from "../src/api/types";
 
 describe("SDK test", () => {
   const registrarAddress = "0xa4F6C921f914ff7972D7C55c15f015419326e0Ca";

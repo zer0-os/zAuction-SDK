@@ -8,12 +8,11 @@ export const listBuyNowSales = async <T>(
   contractAddress: string,
   tokenId: string
 ): Promise<TokenBuy[]> => {
-  
   const queryResult = await apolloClient.query<TokenBuyNowSalesDto>({
     query: queries.getBuyNowTokenSales,
     variables: {
       contractAddress: contractAddress.toLowerCase(),
-      tokenId
+      tokenId,
     },
   });
 

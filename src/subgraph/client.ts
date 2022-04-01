@@ -1,12 +1,11 @@
 import * as apollo from "@apollo/client/core";
 import fetch from "cross-fetch";
-import { stringify } from "querystring";
 import { TokenBuy, TokenSale, TokenSaleCollection } from "../types";
 import * as actions from "./actions";
 
 export interface SubgraphClient {
   listSales: (contract: string, tokenId: string) => Promise<TokenSale[]>;
-  listBuyNowSales: (contract: string, tokenId: string) => Promise<TokenBuy[]>; // maybe make your own type?
+  listBuyNowSales: (contract: string, tokenId: string) => Promise<TokenBuy[]>;
   listAllSales: (contract: string) => Promise<TokenSaleCollection>;
 }
 
