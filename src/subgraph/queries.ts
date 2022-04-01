@@ -31,6 +31,7 @@ export const getBuyNowTokenSales = gql`
       amount
       tokenId
       contractAddress
+      timestamp
     }
   }
 `;

@@ -88,6 +88,7 @@ export interface TokenBuy {
   amount: string;
   contract: string;
   tokenId: string;
+  timestamp: string;
 }
 
 export interface TokenSaleCollection {
