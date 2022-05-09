@@ -30,16 +30,18 @@ export const placeBid = async (
   params.statusCallback ? params.statusCallback(PlaceBidStatus.Encoding) : null;
 
   let signableBid: Maybe<SignableBid>;
-
+  
+  const bidParams: BidParameters = {
+    bidder: params.bidder,
+    tokenId: params.bid.tokenId,
+    contract: params.contract,
+    amount: params.bid.bidAmount,
+    startBlock: params.bid.startBlock ?? "0",
+    expireBlock: params.bid.expireBlock ?? "9999999999",
+    bidToken: params.bid.bidToken
+  }
   try {
-    signableBid = await params.encodeBid({
-      bidder: params.bidder,
-      contract: params.contract,
-      tokenId: params.bid.tokenId,
-      amount: params.bid.bidAmount,
-      startBlock: params.bid.startBlock ?? "0",
-      expireBlock: params.bid.expireBlock ?? "9999999999",
-    } as BidParameters);
+    signableBid = await params.encodeBid(bidParams);
   } catch (e) {
     throw Error(`Failed to encode bid: ${e}`);
   }

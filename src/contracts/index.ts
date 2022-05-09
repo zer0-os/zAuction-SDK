@@ -4,6 +4,8 @@ import {
   IERC20__factory,
   IERC721,
   IERC721__factory,
+  IZNSHub,
+  IZNSHub__factory,
   ZAuction,
   ZAuctionV1,
   ZAuctionV1__factory,
@@ -12,7 +14,7 @@ import {
 
 export const getZAuctionContract = async (
   web3Provider: ethers.providers.Provider | ethers.Signer,
-  address: string // to change on new deployment
+  address: string
 ): Promise<ZAuction> => {
   const contract = ZAuction__factory.connect(address, web3Provider);
   return contract;
@@ -42,14 +44,10 @@ export const getERC721Contract = async (
   return contract;
 };
 
-export const getZAuctionTradeToken = async (
+export const getZnsHub = async (
   web3Provider: ethers.providers.Provider | ethers.Signer,
-  zAuctionAddress: string
-): Promise<IERC20> => {
-  const zAuction = await getZAuctionContract(web3Provider, zAuctionAddress);
-  const tokenAddress = await zAuction.token();
-
-  const tokenContract = await getERC20Contract(web3Provider, tokenAddress);
-
-  return tokenContract;
+  address: string
+): Promise<IZNSHub> => {
+  const contract = IZNSHub__factory.connect(address, web3Provider);
+  return contract;
 };
