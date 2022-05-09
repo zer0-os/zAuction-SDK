@@ -52,7 +52,7 @@ export const buyNow = async (
     throw Error("Incorrect buyNow price given");
   }
 
-  if (!listing.bidToken) {
+  if (!listing.paymentToken) {
     // If no bidToken it is not a v2.1 listing, use WILD
     const allowance = await getPaymentTokenAllowance(
       buyer,
@@ -75,7 +75,7 @@ export const buyNow = async (
 
   const allowance = await getPaymentTokenAllowance(
     buyer,
-    listing.bidToken!,
+    listing.paymentToken!,
     config.web3Provider,
     config.zAuctionAddress
   );

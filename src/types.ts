@@ -7,15 +7,15 @@ export interface Config {
   subgraphUri: string;
   zAuctionAddress: string;
   zAuctionLegacyAddress: string;
-  // The NFT contract
-  tokenContract: string;
+  wildTokenAddress: string;
+  znsHubAddress: string;
   web3Provider: ethers.providers.Web3Provider;
 }
 
 export interface Instance {
   listSales: (tokenId: string) => Promise<TokenSale[]>;
   listBuyNowSales: (tokenId: string) => Promise<TokenBuy[]>;
-  listAllSales: () => Promise<TokenSaleCollection>;
+  listAllSales: (networkId: string) => Promise<TokenSaleCollection>;
   listBids: (tokenIds: string[]) => Promise<TokenBidCollection>;
   listBidsByAccount: (account: string) => Promise<Bid[]>;
   placeBid: (
@@ -27,25 +27,58 @@ export interface Instance {
     account: string,
     bid: Bid
   ) => Promise<boolean>;
-  isZAuctionApprovedToTransferNft: (account: string) => Promise<boolean>;
-  getZAuctionSpendAllowance: (account: string) => Promise<ethers.BigNumber>;
+  isZAuctionApprovedToTransferNft: (
+    account: string,
+    contractAddress: string
+  ) => Promise<boolean>;
+  isZAuctionApprovedToTransferNftLegacy: (
+    account: string,
+    contractAddress: string
+  ) => Promise<boolean>;
   getZAuctionSpendAllowanceByBid: (
     account: string,
     bid: Bid
   ) => Promise<ethers.BigNumber>;
-  getTradeTokenAddress: () => Promise<string>;
+  getZAuctionSpendAllowance: (
+    paymentTokenAddress: string,
+    account: string
+  ) => Promise<ethers.BigNumber>;
+  getZAuctionSpendAllowanceLegacy: (
+    account: string
+  ) => Promise<ethers.BigNumber>;
+  getDefaultPaymentToken: () => Promise<string>;
+  setDefaultPaymentToken: (
+    defaultTokenAddress: string,
+    signer: ethers.Signer
+  ) => Promise<ethers.ContractTransaction>;
+  getDomainNetworkPaymentToken: (networkId: string) => Promise<string>;
+  setDomainNetworkPaymentToken: (
+    networkId: string,
+    domainNetworkToken: string,
+    signer: ethers.Signer
+  ) => Promise<ethers.ContractTransaction>;
+  getPaymentTokenForDomain: (domainTokenId: string) => Promise<string>;
   approveZAuctionSpendTradeTokensByBid: (
     bid: Bid,
     signer: ethers.Signer
   ) => Promise<ethers.ContractTransaction>;
   approveZAuctionSpendTradeTokens: (
+    paymentTokenAddress: string,
     signer: ethers.Signer
   ) => Promise<ethers.ContractTransaction>;
-  approveZAuctionTransferNft: (
+  approveZAuctionSpendTradeTokensLegacy: (
     signer: ethers.Signer
   ) => Promise<ethers.ContractTransaction>;
   approveZAuctionTransferNftByBid: (
     bid: Bid,
+    signer: ethers.Signer
+  ) => Promise<ethers.ContractTransaction>;
+  approveZAuctionTransferNft: (
+    domainContractAddress: string,
+    signer: ethers.Signer
+  ) => Promise<ethers.ContractTransaction>;
+  approveZAuctionTransferNftLegacy: (
+    domainContractAddress: string,
     signer: ethers.Signer
   ) => Promise<ethers.ContractTransaction>;
   acceptBid: (
@@ -53,11 +86,10 @@ export interface Instance {
     signer: ethers.Signer
   ) => Promise<ethers.ContractTransaction>;
   cancelBid: (
-    bidNonce: string,
-    signedBidMessage: string,
+    bid: Bid,
     cancelOnChain: boolean,
     signer: ethers.Signer
-  ) => Promise<ethers.ContractTransaction | void>;
+  ) => Promise<ethers.ContractTransaction | void>
   buyNow: (
     params: BuyNowParams,
     signer: ethers.Signer
@@ -111,6 +143,7 @@ export enum PlaceBidStatus {
 export interface NewBidParameters {
   tokenId: string;
   bidAmount: string; // in wei
+  bidToken: string;
   startBlock?: string;
   expireBlock?: string;
 }
@@ -118,9 +151,11 @@ export interface NewBidParameters {
 export interface BuyNowParams {
   amount: string;
   tokenId: string;
+  paymentToken?: string;
 }
 
 export interface Listing {
   price: ethers.BigNumber;
   holder: string;
+  paymentToken?: string;
 }
