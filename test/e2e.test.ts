@@ -42,8 +42,7 @@ describe("SDK test", () => {
 
   const config: Config = {
     // Rinkeby addresses
-    apiUri: "http://localhost:5000/api",
-    // apiUri: "https://zauction-api-rinkeby.herokuapp.com/api",
+    apiUri: "https://zauction-api-rinkeby.herokuapp.com/api",
     subgraphUri:
       "https://api.thegraph.com/subgraphs/name/zer0-os/zauction-rinkeby",
     zAuctionAddress: "0xb2416Aed6f5439Ffa0eCCAaa2b643f3D9828f86B",
