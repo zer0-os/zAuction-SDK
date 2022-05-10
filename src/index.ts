@@ -181,7 +181,7 @@ export const createInstance = (config: Config): Instance => {
 
       return allowance;
     },
-    getZAuctionSpendAllowanceByToken: async (
+    getZAuctionSpendAllowanceByDomainToken: async (
       account: string,
       tokenId: string
     ): Promise<ethers.BigNumber> => {
@@ -282,7 +282,7 @@ export const createInstance = (config: Config): Instance => {
       );
       return tx;
     },
-    approveZAuctionSpendTradeTokensByToken: async (
+    approveZAuctionSpendTradeTokensByDomainToken: async (
       tokenId: string,
       signer: ethers.Signer
     ): Promise<ethers.ContractTransaction> => {

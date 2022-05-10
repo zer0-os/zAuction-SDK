@@ -39,7 +39,7 @@ export interface Instance {
     account: string,
     bid: Bid
   ) => Promise<ethers.BigNumber>;
-  getZAuctionSpendAllowanceByToken: (
+  getZAuctionSpendAllowanceByDomainToken: (
     account: string,
     tokenId: string
   ) => Promise<ethers.BigNumber>;
@@ -60,7 +60,7 @@ export interface Instance {
     bid: Bid,
     signer: ethers.Signer
   ) => Promise<ethers.ContractTransaction>;
-  approveZAuctionSpendTradeTokensByToken: (
+  approveZAuctionSpendTradeTokensByDomainToken: (
     tokenId: string,
     signer: ethers.Signer
   ) => Promise<ethers.ContractTransaction>;
