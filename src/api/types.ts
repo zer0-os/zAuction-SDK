@@ -7,6 +7,7 @@ export interface BidParamsDto {
   startBlock: string;
   expireBlock: string;
   tokenId: string;
+  bidToken?: string;
 }
 
 export interface BidDto extends BidParamsDto {

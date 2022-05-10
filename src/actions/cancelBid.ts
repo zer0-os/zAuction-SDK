@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 import { ApiClient } from "../api";
-import { getZAuctionContract, getZAuctionV1Contract, getZnsHub } from "../contracts";
-import { Bid, Config } from "../types";
+import { getZAuctionContract, getZAuctionV1Contract, getZnsHubContract } from "../contracts";
+import { Bid } from "../types";
 
 // Cancel a bid for a domain, supporting legacy bids
 export const cancelBid = async (

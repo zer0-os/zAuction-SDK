@@ -2,10 +2,10 @@ import { ethers } from "ethers";
 import {
   getERC721Contract,
   getZAuctionContract,
-  getZnsHub,
+  getZnsHubContract,
 } from "../contracts";
 import { ZAuction } from "../contracts/types";
-import { BuyNowParams, Config, Listing } from "../types";
+import { BuyNowParams, Config, BuyNowListing } from "../types";
 import { getPaymentTokenAllowance } from "./getPaymentTokenAllowance";
 import { isZAuctionApprovedNftTransfer } from "./isZAuctionApproved";
 
@@ -15,7 +15,7 @@ export const buyNow = async (
   signer: ethers.Signer,
   config: Config
 ) => {
-  const hub = await getZnsHub(signer, config.znsHubAddress);
+  const hub = await getZnsHubContract(signer, config.znsHubAddress);
   const tokenContract = await hub.getRegistrarForDomain(params.tokenId);
 
   const nftContract = await getERC721Contract(signer, tokenContract);
@@ -43,7 +43,7 @@ export const buyNow = async (
     config.zAuctionAddress
   );
 
-  const listing: Listing = await zAuction.priceInfo(params.tokenId);
+  const listing: BuyNowListing = await zAuction.priceInfo(params.tokenId);
 
   if (listing.price.eq("0")) {
     throw Error("Domain is not for sale");
@@ -52,7 +52,10 @@ export const buyNow = async (
     throw Error("Incorrect buyNow price given");
   }
 
-  if (!listing.paymentToken) {
+  if (
+    !listing.paymentToken ||
+    listing.paymentToken === ethers.constants.AddressZero
+  ) {
     // If no bidToken it is not a v2.1 listing, use WILD
     const allowance = await getPaymentTokenAllowance(
       buyer,

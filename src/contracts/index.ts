@@ -44,7 +44,7 @@ export const getERC721Contract = async (
   return contract;
 };
 
-export const getZnsHub = async (
+export const getZnsHubContract = async (
   web3Provider: ethers.providers.Provider | ethers.Signer,
   address: string
 ): Promise<IZNSHub> => {

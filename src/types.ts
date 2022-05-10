@@ -39,6 +39,10 @@ export interface Instance {
     account: string,
     bid: Bid
   ) => Promise<ethers.BigNumber>;
+  getZAuctionSpendAllowanceByToken: (
+    account: string,
+    tokenId: string
+  ) => Promise<ethers.BigNumber>;
   getZAuctionSpendAllowance: (
     paymentTokenAddress: string,
     account: string
@@ -46,13 +50,7 @@ export interface Instance {
   getZAuctionSpendAllowanceLegacy: (
     account: string
   ) => Promise<ethers.BigNumber>;
-  getDefaultPaymentToken: () => Promise<string>;
-  setDefaultPaymentToken: (
-    defaultTokenAddress: string,
-    signer: ethers.Signer
-  ) => Promise<ethers.ContractTransaction>;
-  getDomainNetworkPaymentToken: (networkId: string) => Promise<string>;
-  setDomainNetworkPaymentToken: (
+  setNetworkPaymentToken: (
     networkId: string,
     domainNetworkToken: string,
     signer: ethers.Signer
@@ -62,11 +60,12 @@ export interface Instance {
     bid: Bid,
     signer: ethers.Signer
   ) => Promise<ethers.ContractTransaction>;
-  approveZAuctionSpendTradeTokens: (
-    paymentTokenAddress: string,
+  approveZAuctionSpendTradeTokensByToken: (
+    tokenId: string,
     signer: ethers.Signer
   ) => Promise<ethers.ContractTransaction>;
-  approveZAuctionSpendTradeTokensLegacy: (
+  approveZAuctionSpendTradeTokens: (
+    paymentTokenAddress: string,
     signer: ethers.Signer
   ) => Promise<ethers.ContractTransaction>;
   approveZAuctionTransferNftByBid: (
@@ -74,10 +73,6 @@ export interface Instance {
     signer: ethers.Signer
   ) => Promise<ethers.ContractTransaction>;
   approveZAuctionTransferNft: (
-    domainContractAddress: string,
-    signer: ethers.Signer
-  ) => Promise<ethers.ContractTransaction>;
-  approveZAuctionTransferNftLegacy: (
     domainContractAddress: string,
     signer: ethers.Signer
   ) => Promise<ethers.ContractTransaction>;
@@ -89,12 +84,12 @@ export interface Instance {
     bid: Bid,
     cancelOnChain: boolean,
     signer: ethers.Signer
-  ) => Promise<ethers.ContractTransaction | void>
+  ) => Promise<ethers.ContractTransaction | void>;
   buyNow: (
     params: BuyNowParams,
     signer: ethers.Signer
   ) => Promise<ethers.ContractTransaction>;
-  getBuyNowPrice: (tokenId: string) => Promise<Listing>;
+  getBuyNowPrice: (tokenId: string) => Promise<BuyNowListing>;
   setBuyNowPrice: (
     params: BuyNowParams,
     signer: ethers.Signer
@@ -143,7 +138,6 @@ export enum PlaceBidStatus {
 export interface NewBidParameters {
   tokenId: string;
   bidAmount: string; // in wei
-  bidToken: string;
   startBlock?: string;
   expireBlock?: string;
 }
@@ -151,11 +145,11 @@ export interface NewBidParameters {
 export interface BuyNowParams {
   amount: string;
   tokenId: string;
-  paymentToken?: string;
+  paymentToken: string;
 }
 
-export interface Listing {
+export interface BuyNowListing {
   price: ethers.BigNumber;
   holder: string;
-  paymentToken?: string;
+  paymentToken: string;
 }

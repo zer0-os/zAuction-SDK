@@ -1,4 +1,4 @@
-import { ethers} from "ethers";
+import { ethers } from "ethers";
 import * as dotenv from "dotenv";
 
 dotenv.config();
@@ -6,89 +6,96 @@ dotenv.config();
 import { Config, createInstance } from "../src";
 import { Web3Provider } from "@ethersproject/providers";
 import { Bid } from "../src/api/types";
+import { expect } from "chai";
 
 describe("SDK test", () => {
   const registrarAddress = "0xa4F6C921f914ff7972D7C55c15f015419326e0Ca";
   const zAuctionAddress = "0xb2416Aed6f5439Ffa0eCCAaa2b643f3D9828f86B";
   const zAuctionLegacyAddress = "0x376030f58c76ECC288a4fce8F88273905544bC07";
+
+
+  const wilderPancakesDomain =
+      "0x6e35a7ecbf6b6368bb8d42ee9b3dcfc8404857635036e60196931d4458c07622";
+  const wilderPancakesDomainId =
+    "0x6e35a7ecbf6b6368bb8d42ee9b3dcfc8404857635036e60196931d4458c07622";
+  const happyDogsYayDomain =
+    "0xef19e4b21819162b1083f981cf7330e784b8cd98b0a603bd5dd02e1fc5bc7fc4";
+
+  const provider = new ethers.providers.JsonRpcProvider(process.env.INFURA_URL);
+
+  const pk = process.env.MAIN_PRIVATE_KEY;
+  if (!pk) throw Error("no private key");
+
+  const pk2 = process.env.ASTRO_PRIVATE_KEY;
+  if (!pk2) throw Error("no seller private key");
+
+  const pk3 = process.env.CPTD_PRIVATE_KEY;
+  if (!pk3) throw Error("no sirree");
+
+  const mainWallet = new ethers.Wallet(pk, provider);
+  const astroWallet = new ethers.Wallet(pk2, provider);
+  const cptdWallet = new ethers.Wallet(pk3, provider);
+
   const mainAccount = "0xaE3153c9F5883FD2E78031ca2716520748c521dB";
   const astroTestAccount = "0x35888AD3f1C0b39244Bb54746B96Ee84A5d97a53";
+  const cptdAccount = "0x7829Afa127494Ca8b4ceEF4fb81B78fEE9d0e471";
 
-  const provider = new ethers.providers.JsonRpcProvider(
-    process.env.INFURA_URL,
-    4
-  );
-  it("Accepts both v1 and v2 bids through the SDK", async () => {
-    const provider = new ethers.providers.JsonRpcProvider(
-      process.env.INFURA_URL,
-      4
-    );
+  const config: Config = {
+    // Rinkeby addresses
+    apiUri: "http://localhost:5000/api",
+    // apiUri: "https://zauction-api-rinkeby.herokuapp.com/api",
+    subgraphUri:
+      "https://api.thegraph.com/subgraphs/name/zer0-os/zauction-rinkeby",
+    zAuctionAddress: "0xb2416Aed6f5439Ffa0eCCAaa2b643f3D9828f86B",
+    zAuctionLegacyAddress: "0x376030f58c76ECC288a4fce8F88273905544bC07",
+    wildTokenAddress: "0x3Ae5d499cfb8FB645708CC6DA599C90e64b33A79",
+    znsHubAddress: "0x90098737eB7C3e73854daF1Da20dFf90d521929a",
+    web3Provider: provider as Web3Provider,
+  };
+  const sdk = createInstance(config);
 
-    const pk = process.env.MAIN_PRIVATE_KEY;
-    if (!pk) throw Error("no private key");
-
-    const pk2 = process.env.ASTRO_PRIVATE_KEY;
-    if (!pk2) throw Error("no seller private key");
-
-    const pk3 = process.env.CPTD_PRIVATE_KEY;
-    if(!pk3) throw Error("no sirree")
-
-    const mainWallet = new ethers.Wallet(pk, provider);
-    const astroWallet = new ethers.Wallet(pk2, provider);
-    const cptdWallet = new ethers.Wallet(pk3, provider)
-
-    const config: Config = {
-      // not actually mainnet
-      apiUri: "https://zauction-api-rinkeby.herokuapp.com/api",
-      subgraphUri:
-        "https://api.thegraph.com/subgraphs/name/zer0-os/zauction-rinkeby",
-      zAuctionAddress: "0xb2416Aed6f5439Ffa0eCCAaa2b643f3D9828f86B",
-      zAuctionLegacyAddress: "0x376030f58c76ECC288a4fce8F88273905544bC07",
-      // tokenContract: "0x73124d6436a30C998628D980C9c2643aa2021944",
-      tokenContract: "0xa4F6C921f914ff7972D7C55c15f015419326e0Ca", // will be changed to hub not single registrar?
-      web3Provider: provider as Web3Provider,
-    };
-
-    // we should have a `/api/bid/accepted` that takes in a bid and moves it or deletes it so can't reuse
-    const sdk = createInstance(config);
-    const main = "0xaE3153c9F5883FD2E78031ca2716520748c521dB"
-    const mainbids = await sdk.listBidsByAccount(main);
-
-    const wilderPancakes = "0x6e35a7ecbf6b6368bb8d42ee9b3dcfc8404857635036e60196931d4458c07622"
-    const buyNowSales = await sdk.listBuyNowSales(wilderPancakes);
-
-    const domainFromBrett = "0xada136a490b49f140280941197b1c56cdc9668ec9c8b515c8f00d116b9942c09"
-    const wilderPancakesDomainId = "0x6e35a7ecbf6b6368bb8d42ee9b3dcfc8404857635036e60196931d4458c07622"
-    const happyDogsYayDomain = "0xef19e4b21819162b1083f981cf7330e784b8cd98b0a603bd5dd02e1fc5bc7fc4"
-    // Confirm
-    const bids: Bid[] = await sdk.listBidsByAccount(mainAccount);
+  it("List bids and confirms we are connected", async () => {
+    const bids: Bid[] = await sdk.listBidsByAccount(astroTestAccount);
     console.log(bids.length);
+  });
+  it("Accepts a legacy bid", async () => {
+    const bids: Bid[] = await sdk.listBidsByAccount(mainAccount);
 
-    const bidsNfts = await sdk.listBids([wilderPancakesDomainId])
+    // Successful tx hash
+    // 0xeaeae63388aaffd4fbfff17606b0756463f5ef903ac8847a4bcf0d3b067d6a70
+    const specificBid = bids.filter(bid => bid.bidNonce === "26179015888");
+    expect(specificBid.length).to.eq(1);
 
-    const singleBids: Bid[] = bids.filter(bid => bid.bidNonce === "22162161372");
-    const bidToAccept = singleBids[0];
+    // const tx = await sdk.acceptBid(specificBid[0], astroWallet);
+    // const receipt = await tx.wait(1);
+    // console.log(receipt.transactionHash);
+  });
+  it("Accepts a v2 bid", async () => {
+    const allBids: Bid[] = await sdk.listBidsByAccount(mainAccount);
 
-    // Must call the first time, make sure both the seller and the buyer are approved
-    // const tx0 = await sdk.approveZAuctionSpendTradeTokensByBid(bidToAccept, cptdWallet);
-    // const receipt0 = await tx0.wait(1);
-    // const tx1 = await sdk.approveZAuctionTransferNftByBid(bidToAccept, cptdWallet);
-    // const receipt1 = await tx1.wait(1);
-    // const tx2 = await sdk.approveZAuctionSpendTradeTokensByBid(bidToAccept, mainWallet);
-    // const receipt2 = await tx2.wait(1);
-    // const tx3 = await sdk.approveZAuctionTransferNftByBid(bidToAccept, mainWallet);
-    // const receipt3 = await tx3.wait(1);
+    const bids = allBids.filter(bid => bid.bidNonce === "12970992062")
+    // Successful tx hash
+    // 0x492caa7181dacc33942d749e48f84e174f447999e59aaeae221a15f77519eb16
 
-    // const tx4 = await sdk.approveZAuctionSpendTradeTokensByBid(bidToAccept, astroWallet);
-    // const receipt4 = await tx2.wait(1);
-    // const tx5 = await sdk.approveZAuctionTransferNftByBid(bidToAccept, astroWallet);
-    // const receipt5 = await tx3.wait(1);
+    // const tx = await sdk.acceptBid(bids[0], astroWallet);
+    // const receipt = await tx.wait(1);
+    // console.log(receipt.transactionHash);
+  })
+  it("Accepts a v2.1 bid", async () => {
+    const bids: Bid[] = await sdk.listBidsByAccount(astroTestAccount);
 
-    // Signer in this case is the seller of the domain
-    // const tx = await sdk.acceptBid(bidToAccept, mainWallet);
-  // const tx = await sdk.acceptBid(bidToAccept, mainWallet);
-  // if(!tx) throw Error("void")
-  // const receipt = await tx.wait(1);
-  // console.log(receipt);
+    const v2dot1Bids: Bid[] = [];
+    for(let bid of bids) {
+      if(bid.bidToken) {
+        v2dot1Bids.push(bid)
+      }
+    }
+
+    // Successful tx hash
+    // 0x5bb2d0353644a482ce7f7337c1380ed4b8dadb99f6a8164f2cd7560e15c7a03d
+
+    // const tx = await sdk.acceptBid(v2dot1Bids[1], mainWallet);
+    // const receipt = await tx.wait(1);
+    // console.log(receipt.transactionHash);
   });
 });
