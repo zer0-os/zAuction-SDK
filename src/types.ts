@@ -29,11 +29,11 @@ export interface Instance {
   ) => Promise<boolean>;
   isZAuctionApprovedToTransferNft: (
     account: string,
-    contractAddress: string
+    tokenId: string
   ) => Promise<boolean>;
   isZAuctionApprovedToTransferNftLegacy: (
     account: string,
-    contractAddress: string
+    tokenId: string,
   ) => Promise<boolean>;
   getZAuctionSpendAllowanceByBid: (
     account: string,
@@ -56,15 +56,15 @@ export interface Instance {
     signer: ethers.Signer
   ) => Promise<ethers.ContractTransaction>;
   getPaymentTokenForDomain: (domainTokenId: string) => Promise<string>;
-  approveZAuctionSpendTradeTokensByBid: (
+  approveZAuctionSpendByBid: (
     bid: Bid,
     signer: ethers.Signer
   ) => Promise<ethers.ContractTransaction>;
-  approveZAuctionSpendTradeTokensByDomainToken: (
+  approveZAuctionSpendByDomainToken: (
     tokenId: string,
     signer: ethers.Signer
   ) => Promise<ethers.ContractTransaction>;
-  approveZAuctionSpendTradeTokens: (
+  approveZAuctionSpend: (
     paymentTokenAddress: string,
     signer: ethers.Signer
   ) => Promise<ethers.ContractTransaction>;
@@ -73,7 +73,7 @@ export interface Instance {
     signer: ethers.Signer
   ) => Promise<ethers.ContractTransaction>;
   approveZAuctionTransferNft: (
-    domainContractAddress: string,
+    tokenId: string,
     signer: ethers.Signer
   ) => Promise<ethers.ContractTransaction>;
   acceptBid: (

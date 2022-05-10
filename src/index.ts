@@ -235,6 +235,7 @@ export const createInstance = (config: Config): Instance => {
         config.zAuctionAddress
       );
 
+      // TODO how to ensure we only ever get valid network tokens?
       const zAuctionOwner = await contract.owner();
       const signerAddress = await signer.getAddress();
 
@@ -263,7 +264,7 @@ export const createInstance = (config: Config): Instance => {
       );
       return paymentToken;
     },
-    approveZAuctionSpendTradeTokensByBid: async (
+    approveZAuctionSpendByBid: async (
       bid: Bid,
       signer: ethers.Signer
     ): Promise<ethers.ContractTransaction> => {
@@ -282,7 +283,7 @@ export const createInstance = (config: Config): Instance => {
       );
       return tx;
     },
-    approveZAuctionSpendTradeTokensByDomainToken: async (
+    approveZAuctionSpendByDomainToken: async (
       tokenId: string,
       signer: ethers.Signer
     ): Promise<ethers.ContractTransaction> => {
@@ -295,23 +296,13 @@ export const createInstance = (config: Config): Instance => {
       );
       return tx;
     },
-    approveZAuctionSpendTradeTokens: async (
+    approveZAuctionSpend: async (
       paymentTokenAddress: string,
       signer: ethers.Signer
     ): Promise<ethers.ContractTransaction> => {
       const tx = await approveSpender(
         paymentTokenAddress,
         config.zAuctionAddress,
-        signer
-      );
-      return tx;
-    },
-    approveZAuctionSpendTradeTokensLegacy: async (
-      signer: ethers.Signer
-    ): Promise<ethers.ContractTransaction> => {
-      const tx = await approveSpender(
-        config.wildTokenAddress,
-        config.zAuctionLegacyAddress,
         signer
       );
       return tx;
