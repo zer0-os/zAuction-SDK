@@ -1,10 +1,12 @@
 import { ethers } from "ethers";
 import { BidParameters, SignableBid, SignedBid } from "../api/types";
+import { getZAuctionContract, getZnsHubContract } from "../contracts";
 
 import {
   PlaceBidStatus,
   PlaceBidStatusCallback,
   NewBidParameters,
+  Config,
 } from "../types";
 import { Maybe } from "../utilities";
 
@@ -16,7 +18,7 @@ type SubmitBidFunction = (signedBid: SignedBid) => Promise<void>;
 
 interface PlaceBidActionParameters {
   bid: NewBidParameters;
-  contract: string;
+  config: Config,
   bidder: string;
   encodeBid: EncodeBidFunction;
   signMessage: SignMessageFunction;
@@ -29,17 +31,28 @@ export const placeBid = async (
 ): Promise<void> => {
   params.statusCallback ? params.statusCallback(PlaceBidStatus.Encoding) : null;
 
-  let signableBid: Maybe<SignableBid>;
+  const hub = await getZnsHubContract(
+    params.config.web3Provider,
+    params.config.znsHubAddress
+  );
+  const registrar = await hub.getRegistrarForDomain(params.bid.tokenId);
+  
+  const contract = await getZAuctionContract(params.config.web3Provider, params.config.zAuctionAddress);
+  const paymentToken = await contract.getPaymentTokenForDomain(params.bid.tokenId);
 
+  let signableBid: Maybe<SignableBid>;
+  
+  const bidParams: BidParameters = {
+    bidder: params.bidder,
+    tokenId: params.bid.tokenId,
+    contract: registrar,
+    amount: params.bid.bidAmount,
+    startBlock: params.bid.startBlock ?? "0",
+    expireBlock: params.bid.expireBlock ?? "9999999999",
+    bidToken: paymentToken
+  }
   try {
-    signableBid = await params.encodeBid({
-      bidder: params.bidder,
-      contract: params.contract,
-      tokenId: params.bid.tokenId,
-      amount: params.bid.bidAmount,
-      startBlock: params.bid.startBlock ?? "0",
-      expireBlock: params.bid.expireBlock ?? "9999999999",
-    } as BidParameters);
+    signableBid = await params.encodeBid(bidParams);
   } catch (e) {
     throw Error(`Failed to encode bid: ${e}`);
   }

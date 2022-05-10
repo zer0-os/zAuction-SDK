@@ -1,6 +1,6 @@
-import { ethers } from "ethers";
-import { IERC20, IERC721 } from "../contracts/types";
+import { IERC721 } from "../contracts/types";
 
+// Check whether or not zAuction is approved to transfer NFTs for the user
 export const isZAuctionApprovedNftTransfer = async (
   account: string,
   zAuctionAddress: string,
@@ -11,14 +11,4 @@ export const isZAuctionApprovedNftTransfer = async (
     zAuctionAddress
   );
   return isApproved;
-};
-
-export const getZAuctionTradeTokenAllowance = async (
-  account: string,
-  zAuctionAddress: string,
-  erc20Contract: IERC20
-): Promise<ethers.BigNumber> => {
-  const allowance = await erc20Contract.allowance(account, zAuctionAddress);
-
-  return allowance;
 };

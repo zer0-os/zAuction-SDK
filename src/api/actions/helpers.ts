@@ -44,6 +44,7 @@ export const convertBidDtoToBid = (bid: BidDto): Bid => {
   const localBid: Bid = {
     bidNonce: bid.bidNonce,
     bidder: bid.account,
+    bidToken: bid.bidToken ?? "",
     contract: bid.contractAddress,
     tokenId: bid.tokenId,
     amount: bid.bidAmount,
