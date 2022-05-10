@@ -49,6 +49,15 @@ export const createInstance = (config: Config): Instance => {
       return tokenSales;
     },
     listAllSales: async (networkId: string): Promise<TokenSaleCollection> => {
+      const hub = await getZnsHubContract(
+        config.web3Provider,
+        config.znsHubAddress
+      );
+      const isAuthorizedRegistrar = await hub.authorizedRegistrars(networkId);
+
+      if (!isAuthorizedRegistrar) {
+        throw Error("Must provide a valid network ID to list all sales in that network");
+      }
       const tokenSaleCollection: TokenSaleCollection =
         await subgraphClient.listAllSales(networkId);
       return tokenSaleCollection;
@@ -234,8 +243,15 @@ export const createInstance = (config: Config): Instance => {
         config.web3Provider,
         config.zAuctionAddress
       );
+      const hub = await getZnsHubContract(
+        config.web3Provider,
+        config.znsHubAddress
+      );
+      const isAuthorizedRegistrar = await hub.authorizedRegistrars(networkId);
 
-      // TODO how to ensure we only ever get valid network tokens?
+      if (!isAuthorizedRegistrar) {
+        throw Error("Can only set network payment tokens on valid network IDs");
+      }
       const zAuctionOwner = await contract.owner();
       const signerAddress = await signer.getAddress();
 
@@ -252,16 +268,12 @@ export const createInstance = (config: Config): Instance => {
     },
     // Return the ERC20 token used for payment in the network that domain is a part of.
     // This could be either the network payment token or the default payment token
-    getPaymentTokenForDomain: async (
-      tokenId: string
-    ): Promise<string> => {
+    getPaymentTokenForDomain: async (tokenId: string): Promise<string> => {
       const contract = await getZAuctionContract(
         config.web3Provider,
         config.zAuctionAddress
       );
-      const paymentToken = await contract.getPaymentTokenForDomain(
-        tokenId
-      );
+      const paymentToken = await contract.getPaymentTokenForDomain(tokenId);
       return paymentToken;
     },
     approveZAuctionSpendByBid: async (
@@ -287,7 +299,10 @@ export const createInstance = (config: Config): Instance => {
       tokenId: string,
       signer: ethers.Signer
     ): Promise<ethers.ContractTransaction> => {
-      const contract = await getZAuctionContract(config.web3Provider, config.zAuctionAddress);
+      const contract = await getZAuctionContract(
+        config.web3Provider,
+        config.zAuctionAddress
+      );
       const paymentToken = await contract.getPaymentTokenForDomain(tokenId);
       const tx = await approveSpender(
         paymentToken,
@@ -322,9 +337,7 @@ export const createInstance = (config: Config): Instance => {
         signer,
         config.znsHubAddress
       );
-      const domainContract = await hub.getRegistrarForDomain(
-        bid.tokenId
-      );
+      const domainContract = await hub.getRegistrarForDomain(bid.tokenId);
 
       const tx = await approveDomainTransfer(
         domainContract,

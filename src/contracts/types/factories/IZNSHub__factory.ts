@@ -76,6 +76,25 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "address",
+        name: "registrar",
+        type: "address",
+      },
+    ],
+    name: "authorizedRegistrars",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "uint256",
         name: "domainId",
         type: "uint256",
