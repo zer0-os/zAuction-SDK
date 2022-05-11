@@ -4,8 +4,7 @@ import * as queries from "../queries";
 import { TokenSale, TokenSaleCollection } from "../../types";
 
 export const listAllSales = async <T>(
-  apolloClient: ApolloClient<T>,
-  contract: string
+  apolloClient: ApolloClient<T>
 ): Promise<TokenSaleCollection> => {
   const count = 1000;
   let skipCount = 0;
@@ -17,7 +16,6 @@ export const listAllSales = async <T>(
     const queryResult = await apolloClient.query<TokenSalesDto>({
       query: queries.getAllTokenSales,
       variables: {
-        contract: contract.toLowerCase(),
         count,
         skipCount,
       },

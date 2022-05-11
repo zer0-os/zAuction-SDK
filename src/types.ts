@@ -27,11 +27,11 @@ export interface Instance {
     account: string,
     bid: Bid
   ) => Promise<boolean>;
-  isZAuctionApprovedToTransferNft: (
+  isZAuctionApprovedToTransferNftByDomain: (
     account: string,
     tokenId: string
   ) => Promise<boolean>;
-  isZAuctionApprovedToTransferNftLegacy: (
+  isZAuctionLegacyApprovedToTransferNft: (
     account: string,
     tokenId: string,
   ) => Promise<boolean>;
@@ -39,7 +39,7 @@ export interface Instance {
     account: string,
     bid: Bid
   ) => Promise<ethers.BigNumber>;
-  getZAuctionSpendAllowanceByDomainToken: (
+  getZAuctionSpendAllowanceByDomain: (
     account: string,
     tokenId: string
   ) => Promise<ethers.BigNumber>;
@@ -47,7 +47,7 @@ export interface Instance {
     paymentTokenAddress: string,
     account: string
   ) => Promise<ethers.BigNumber>;
-  getZAuctionSpendAllowanceLegacy: (
+  getZAuctionLegacySpendAllowance: (
     account: string
   ) => Promise<ethers.BigNumber>;
   setNetworkPaymentToken: (
@@ -56,15 +56,15 @@ export interface Instance {
     signer: ethers.Signer
   ) => Promise<ethers.ContractTransaction>;
   getPaymentTokenForDomain: (domainTokenId: string) => Promise<string>;
-  approveZAuctionSpendByBid: (
+  approveZAuctionSpendPaymentTokenByBid: (
     bid: Bid,
     signer: ethers.Signer
   ) => Promise<ethers.ContractTransaction>;
-  approveZAuctionSpendByDomainToken: (
+  approveZAuctionSpendPaymentTokenByDomain: (
     tokenId: string,
     signer: ethers.Signer
   ) => Promise<ethers.ContractTransaction>;
-  approveZAuctionSpend: (
+  approveZAuctionSpendPaymentToken: (
     paymentTokenAddress: string,
     signer: ethers.Signer
   ) => Promise<ethers.ContractTransaction>;
@@ -72,7 +72,7 @@ export interface Instance {
     bid: Bid,
     signer: ethers.Signer
   ) => Promise<ethers.ContractTransaction>;
-  approveZAuctionTransferNft: (
+  approveZAuctionTransferNftByDomain: (
     tokenId: string,
     signer: ethers.Signer
   ) => Promise<ethers.ContractTransaction>;
@@ -145,7 +145,7 @@ export interface NewBidParameters {
 export interface BuyNowParams {
   amount: string;
   tokenId: string;
-  paymentToken: string;
+  // paymentToken: string;
 }
 
 export interface BuyNowListing {

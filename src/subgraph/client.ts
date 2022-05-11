@@ -6,7 +6,7 @@ import * as actions from "./actions";
 export interface SubgraphClient {
   listSales: (contract: string, tokenId: string) => Promise<TokenSale[]>;
   listBuyNowSales: (contract: string, tokenId: string) => Promise<TokenBuy[]>;
-  listAllSales: (contract: string) => Promise<TokenSaleCollection>;
+  listAllSales: () => Promise<TokenSaleCollection>;
 }
 
 const createApolloClient = (
@@ -30,8 +30,8 @@ export const createClient = (subgraphUri: string): SubgraphClient => {
     listBuyNowSales: (contract: string, tokenId: string) => {
       return actions.listBuyNowSales(apolloClient, contract, tokenId);
     },
-    listAllSales: (contract: string) => {
-      return actions.listAllSales(apolloClient, contract);
+    listAllSales: () => {
+      return actions.listAllSales(apolloClient);
     },
   };
 

@@ -17,5 +17,6 @@ export const submitBid = async (
     minimumBid: "0",
     startBlock: signedBid.bid.startBlock,
     expireBlock: signedBid.bid.expireBlock,
+    bidToken: signedBid.bid.bidToken
   });
 };

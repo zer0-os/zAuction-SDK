@@ -48,18 +48,9 @@ export const createInstance = (config: Config): Instance => {
       );
       return tokenSales;
     },
-    listAllSales: async (networkId: string): Promise<TokenSaleCollection> => {
-      const hub = await getZnsHubContract(
-        config.web3Provider,
-        config.znsHubAddress
-      );
-      const isAuthorizedRegistrar = await hub.authorizedRegistrars(networkId);
-
-      if (!isAuthorizedRegistrar) {
-        throw Error("Must provide a valid network ID to list all sales in that network");
-      }
+    listAllSales: async (): Promise<TokenSaleCollection> => {
       const tokenSaleCollection: TokenSaleCollection =
-        await subgraphClient.listAllSales(networkId);
+        await subgraphClient.listAllSales();
       return tokenSaleCollection;
     },
     listBuyNowSales: async (tokenId: string): Promise<TokenBuy[]> => {
@@ -98,7 +89,6 @@ export const createInstance = (config: Config): Instance => {
         statusCallback,
       });
     },
-
     isZAuctionApprovedToTransferNftByBid: async (
       account: string,
       bid: Bid
@@ -124,7 +114,7 @@ export const createInstance = (config: Config): Instance => {
       return isApproved;
     },
 
-    isZAuctionApprovedToTransferNft: async (
+    isZAuctionApprovedToTransferNftByDomain: async (
       account: string,
       tokenId: string
     ): Promise<boolean> => {
@@ -146,7 +136,7 @@ export const createInstance = (config: Config): Instance => {
 
       return isApproved;
     },
-    isZAuctionApprovedToTransferNftLegacy: async (
+    isZAuctionLegacyApprovedToTransferNft: async (
       account: string,
       tokenId: string
     ): Promise<boolean> => {
@@ -190,7 +180,7 @@ export const createInstance = (config: Config): Instance => {
 
       return allowance;
     },
-    getZAuctionSpendAllowanceByDomainToken: async (
+    getZAuctionSpendAllowanceByDomain: async (
       account: string,
       tokenId: string
     ): Promise<ethers.BigNumber> => {
@@ -221,7 +211,7 @@ export const createInstance = (config: Config): Instance => {
 
       return allowance;
     },
-    getZAuctionSpendAllowanceLegacy: async (
+    getZAuctionLegacySpendAllowance: async (
       account: string
     ): Promise<ethers.BigNumber> => {
       const allowance = await actions.getPaymentTokenAllowance(
@@ -247,10 +237,10 @@ export const createInstance = (config: Config): Instance => {
         config.web3Provider,
         config.znsHubAddress
       );
-      const isAuthorizedRegistrar = await hub.authorizedRegistrars(networkId);
+      const parent = await hub.parentOf(networkId);
 
-      if (!isAuthorizedRegistrar) {
-        throw Error("Can only set network payment tokens on valid network IDs");
+      if (!parent.eq(ethers.constants.HashZero)) {
+        throw Error("Can only set network payment tokens on network domains");
       }
       const zAuctionOwner = await contract.owner();
       const signerAddress = await signer.getAddress();
@@ -276,7 +266,7 @@ export const createInstance = (config: Config): Instance => {
       const paymentToken = await contract.getPaymentTokenForDomain(tokenId);
       return paymentToken;
     },
-    approveZAuctionSpendByBid: async (
+    approveZAuctionSpendPaymentTokenByBid: async (
       bid: Bid,
       signer: ethers.Signer
     ): Promise<ethers.ContractTransaction> => {
@@ -295,7 +285,7 @@ export const createInstance = (config: Config): Instance => {
       );
       return tx;
     },
-    approveZAuctionSpendByDomainToken: async (
+    approveZAuctionSpendPaymentTokenByDomain: async (
       tokenId: string,
       signer: ethers.Signer
     ): Promise<ethers.ContractTransaction> => {
@@ -311,7 +301,7 @@ export const createInstance = (config: Config): Instance => {
       );
       return tx;
     },
-    approveZAuctionSpend: async (
+    approveZAuctionSpendPaymentToken: async (
       paymentTokenAddress: string,
       signer: ethers.Signer
     ): Promise<ethers.ContractTransaction> => {
@@ -347,7 +337,7 @@ export const createInstance = (config: Config): Instance => {
 
       return tx;
     },
-    approveZAuctionTransferNft: async (
+    approveZAuctionTransferNftByDomain: async (
       tokenId: string,
       signer: ethers.Signer
     ): Promise<ethers.ContractTransaction> => {
