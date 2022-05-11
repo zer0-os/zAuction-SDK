@@ -16,7 +16,7 @@ type SignMessageFunction = (
 type EncodeBidFunction = (bidParams: BidParameters) => Promise<SignableBid>;
 type SubmitBidFunction = (signedBid: SignedBid) => Promise<void>;
 
-interface PlaceBidActionParameters {
+export interface PlaceBidActionParameters {
   bid: NewBidParameters;
   config: Config,
   bidder: string;

@@ -1,5 +1,7 @@
 import { ethers } from "ethers";
 import * as dotenv from "dotenv";
+import { Web3Provider } from "@ethersproject/providers";
+import { expect } from "chai";
 
 dotenv.config();
 
@@ -13,9 +15,9 @@ import {
   TokenSale,
   TokenSaleCollection,
 } from "../src";
-import { Web3Provider } from "@ethersproject/providers";
+
 import { Bid } from "../src/api/types";
-import { expect } from "chai";
+import { placeBid, PlaceBidActionParameters } from "../src/actions";
 import {
   getZAuctionContract,
   getZAuctionV1Contract,
