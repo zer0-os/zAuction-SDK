@@ -426,17 +426,17 @@ export const createInstance = (config: Config): Instance => {
 
       const nftContract = await getERC721Contract(signer, domainContract);
 
-      const seller = await nftContract.ownerOf(params.tokenId);
+      const owner = await nftContract.ownerOf(params.tokenId);
       const givenSeller = await signer.getAddress();
 
-      if (givenSeller !== seller) {
+      if (givenSeller !== owner) {
         throw Error("Cannot set the price of a domain that is not yours");
       }
 
       // Seller must have approved zAuction to transfer their NFT(s)
       // before being able to set a buy price
       const isApproved = await actions.isZAuctionApprovedNftTransfer(
-        seller,
+        owner,
         config.zAuctionAddress,
         nftContract
       );

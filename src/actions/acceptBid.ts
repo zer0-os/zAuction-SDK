@@ -112,7 +112,7 @@ export const acceptBid = async (
   }
 
   // Otherwise, it is v2.1
-  const tx = await zAuction.connect(signer).acceptBid(
+  const tx = await zAuction.connect(signer).acceptBidV2(
     bid.signedMessage,
     bid.bidNonce,
     bid.bidder,
@@ -121,6 +121,7 @@ export const acceptBid = async (
     "0", // minimum bid as string
     bid.startBlock,
     bid.expireBlock,
+    bid.bidToken!,
     {
       gasLimit: 500000
     }
