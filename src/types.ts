@@ -15,7 +15,7 @@ export interface Config {
 export interface Instance {
   listSales: (tokenId: string) => Promise<TokenSale[]>;
   listBuyNowSales: (tokenId: string) => Promise<TokenBuy[]>;
-  listAllSales: (networkId: string) => Promise<TokenSaleCollection>;
+  listAllSales: () => Promise<TokenSaleCollection>;
   listBids: (tokenIds: string[]) => Promise<TokenBidCollection>;
   listBidsByAccount: (account: string) => Promise<Bid[]>;
   placeBid: (

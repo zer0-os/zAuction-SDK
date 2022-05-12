@@ -18,7 +18,6 @@ import {
   TokenBidCollection,
 } from "./types";
 import {
-  getERC20Contract,
   getERC721Contract,
   getZAuctionContract,
   getZnsHubContract,

@@ -26,8 +26,6 @@ export interface BidParameters {
   bidToken?: string;
 }
 
-
-
 export interface BidMessage extends BidParameters {
   bidNonce: string;
 }

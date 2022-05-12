@@ -17,11 +17,8 @@ import {
 } from "../src";
 
 import { Bid } from "../src/api/types";
-import { placeBid, PlaceBidActionParameters } from "../src/actions";
 import {
   getZAuctionContract,
-  getZAuctionV1Contract,
-  getZnsHubContract,
 } from "../src/contracts";
 
 describe("SDK test", () => {
@@ -71,9 +68,7 @@ describe("SDK test", () => {
     const sales: TokenSale[] = await sdk.listSales(wilderPancakesDomain);
   });
   it("Lists all sales", async () => {
-    const sales: TokenSaleCollection = await sdk.listAllSales(
-      wilderPancakesDomain
-    );
+    const sales: TokenSaleCollection = await sdk.listAllSales();
   });
   it("Lists bids and confirms we are connected", async () => {
     const bids: Bid[] = await sdk.listBidsByAccount(astroTestAccount);
@@ -100,173 +95,92 @@ describe("SDK test", () => {
     const bids = await sdk.listBidsByAccount(astroTestAccount);
     expect(bids.length).to.eq(astroBidsArrayLength + 1);
   });
-  // Successful tx hash from first round
-  // 0xeaeae63388aaffd4fbfff17606b0756463f5ef903ac8847a4bcf0d3b067d6a70
-  it("Accepts a v1 bid with the contract directly", async () => {
-    const contract = await getZAuctionV1Contract(
-      config.web3Provider,
-      config.zAuctionLegacyAddress
-    );
-
-    const contract2 = await getZAuctionContract(
+  it("Recovers the correct address", async () => {
+    const contract = await getZAuctionContract(
       config.web3Provider,
       config.zAuctionAddress
-    )
-
-    const params = {
-      signature:
-        "0xeedd3bb6e03aab2651f759b4d36d2fb7ae4100b4ffd3ff7260d0e334913d682a3afb20f67097f280ac919a95ca6dc17c8c0674924f8cc70da86c03773033bb8b1b",
-      bidNonce: "4701147026",
-      bidder: astroTestAccount,
-      bidAmount: "1370000000000000000",
-      domaintokenId: wilderPancakesDomain,
-      minbid: "0",
-      startblock: "0",
-      expireblock: "999999999999",
-    };
-
-    const data = await contract.createBid(
-      params.bidNonce,
-      params.bidAmount,
-      registrarAddress,
-      params.domaintokenId,
-      params.minbid,
-      params.startblock,
-      params.expireblock
     );
-
-    const ethHashdata = await contract.toEthSignedMessageHash(data);
-    const recoveredAccount = await contract.recover(ethHashdata, params.signature);
-    console.log(recoveredAccount);
-
-    const data2 = await contract2.createBidV2(
+    const params = {
+      account: "0x35888AD3f1C0b39244Bb54746B96Ee84A5d97a53",
+      bidNonce: "4120610753",
+      bidAmount: "12000000000000000000",
+      contractAddress: "0xa4f6c921f914ff7972d7c55c15f015419326e0ca",
+      tokenId:
+        "0x6e35a7ecbf6b6368bb8d42ee9b3dcfc8404857635036e60196931d4458c07622",
+      minimumBid: "0",
+      startBlock: "0",
+      expireBlock: "9999999999",
+      bidToken: "0x3Ae5d499cfb8FB645708CC6DA599C90e64b33A79",
+      signedMessage:
+        "0x76f2d057e7767ee77d906ff4e77acaf1d9b4679454810e40628d489a9ff2de4f6bfe8bed1d8b1b9c49e57199fc90467f22dfef7f89210802f6d1e79b82e941121c",
+      date: "1652308171751",
+      version: "2.0",
+    };
+    const data = await contract.createBidV2(
       params.bidNonce,
       params.bidAmount,
-      params.domaintokenId,
-      params.minbid,
-      params.startblock,
-      params.expireblock,
+      params.tokenId,
+      params.minimumBid,
+      params.startBlock,
+      params.expireBlock,
       config.wildTokenAddress
-    )
-    
-    const ethHashdata2 = await contract.toEthSignedMessageHash(data2);
-    const recoveredAccount2 = await contract.recover(ethHashdata2, params.signature);
-    console.log(recoveredAccount2);
-
-    // const tx = await contract
-    //   .connect(mainWallet)
-    //   .acceptBid(
-    //     params.signature,
-    //     params.bidNonce,
-    //     params.bidder,
-    //     params.bidAmount,
-    //     registrarAddress,
-    //     params.domaintokenId,
-    //     params.minbid,
-    //     params.startblock,
-    //     params.expireblock,
-    //     {
-    //       gasLimit: 1000000,
-    //     }
-    //   );
-    // console.log(tx.hash);
-  });
-  it("Accepts a v2 bid with the contract directly", async () => {
-    // Can't get v2 bids to work right, fails on "recovered incorrect bidder"
-    const contract = await getZAuctionContract(
-      config.web3Provider,
-      config.zAuctionAddress
     );
-
-    const params = {
-      signature:
-        "0x893c76db1ddbd812417d9ce3fb1ae2fd2fa5664c95e886cce984d71e10a3118c5b36bde7b8145eaf81f0b4ff04d33c9767d1535dcc017fc155f970d3662da2b71c",
-      bidNonce: "2495145018",
-      bidder: astroTestAccount,
-      bidAmount: "3124560000000000000",
-      domaintokenId: wilderPancakesDomain,
-      minbid: "0",
-      startblock: "0",
-      expireblock: "999999999999",
-    };
-
-    // const tx = await contract
-    //   .connect(mainWallet)
-    //   .acceptBid(
-    //     params.signature,
-    //     params.bidNonce,
-    //     params.bidder,
-    //     params.bidAmount,
-    //     params.domaintokenId,
-    //     params.minbid,
-    //     params.startblock,
-    //     params.expireblock,
-    //     {
-    //       gasLimit: 1000000,
-    //     }
-    //   )
-    //   console.log(tx.hash);
-  });
-  it("Accepts a v2.1 bid with the contract directly", async () => {
-    const contract = await getZAuctionContract(
-      config.web3Provider,
-      config.zAuctionAddress
+    const arrayifiedData = await ethers.utils.arrayify(data);
+    const unsignedMessage = await contract.toEthSignedMessageHash(
+      arrayifiedData
     );
-
+    const recoveredAccount = await contract.recover(
+      unsignedMessage,
+      params.signedMessage
+    );
+    expect(recoveredAccount).to.eq(params.account);
+  });
+  it("Accepts a v2.1 bid", async () => {
+    // Successful hash
+    // 0xe168848eea33e7317c8ff20dd0f938aaa921982c561e1fd271746f222b9391e8
     const params = {
-      signature:
-        "0x75ad60dfe869a2dccd86cef814d8edba3dfc524b21113f21e9bd70d9ab7fd891635b42c0837b8f2a2a4b0ebd1206e54973593c27077dc8571e134c20a8f9b3fc1b",
-      bidNonce: "34747568340",
-      bidder: astroTestAccount,
-      bidAmount: "21212100000000000000",
-      domaintokenId: wilderPancakesDomain, // owner of this domain is now astro
-      minbid: "0",
-      startblock: "0",
-      expireblock: "99999999999",
-    };
-    // Successful tx hash
-    // 0x3e4d7d0c9b90cd95c300fd5b1ce2239a6bfc2360870da0700c139a08bfdbeabf
-    // const tx = await contract
-    //   .connect(mainWallet)
-    //   .acceptBidV2(
-    //     params.signature,
-    //     params.bidNonce,
-    //     params.bidder,
-    //     params.bidAmount,
-    //     params.domaintokenId,
-    //     params.minbid,
-    //     params.startblock,
-    //     params.expireblock,
-    //     config.wildTokenAddress,
-    //     {
-    //       gasLimit: 1000000,
-    //     }
-    //   );
+      bidder: "0x35888AD3f1C0b39244Bb54746B96Ee84A5d97a53",
+      bidNonce: "4120610753",
+      amount: "12000000000000000000",
+      contract: "0xa4f6c921f914ff7972d7c55c15f015419326e0ca",
+      tokenId:
+        "0x6e35a7ecbf6b6368bb8d42ee9b3dcfc8404857635036e60196931d4458c07622",
+      startBlock: "0",
+      expireBlock: "9999999999",
+      bidToken: "0x3Ae5d499cfb8FB645708CC6DA599C90e64b33A79",
+      signedMessage:
+        "0x76f2d057e7767ee77d906ff4e77acaf1d9b4679454810e40628d489a9ff2de4f6bfe8bed1d8b1b9c49e57199fc90467f22dfef7f89210802f6d1e79b82e941121c",
+      timestamp: "1652308171751",
+      version: "2.0",
+    } as Bid;
+    // const tx = await sdk.acceptBid(params, mainWallet);
     // console.log(tx.hash);
     // const receipt = await tx.wait(1);
     // console.log(receipt);
   });
-  it("Accepts a v2.1 bid through the SDK", async () => {
-    const p: Bid = {
-      signedMessage:
-        "0x032fdd066f7ad42b83a5dd96fde08f827b9e5d319289eb70f64a4b68531702e27d84a190b4eb6ab4715fcfea0bbd3b851d80f14865a53f1d5bc90f3ef8802f0c1c",
-      bidNonce: "12742162097",
-      bidder: mainAccount,
-      amount: "98778900000000000000",
-      tokenId: wilderPancakesDomain, // owner of this domain is now astro
-      startBlock: "0",
-      expireBlock: "99999999999",
-      timestamp: "1652137472159",
-      version: "2.0",
-      contract: registrarAddress,
-      bidToken: config.wildTokenAddress,
-    };
+  it("Accepts a v2.0 bid", async () => {
     // Successful tx hash
-    // 0xcca94eb464717878aea5b006cd84bf3b0a0d0e4de5c16c0bba787dba3bc5d519
-    // const tx = await sdk.acceptBid(p, astroWallet);
-    // console.log(tx.hash)
-    // const receipt = await tx.wait(1)
-    // console.log(receipt);
+    // 0xc709aed1859b6f1af5bb8e677f4ab34ea7f8897790f3673eb16fbff3b5d5da2d
+    const params = {
+      bidder: "0xaE3153c9F5883FD2E78031ca2716520748c521dB",
+      bidNonce: "23865561613",
+      amount: "2000000000000000000",
+      contract: "0xa4F6C921f914ff7972D7C55c15f015419326e0Ca",
+      tokenId:
+        "0x6e35a7ecbf6b6368bb8d42ee9b3dcfc8404857635036e60196931d4458c07622",
+      startBlock: "0",
+      expireBlock: "9999999999",
+      bidToken: "",
+      signedMessage:
+        "0xe30293df13291c4bdd026857f8e96bdb2ed2124cb912152dc2c2a6630ee53b5b551956469d56cea877e02da3149513f4067d1f6c311dea38a7a9a37f4bdb6d261c",
+      timestamp: "1652370554226",
+      version: "2.0",
+    } as Bid;
+
+  //   const tx = await sdk.acceptBid(params, astroWallet);
+  //   console.log(tx.hash);
+  //   const receipt = await tx.wait(1);
+  //   console.log(receipt);
   });
   it("Sets a buy now price", async () => {
     const params: BuyNowParams = {
@@ -275,7 +189,7 @@ describe("SDK test", () => {
     };
     // Successful tx hash
     // 0xf141dcad72dd56833c2d2ec2ff2dfc8ba5bb53db14d1a0db2766319e9fef55c8
-    const tx = await sdk.setBuyNowPrice(params, mainWallet);
-    console.log(tx.hash);
+    // const tx = await sdk.setBuyNowPrice(params, mainWallet);
+    // console.log(tx.hash);
   });
 });

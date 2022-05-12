@@ -5,8 +5,28 @@ import {
   getZAuctionV1Contract,
   getZnsHubContract,
 } from "../contracts";
-import { IZNSHub, ZAuctionV1 } from "../contracts/types";
+import { IERC721, IZNSHub, ZAuction, ZAuctionV1 } from "../contracts/types";
 import { Bid, Config } from "../types";
+
+const verifyAccount = async (
+  zAuction: ZAuction | ZAuctionV1,
+  data: string,
+  signedMessage: string,
+  bidder: string
+): Promise<void> => {
+  const unsignedMessage = await zAuction.toEthSignedMessageHash(
+    ethers.utils.arrayify(data)
+  );
+
+  const recoveredAccount = await zAuction.recover(
+    unsignedMessage,
+    signedMessage
+  );
+
+  if (recoveredAccount !== bidder) {
+    throw Error("Recovered incorrect account");
+  }
+};
 
 // Accept a bid for a domain, supporting legacy bids
 export const acceptBid = async (
@@ -24,7 +44,7 @@ export const acceptBid = async (
 
   const hub: IZNSHub = await getZnsHubContract(signer, config.znsHubAddress);
   const domainContract = await hub.getRegistrarForDomain(bid.tokenId);
-  const nftContract = await getERC721Contract(signer, domainContract);
+  const nftContract: IERC721 = await getERC721Contract(signer, domainContract);
 
   const owner = await nftContract.ownerOf(bid.tokenId);
   const signerAddress = await signer.getAddress();
@@ -36,17 +56,42 @@ export const acceptBid = async (
     throw Error("Cannot sell to self");
   }
 
-  if (!isVersion2) {
-    const zAuctionV1: ZAuctionV1 = await getZAuctionV1Contract(
+  if (isVersion2) {
+    const zAuction: ZAuction = await getZAuctionContract(
       signer,
       zAuctionAddress
     );
-    const hub = await getZnsHubContract(
-      config.web3Provider,
-      config.znsHubAddress
-    );
 
-    const data = await zAuctionV1.createBid(
+    if (bid.bidToken) {
+      // v2.1 bid
+      const data = await zAuction.createBidV2(
+        bid.bidNonce,
+        bid.amount,
+        bid.tokenId,
+        "0",
+        bid.startBlock,
+        bid.expireBlock,
+        bid.bidToken
+      );
+
+      await verifyAccount(zAuction, data, bid.signedMessage, bid.bidder);
+
+      const tx = await zAuction.connect(signer).acceptBidV2(
+        bid.signedMessage,
+        bid.bidNonce,
+        bid.bidder,
+        bid.amount,
+        bid.tokenId,
+        "0", // minimum bid as string
+        bid.startBlock,
+        bid.expireBlock,
+        bid.bidToken
+      );
+
+      return tx;
+    }
+    // v2.0 bid
+    const data = await zAuction.createBid(
       bid.bidNonce,
       bid.amount,
       bid.contract,
@@ -56,78 +101,52 @@ export const acceptBid = async (
       bid.expireBlock
     );
 
-    // const recreatedBid = await zAuctionV1.toEthSignedMessageHash(data);
+    await verifyAccount(zAuction, data, bid.signedMessage, bid.bidder);
 
-    const recoveredAccount = await zAuctionV1.recover(
-      data,
-      bid.signedMessage
-    );
-
-    if (recoveredAccount !== bid.bidder) {
-      throw Error("Recovered the incorrect account");
-    }
-    // For any v1 bid this will always return the default registrar
-    // const registrar = await hub.getRegistrarForDomain(bid.tokenId);
-
-    const tx = await zAuctionV1.connect(signer).acceptBid(
-      bid.signedMessage,
-      bid.bidNonce,
-      bid.bidder,
-      bid.amount,
-      bid.contract,
-      bid.tokenId,
-      "0", // minimum bid as string
-      bid.startBlock,
-      bid.expireBlock,
-      {
-        gasLimit: 500000,
-      }
-    );
-    const receipt = await tx.wait(1);
-    console.log(receipt.transactionHash);
-    return tx;
-  }
-
-  const zAuction = await getZAuctionContract(signer, zAuctionAddress);
-
-  if (!bid.bidToken) {
-    // If version is 2.0 but there is still no bidToken it's v2 not v2.1
     const tx = await zAuction.connect(signer).acceptBid(
       bid.signedMessage,
       bid.bidNonce,
       bid.bidder,
       bid.amount,
       bid.tokenId,
-      "0", // minimum bid as string
+      "0", // minimum bid
       bid.startBlock,
-      bid.expireBlock,
-      {
-        gasLimit: 500000
-      }
+      bid.expireBlock
     );
-    const receipt = await tx.wait(1);
-    console.log(receipt.transactionHash)
-
     return tx;
   }
+  //v1 legacy bid
+  const zAuctionV1: ZAuctionV1 = await getZAuctionV1Contract(
+    signer,
+    zAuctionAddress
+  );
 
-  // Otherwise, it is v2.1
-  const tx = await zAuction.connect(signer).acceptBidV2(
+  const data = await zAuctionV1.createBid(
+    bid.bidNonce,
+    bid.amount,
+    bid.contract,
+    bid.tokenId,
+    "0",
+    bid.startBlock,
+    bid.expireBlock
+  );
+
+  await verifyAccount(zAuctionV1, data, bid.signedMessage, bid.bidder);
+
+  // For any v1 bid this will always return the default registrar
+  // const registrar = await hub.getRegistrarForDomain(bid.tokenId);
+  const tx = await zAuctionV1.connect(signer).acceptBid(
     bid.signedMessage,
     bid.bidNonce,
     bid.bidder,
     bid.amount,
+    bid.contract,
     bid.tokenId,
     "0", // minimum bid as string
     bid.startBlock,
-    bid.expireBlock,
-    bid.bidToken!,
-    {
-      gasLimit: 500000
-    }
+    bid.expireBlock
   );
   const receipt = await tx.wait(1);
-  console.log(receipt);
-
+  console.log(receipt.transactionHash);
   return tx;
 };
