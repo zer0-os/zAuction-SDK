@@ -19,6 +19,7 @@ export const encodeBid = async (
     minimumBid: "0",
     startBlock: bidParams.startBlock,
     expireBlock: bidParams.expireBlock,
+    bidToken: bidParams.bidToken
   });
 
   const bidToSign: SignableBid = {

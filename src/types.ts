@@ -15,7 +15,7 @@ export interface Config {
 export interface Instance {
   listSales: (tokenId: string) => Promise<TokenSale[]>;
   listBuyNowSales: (tokenId: string) => Promise<TokenBuy[]>;
-  listAllSales: (networkId: string) => Promise<TokenSaleCollection>;
+  listAllSales: () => Promise<TokenSaleCollection>;
   listBids: (tokenIds: string[]) => Promise<TokenBidCollection>;
   listBidsByAccount: (account: string) => Promise<Bid[]>;
   placeBid: (
@@ -27,19 +27,19 @@ export interface Instance {
     account: string,
     bid: Bid
   ) => Promise<boolean>;
-  isZAuctionApprovedToTransferNft: (
+  isZAuctionApprovedToTransferNftByDomain: (
     account: string,
-    contractAddress: string
+    tokenId: string
   ) => Promise<boolean>;
-  isZAuctionApprovedToTransferNftLegacy: (
+  isZAuctionLegacyApprovedToTransferNft: (
     account: string,
-    contractAddress: string
+    tokenId: string,
   ) => Promise<boolean>;
   getZAuctionSpendAllowanceByBid: (
     account: string,
     bid: Bid
   ) => Promise<ethers.BigNumber>;
-  getZAuctionSpendAllowanceByDomainToken: (
+  getZAuctionSpendAllowanceByDomain: (
     account: string,
     tokenId: string
   ) => Promise<ethers.BigNumber>;
@@ -47,7 +47,7 @@ export interface Instance {
     paymentTokenAddress: string,
     account: string
   ) => Promise<ethers.BigNumber>;
-  getZAuctionSpendAllowanceLegacy: (
+  getZAuctionLegacySpendAllowance: (
     account: string
   ) => Promise<ethers.BigNumber>;
   setNetworkPaymentToken: (
@@ -56,15 +56,15 @@ export interface Instance {
     signer: ethers.Signer
   ) => Promise<ethers.ContractTransaction>;
   getPaymentTokenForDomain: (domainTokenId: string) => Promise<string>;
-  approveZAuctionSpendTradeTokensByBid: (
+  approveZAuctionSpendPaymentTokenByBid: (
     bid: Bid,
     signer: ethers.Signer
   ) => Promise<ethers.ContractTransaction>;
-  approveZAuctionSpendTradeTokensByDomainToken: (
+  approveZAuctionSpendPaymentTokenByDomain: (
     tokenId: string,
     signer: ethers.Signer
   ) => Promise<ethers.ContractTransaction>;
-  approveZAuctionSpendTradeTokens: (
+  approveZAuctionSpendPaymentToken: (
     paymentTokenAddress: string,
     signer: ethers.Signer
   ) => Promise<ethers.ContractTransaction>;
@@ -72,8 +72,8 @@ export interface Instance {
     bid: Bid,
     signer: ethers.Signer
   ) => Promise<ethers.ContractTransaction>;
-  approveZAuctionTransferNft: (
-    domainContractAddress: string,
+  approveZAuctionTransferNftByDomain: (
+    tokenId: string,
     signer: ethers.Signer
   ) => Promise<ethers.ContractTransaction>;
   acceptBid: (
@@ -145,7 +145,7 @@ export interface NewBidParameters {
 export interface BuyNowParams {
   amount: string;
   tokenId: string;
-  paymentToken: string;
+  // paymentToken: string;
 }
 
 export interface BuyNowListing {

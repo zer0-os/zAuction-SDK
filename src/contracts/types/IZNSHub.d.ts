@@ -23,6 +23,7 @@ interface IZNSHubInterface extends ethers.utils.Interface {
   functions: {
     "addRegistrar(uint256,address)": FunctionFragment;
     "domainCreated(uint256,string,uint256,uint256,address,address,string,uint256)": FunctionFragment;
+    "authorizedRegistrars(address)": FunctionFragment;
     "domainExists(uint256)": FunctionFragment;
     "domainTransferred(address,address,uint256)": FunctionFragment;
     "getRegistrarForDomain(uint256)": FunctionFragment;
@@ -52,6 +53,10 @@ interface IZNSHubInterface extends ethers.utils.Interface {
       string,
       BigNumberish
     ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "authorizedRegistrars",
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "domainExists",
@@ -101,6 +106,10 @@ interface IZNSHubInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "domainCreated",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "authorizedRegistrars",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -204,6 +213,11 @@ export class IZNSHub extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    authorizedRegistrars(
+      registrar: string,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
     domainExists(
       domainId: BigNumberish,
       overrides?: CallOverrides
@@ -275,6 +289,11 @@ export class IZNSHub extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  authorizedRegistrars(
+    registrar: string,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
   domainExists(
     domainId: BigNumberish,
     overrides?: CallOverrides
@@ -342,6 +361,11 @@ export class IZNSHub extends BaseContract {
       royaltyAmount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    authorizedRegistrars(
+      registrar: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
 
     domainExists(
       domainId: BigNumberish,
@@ -414,6 +438,11 @@ export class IZNSHub extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    authorizedRegistrars(
+      registrar: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     domainExists(
       domainId: BigNumberish,
       overrides?: CallOverrides
@@ -484,6 +513,11 @@ export class IZNSHub extends BaseContract {
       metadataUri: string,
       royaltyAmount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    authorizedRegistrars(
+      registrar: string,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     domainExists(

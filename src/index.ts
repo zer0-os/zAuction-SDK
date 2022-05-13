@@ -18,7 +18,6 @@ import {
   TokenBidCollection,
 } from "./types";
 import {
-  getERC20Contract,
   getERC721Contract,
   getZAuctionContract,
   getZnsHubContract,
@@ -48,9 +47,9 @@ export const createInstance = (config: Config): Instance => {
       );
       return tokenSales;
     },
-    listAllSales: async (networkId: string): Promise<TokenSaleCollection> => {
+    listAllSales: async (): Promise<TokenSaleCollection> => {
       const tokenSaleCollection: TokenSaleCollection =
-        await subgraphClient.listAllSales(networkId);
+        await subgraphClient.listAllSales();
       return tokenSaleCollection;
     },
     listBuyNowSales: async (tokenId: string): Promise<TokenBuy[]> => {
@@ -89,7 +88,6 @@ export const createInstance = (config: Config): Instance => {
         statusCallback,
       });
     },
-
     isZAuctionApprovedToTransferNftByBid: async (
       account: string,
       bid: Bid
@@ -115,7 +113,7 @@ export const createInstance = (config: Config): Instance => {
       return isApproved;
     },
 
-    isZAuctionApprovedToTransferNft: async (
+    isZAuctionApprovedToTransferNftByDomain: async (
       account: string,
       tokenId: string
     ): Promise<boolean> => {
@@ -137,7 +135,7 @@ export const createInstance = (config: Config): Instance => {
 
       return isApproved;
     },
-    isZAuctionApprovedToTransferNftLegacy: async (
+    isZAuctionLegacyApprovedToTransferNft: async (
       account: string,
       tokenId: string
     ): Promise<boolean> => {
@@ -181,7 +179,7 @@ export const createInstance = (config: Config): Instance => {
 
       return allowance;
     },
-    getZAuctionSpendAllowanceByDomainToken: async (
+    getZAuctionSpendAllowanceByDomain: async (
       account: string,
       tokenId: string
     ): Promise<ethers.BigNumber> => {
@@ -212,7 +210,7 @@ export const createInstance = (config: Config): Instance => {
 
       return allowance;
     },
-    getZAuctionSpendAllowanceLegacy: async (
+    getZAuctionLegacySpendAllowance: async (
       account: string
     ): Promise<ethers.BigNumber> => {
       const allowance = await actions.getPaymentTokenAllowance(
@@ -234,7 +232,15 @@ export const createInstance = (config: Config): Instance => {
         config.web3Provider,
         config.zAuctionAddress
       );
+      const hub = await getZnsHubContract(
+        config.web3Provider,
+        config.znsHubAddress
+      );
+      const parent = await hub.parentOf(networkId);
 
+      if (!parent.eq(ethers.constants.HashZero)) {
+        throw Error("Can only set network payment tokens on network domains");
+      }
       const zAuctionOwner = await contract.owner();
       const signerAddress = await signer.getAddress();
 
@@ -251,19 +257,15 @@ export const createInstance = (config: Config): Instance => {
     },
     // Return the ERC20 token used for payment in the network that domain is a part of.
     // This could be either the network payment token or the default payment token
-    getPaymentTokenForDomain: async (
-      tokenId: string
-    ): Promise<string> => {
+    getPaymentTokenForDomain: async (tokenId: string): Promise<string> => {
       const contract = await getZAuctionContract(
         config.web3Provider,
         config.zAuctionAddress
       );
-      const paymentToken = await contract.getPaymentTokenForDomain(
-        tokenId
-      );
+      const paymentToken = await contract.getPaymentTokenForDomain(tokenId);
       return paymentToken;
     },
-    approveZAuctionSpendTradeTokensByBid: async (
+    approveZAuctionSpendPaymentTokenByBid: async (
       bid: Bid,
       signer: ethers.Signer
     ): Promise<ethers.ContractTransaction> => {
@@ -282,11 +284,14 @@ export const createInstance = (config: Config): Instance => {
       );
       return tx;
     },
-    approveZAuctionSpendTradeTokensByDomainToken: async (
+    approveZAuctionSpendPaymentTokenByDomain: async (
       tokenId: string,
       signer: ethers.Signer
     ): Promise<ethers.ContractTransaction> => {
-      const contract = await getZAuctionContract(config.web3Provider, config.zAuctionAddress);
+      const contract = await getZAuctionContract(
+        config.web3Provider,
+        config.zAuctionAddress
+      );
       const paymentToken = await contract.getPaymentTokenForDomain(tokenId);
       const tx = await approveSpender(
         paymentToken,
@@ -295,23 +300,13 @@ export const createInstance = (config: Config): Instance => {
       );
       return tx;
     },
-    approveZAuctionSpendTradeTokens: async (
+    approveZAuctionSpendPaymentToken: async (
       paymentTokenAddress: string,
       signer: ethers.Signer
     ): Promise<ethers.ContractTransaction> => {
       const tx = await approveSpender(
         paymentTokenAddress,
         config.zAuctionAddress,
-        signer
-      );
-      return tx;
-    },
-    approveZAuctionSpendTradeTokensLegacy: async (
-      signer: ethers.Signer
-    ): Promise<ethers.ContractTransaction> => {
-      const tx = await approveSpender(
-        config.wildTokenAddress,
-        config.zAuctionLegacyAddress,
         signer
       );
       return tx;
@@ -331,9 +326,7 @@ export const createInstance = (config: Config): Instance => {
         signer,
         config.znsHubAddress
       );
-      const domainContract = await hub.getRegistrarForDomain(
-        bid.tokenId
-      );
+      const domainContract = await hub.getRegistrarForDomain(bid.tokenId);
 
       const tx = await approveDomainTransfer(
         domainContract,
@@ -343,7 +336,7 @@ export const createInstance = (config: Config): Instance => {
 
       return tx;
     },
-    approveZAuctionTransferNft: async (
+    approveZAuctionTransferNftByDomain: async (
       tokenId: string,
       signer: ethers.Signer
     ): Promise<ethers.ContractTransaction> => {
@@ -432,17 +425,17 @@ export const createInstance = (config: Config): Instance => {
 
       const nftContract = await getERC721Contract(signer, domainContract);
 
-      const seller = await nftContract.ownerOf(params.tokenId);
+      const owner = await nftContract.ownerOf(params.tokenId);
       const givenSeller = await signer.getAddress();
 
-      if (givenSeller !== seller) {
+      if (givenSeller !== owner) {
         throw Error("Cannot set the price of a domain that is not yours");
       }
 
       // Seller must have approved zAuction to transfer their NFT(s)
       // before being able to set a buy price
       const isApproved = await actions.isZAuctionApprovedNftTransfer(
-        seller,
+        owner,
         config.zAuctionAddress,
         nftContract
       );

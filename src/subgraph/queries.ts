@@ -37,9 +37,8 @@ export const getBuyNowTokenSales = gql`
 `;
 
 export const getAllTokenSales = gql`
-  query TokenSales($contract: Bytes!, $count: Int!, $skipCount: Int!) {
+  query TokenSales($count: Int!, $skipCount: Int!) {
     tokenSales(
-      where: { contractAddress: $contract }
       first: $count
       skip: $skipCount
     ) {
