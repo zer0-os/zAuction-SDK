@@ -146,7 +146,5 @@ export const acceptBid = async (
     bid.startBlock,
     bid.expireBlock
   );
-  const receipt = await tx.wait(1);
-  console.log(receipt.transactionHash);
   return tx;
 };
