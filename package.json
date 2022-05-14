@@ -1,6 +1,6 @@
 {
   "name": "@zero-tech/zauction-sdk",
-  "version": "0.1.0",
+  "version": "0.1.3",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "repository": "git@github.com:zer0-os/zAuction-SDK.git",
@@ -17,8 +17,7 @@
     "lint": "eslint --fix src",
     "style": "prettier --write ./src/**/*.ts",
     "test": "mocha -r ts-node/register 'test/**/e2e.test.ts' --exit --timeout 150000",
-    "typechain": "typechain --target ethers-v5 --out-dir src/contracts/types/ \"abi/**/*.json\"",
-    "postinstall": "yarn build"
+    "typechain": "typechain --target ethers-v5 --out-dir src/contracts/types/ \"abi/**/*.json\""
   },
   "devDependencies": {
     "@typechain/ethers-v5": "7.0.1",
