@@ -449,6 +449,14 @@ export const createInstance = (config: Config): Instance => {
         config.zAuctionAddress
       );
 
+      const listing = await contract.priceInfo(params.tokenId);
+
+      if (listing.price.eq(params.amount)) {
+        throw Error(
+          "Unable to set price if a listing with that price already exists"
+        );
+      }
+
       const tx = await contract
         .connect(signer)
         .setBuyPrice(params.amount, params.tokenId);

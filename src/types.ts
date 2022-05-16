@@ -145,7 +145,7 @@ export interface NewBidParameters {
 export interface BuyNowParams {
   amount: string;
   tokenId: string;
-  // paymentToken: string;
+  paymentToken: string;
 }
 
 export interface BuyNowListing {

@@ -136,8 +136,6 @@ describe("SDK test", () => {
     expect(recoveredAccount).to.eq(params.account);
   });
   it("Accepts a v2.1 bid", async () => {
-    // Successful hash
-    // 0xe168848eea33e7317c8ff20dd0f938aaa921982c561e1fd271746f222b9391e8
     const params = {
       bidder: "0x35888AD3f1C0b39244Bb54746B96Ee84A5d97a53",
       bidNonce: "4120610753",
@@ -153,14 +151,14 @@ describe("SDK test", () => {
       timestamp: "1652308171751",
       version: "2.0",
     } as Bid;
+    // Successful hash
+    // 0xe168848eea33e7317c8ff20dd0f938aaa921982c561e1fd271746f222b9391e8
     // const tx = await sdk.acceptBid(params, mainWallet);
     // console.log(tx.hash);
     // const receipt = await tx.wait(1);
     // console.log(receipt);
   });
   it("Accepts a v2.0 bid", async () => {
-    // Successful tx hash
-    // 0xc709aed1859b6f1af5bb8e677f4ab34ea7f8897790f3673eb16fbff3b5d5da2d
     const params = {
       bidder: "0xaE3153c9F5883FD2E78031ca2716520748c521dB",
       bidNonce: "23865561613",
@@ -177,19 +175,23 @@ describe("SDK test", () => {
       version: "2.0",
     } as Bid;
 
+  // Successful tx hash
+  // 0xc709aed1859b6f1af5bb8e677f4ab34ea7f8897790f3673eb16fbff3b5d5da2d
   //   const tx = await sdk.acceptBid(params, astroWallet);
   //   console.log(tx.hash);
   //   const receipt = await tx.wait(1);
   //   console.log(receipt);
   });
   it("Sets a buy now price", async () => {
+    const paymentToken = await sdk.getPaymentTokenForDomain(wilderPancakesDomain)
     const params: BuyNowParams = {
-      amount: ethers.utils.parseEther("0.000005").toString(),
+      amount: ethers.utils.parseEther("0.02").toString(),
       tokenId: wilderPancakesDomain,
+      paymentToken: paymentToken
     };
     // Successful tx hash
-    // 0xf141dcad72dd56833c2d2ec2ff2dfc8ba5bb53db14d1a0db2766319e9fef55c8
-    // const tx = await sdk.setBuyNowPrice(params, mainWallet);
-    // console.log(tx.hash);
+    // 0x5106cc98a780b231486b8e98eca93ade17b02b316b6eca4bad820366e0476c70
+    const tx = await sdk.setBuyNowPrice(params, mainWallet);
+    console.log(tx.hash);
   });
 });
