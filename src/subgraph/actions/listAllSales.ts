@@ -26,14 +26,18 @@ export const listAllSales = async <T>(
     }
 
     const queriedSales = queryResult.data.tokenSales.map((e) => {
-      return {
+      const sale: TokenSale = {
         timestamp: e.timestamp,
+        bidNonce: e.bidNonce,
         tokenId: e.tokenId,
         contract: e.contractAddress,
         saleAmount: e.amount,
         seller: e.seller.id,
         buyer: e.buyer.id,
-      } as TokenSale;
+        paymentToken: e.paymentToken ?? "",
+        topLevelDomainId: e.paymentToken ?? ""
+      }
+      return sale;
     });
 
     for (const sale of queriedSales) {

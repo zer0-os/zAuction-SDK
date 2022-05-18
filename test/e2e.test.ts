@@ -191,7 +191,7 @@ describe("SDK test", () => {
     };
     // Successful tx hash
     // 0x5106cc98a780b231486b8e98eca93ade17b02b316b6eca4bad820366e0476c70
-    const tx = await sdk.setBuyNowPrice(params, mainWallet);
-    console.log(tx.hash);
+    // const tx = await sdk.setBuyNowPrice(params, mainWallet);
+    // console.log(tx.hash);
   });
 });
