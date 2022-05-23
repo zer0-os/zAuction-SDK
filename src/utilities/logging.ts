@@ -22,3 +22,5 @@ export const setLogLevel = (level?: consola.LogLevel) => {
 
   logger.level = level;
 };
+
+(global as any).setZAuctionSDKLogLevel = setLogLevel
