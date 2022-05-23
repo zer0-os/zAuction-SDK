@@ -2,6 +2,7 @@ import * as apollo from "@apollo/client/core";
 import fetch from "cross-fetch";
 import { TokenBuy, TokenSale, TokenSaleCollection } from "../types";
 import * as actions from "./actions";
+import { getLogger } from "../utilities";
 
 export interface SubgraphClient {
   listSales: (contract: string, tokenId: string) => Promise<TokenSale[]>;
@@ -23,14 +24,18 @@ const createApolloClient = (
 export const createClient = (subgraphUri: string): SubgraphClient => {
   const apolloClient = createApolloClient(subgraphUri);
 
+  const logger = getLogger("subgraph:client");
   const subgraphClient: SubgraphClient = {
     listSales: (contract: string, tokenId: string) => {
+      logger.debug(`Get sales for domain: ${tokenId}`);
       return actions.listSales(apolloClient, contract, tokenId);
     },
     listBuyNowSales: (contract: string, tokenId: string) => {
+      logger.debug(`Get "buy now" sales for domain: ${tokenId}`);
       return actions.listBuyNowSales(apolloClient, contract, tokenId);
     },
     listAllSales: () => {
+      logger.debug(`Get all sales`);
       return actions.listAllSales(apolloClient);
     },
   };

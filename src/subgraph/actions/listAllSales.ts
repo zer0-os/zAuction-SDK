@@ -2,6 +2,9 @@ import { ApolloClient } from "@apollo/client/core";
 import { TokenSalesDto } from "../types";
 import * as queries from "../queries";
 import { TokenSale, TokenSaleCollection } from "../../types";
+import { getLogger } from "../../utilities";
+
+const logger = getLogger("subgraph:actions:listAllSales");
 
 export const listAllSales = async <T>(
   apolloClient: ApolloClient<T>
@@ -12,7 +15,9 @@ export const listAllSales = async <T>(
   const collection: TokenSaleCollection = {};
 
   // eslint-disable-next-line no-constant-condition
+  let allSalesLength = 0;
   while (true) {
+    logger.trace(`Querying for ${count} sales starting at ${skipCount}`);
     const queryResult = await apolloClient.query<TokenSalesDto>({
       query: queries.getAllTokenSales,
       variables: {
@@ -24,7 +29,6 @@ export const listAllSales = async <T>(
     if (queryResult.error) {
       throw queryResult.error;
     }
-
     const queriedSales = queryResult.data.tokenSales.map((e) => {
       return {
         timestamp: e.timestamp,
@@ -42,6 +46,7 @@ export const listAllSales = async <T>(
       }
 
       collection[sale.tokenId].push(sale);
+      allSalesLength++;
     }
 
     /**
@@ -55,5 +60,6 @@ export const listAllSales = async <T>(
     skipCount += queriedSales.length;
   }
 
+  logger.trace(`Found ${allSalesLength} sales for all domains`)
   return collection;
 };

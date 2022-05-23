@@ -8,6 +8,9 @@ import { ZAuction } from "../contracts/types";
 import { BuyNowParams, Config, BuyNowListing } from "../types";
 import { getPaymentTokenAllowance } from "./getPaymentTokenAllowance";
 import { isZAuctionApprovedNftTransfer } from "./isZAuctionApproved";
+import { getLogger } from "../utilities";
+
+const logger = getLogger("actions:buyNow");
 
 // Perform an immediate buy, supporting legacy domain listings
 export const buyNow = async (
@@ -15,6 +18,11 @@ export const buyNow = async (
   signer: ethers.Signer,
   config: Config
 ) => {
+  const buyer = await signer.getAddress();
+
+  logger.trace(
+    `Calling from user ${buyer} for domain ${params.tokenId} to buy now`
+  );
   const hub = await getZnsHubContract(signer, config.znsHubAddress);
   const tokenContract = await hub.getRegistrarForDomain(params.tokenId);
 
@@ -31,8 +39,6 @@ export const buyNow = async (
   if (!isApproved) {
     throw Error("Seller did not approve zAuction to transfer NFT");
   }
-
-  const buyer = await signer.getAddress();
 
   if (seller === buyer) {
     throw Error("Cannot sell a domain to yourself");
@@ -56,7 +62,10 @@ export const buyNow = async (
     !listing.paymentToken ||
     listing.paymentToken === ethers.constants.AddressZero
   ) {
-    // If no bidToken it is not a v2.1 listing, use WILD
+    logger.trace(
+      `Payment token for domain ${params.tokenId} is ${config.wildTokenAddress}`
+    );
+    // If no bidToken exists it is not a v2.1 listing, use WILD
     const allowance = await getPaymentTokenAllowance(
       buyer,
       config.wildTokenAddress,
@@ -75,6 +84,10 @@ export const buyNow = async (
 
     return tx;
   }
+
+  logger.trace(
+    `Payment token for domain ${params.tokenId} is ${listing.paymentToken}`
+  );
 
   const allowance = await getPaymentTokenAllowance(
     buyer,

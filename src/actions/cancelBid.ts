@@ -1,7 +1,10 @@
 import { ethers } from "ethers";
 import { ApiClient } from "../api";
-import { getZAuctionContract, getZAuctionV1Contract, getZnsHubContract } from "../contracts";
+import { getZAuctionContract } from "../contracts";
 import { Bid } from "../types";
+import { getLogger } from "../utilities";
+
+const logger = getLogger("actions:cancelBid");
 
 // Cancel a bid for a domain, supporting legacy bids
 export const cancelBid = async (
@@ -11,7 +14,9 @@ export const cancelBid = async (
   zAuctionAddress: string,
   signer: ethers.Signer
 ): Promise<ethers.ContractTransaction | void> => {
-
+  logger.trace(
+    `Calling to cancel a bid by user ${bid.bidder} with bid nonce of ${bid.bidNonce}`
+  );
   const encodedCancelMessage = await apiClient.encodeCancelBid(
     bid.signedMessage
   );

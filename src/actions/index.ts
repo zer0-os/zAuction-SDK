@@ -6,3 +6,5 @@ export * from "./buyNow";
 export * from "./approveSpender";
 export * from "./approveDomainTransfer";
 export * from "./getPaymentTokenAllowance";
+export * from "./setNetworkPaymentToken";
+export * from "./setBuyNowPrice";
