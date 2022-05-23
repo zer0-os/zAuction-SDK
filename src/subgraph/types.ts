@@ -12,7 +12,7 @@ export interface TokenSaleDto {
   seller: AccountDto;
   timestamp: string;
   paymentToken?: string;
-  topLevelDomainId?: string;
+  topLevelDomainId: string;
 }
 
 export interface TokenSalesDto {
@@ -28,9 +28,19 @@ export interface TokenBuyNowSaleDto {
   contractAddress: string;
   timestamp: string;
   paymentToken?: string;
-  topLevelDomainId?: string;
+  topLevelDomainId: string;
 }
 
 export interface TokenBuyNowSalesDto {
   domainTokenSolds: TokenBuyNowSaleDto[];
+}
+
+export interface ListAllSalesVars {
+  count: number;
+  skipCount: number;
+}
+
+export interface ListSalesVars {
+  contract: string;
+  tokenId: string;
 }

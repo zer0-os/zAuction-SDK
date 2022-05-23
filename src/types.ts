@@ -108,8 +108,8 @@ export interface TokenSale {
   buyer: string;
   seller: string;
   timestamp: string;
-  paymentToken?: string;
-  topLevelDomainId?: string;
+  paymentToken: string;
+  topLevelDomainId: string;
 }
 
 export interface TokenBuy {
@@ -119,8 +119,8 @@ export interface TokenBuy {
   contract: string;
   tokenId: string;
   timestamp: string;
-  paymentToken?: string;
-  topLevelDomainId?: string;
+  paymentToken: string;
+  topLevelDomainId: string;
 }
 
 export interface TokenSaleCollection {

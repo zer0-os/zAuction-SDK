@@ -29,7 +29,8 @@ export * from "./types";
 
 export const createInstance = (config: Config): Instance => {
   const subgraphClient: subgraph.SubgraphClient = subgraph.createClient(
-    config.subgraphUri
+    config.subgraphUri,
+    config.wildTokenAddress
   );
 
   const apiClient: api.ApiClient = api.createClient(config.apiUri);

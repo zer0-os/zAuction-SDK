@@ -20,18 +20,18 @@ const createApolloClient = (
   return client;
 };
 
-export const createClient = (subgraphUri: string): SubgraphClient => {
+export const createClient = (subgraphUri: string, wildToken: string): SubgraphClient => {
   const apolloClient = createApolloClient(subgraphUri);
 
   const subgraphClient: SubgraphClient = {
     listSales: (contract: string, tokenId: string) => {
-      return actions.listSales(apolloClient, contract, tokenId);
+      return actions.listSales(apolloClient, contract, tokenId, wildToken);
     },
     listBuyNowSales: (contract: string, tokenId: string) => {
-      return actions.listBuyNowSales(apolloClient, contract, tokenId);
+      return actions.listBuyNowSales(apolloClient, contract, tokenId, wildToken);
     },
     listAllSales: () => {
-      return actions.listAllSales(apolloClient);
+      return actions.listAllSales(apolloClient, wildToken);
     },
   };
 
