@@ -76,6 +76,7 @@ describe("SDK test", () => {
   });
   it("Lists buyNow sales", async () => {
     const sales: TokenBuy[] = await sdk.listBuyNowSales(wilderPancakesDomain);
+    console.log(sales[0])
   });
   it("List bids through the API", async () => {
     const bids: TokenBidCollection = await sdk.listBids([wilderPancakesDomain]);

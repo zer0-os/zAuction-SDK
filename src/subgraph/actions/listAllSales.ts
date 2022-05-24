@@ -1,5 +1,5 @@
 import { ApolloClient } from "@apollo/client/core";
-import { ListAllSalesVars, TokenSalesDto } from "../types";
+import { ListAllSalesQueryOpts } from "../types";
 import * as queries from "../queries";
 import { TokenSaleCollection } from "../../types";
 import * as helpers from "../helpers";
@@ -9,7 +9,7 @@ export const listAllSales = async <T>(
   wildToken: string
 ): Promise<TokenSaleCollection> => {
   const collection: TokenSaleCollection = {};
-  const variables: ListAllSalesVars = {
+  const variables: ListAllSalesQueryOpts = {
     count: 1000,
     skipCount: 0,
   };
