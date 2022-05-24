@@ -6,7 +6,8 @@ import { TokenBuy } from "../../types";
 export const listBuyNowSales = async <T>(
   apolloClient: ApolloClient<T>,
   contractAddress: string,
-  tokenId: string
+  tokenId: string,
+  wildToken: string
 ): Promise<TokenBuy[]> => {
   const queryResult = await apolloClient.query<TokenBuyNowSalesDto>({
     query: queries.getBuyNowTokenSales,
@@ -21,14 +22,17 @@ export const listBuyNowSales = async <T>(
   }
 
   const buys: TokenBuy[] = queryResult.data.domainTokenSolds.map((e) => {
-    return {
+    const buy: TokenBuy = {
       tokenId: e.tokenId,
       contract: e.contractAddress,
       amount: e.amount,
       seller: e.seller.id,
       buyer: e.buyer.id,
-      timestamp: e.timestamp
-    } as TokenBuy;
+      timestamp: e.timestamp,
+      paymentToken: e.paymentToken ?? wildToken,
+      topLevelDomainId: e.topLevelDomainId
+    }
+    return buy;
   });
 
   return buys;

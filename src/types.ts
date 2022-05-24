@@ -102,11 +102,14 @@ export interface Instance {
 
 export interface TokenSale {
   contract: string;
+  bidNonce: string;
   tokenId: string;
   saleAmount: string;
   buyer: string;
   seller: string;
   timestamp: string;
+  paymentToken: string;
+  topLevelDomainId: string;
 }
 
 export interface TokenBuy {
@@ -116,6 +119,8 @@ export interface TokenBuy {
   contract: string;
   tokenId: string;
   timestamp: string;
+  paymentToken: string;
+  topLevelDomainId: string;
 }
 
 export interface TokenSaleCollection {

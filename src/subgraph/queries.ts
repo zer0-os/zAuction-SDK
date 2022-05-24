@@ -4,16 +4,19 @@ export const getTokenSalesForNftQuery = gql`
   query TokenSales($contract: Bytes!, $tokenId: ID!) {
     tokenSales(where: { tokenId: $tokenId, contractAddress: $contract }) {
       id
+      bidNonce
       tokenId
       contractAddress
       amount
-      timestamp
-      seller {
-        id
-      }
       buyer {
         id
       }
+      seller {
+        id
+      }
+      timestamp
+      paymentToken
+      topLevelDomainId
     }
   }
 `;
@@ -32,6 +35,8 @@ export const getBuyNowTokenSales = gql`
       tokenId
       contractAddress
       timestamp
+      paymentToken
+      topLevelDomainId
     }
   }
 `;
@@ -43,16 +48,19 @@ export const getAllTokenSales = gql`
       skip: $skipCount
     ) {
       id
+      bidNonce
       tokenId
       contractAddress
       amount
-      timestamp
-      seller {
-        id
-      }
       buyer {
         id
       }
+      seller {
+        id
+      }
+      timestamp
+      paymentToken
+      topLevelDomainId
     }
   }
 `;

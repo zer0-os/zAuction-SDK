@@ -1,42 +1,29 @@
 import { ApolloClient } from "@apollo/client/core";
-import { TokenSalesDto } from "../types";
+import { ListAllSalesVars, TokenSalesDto } from "../types";
 import * as queries from "../queries";
-import { TokenSale, TokenSaleCollection } from "../../types";
+import { TokenSaleCollection } from "../../types";
+import * as helpers from "../helpers";
 
 export const listAllSales = async <T>(
-  apolloClient: ApolloClient<T>
+  apolloClient: ApolloClient<T>,
+  wildToken: string
 ): Promise<TokenSaleCollection> => {
-  const count = 1000;
-  let skipCount = 0;
-
   const collection: TokenSaleCollection = {};
+  const variables: ListAllSalesVars = {
+    count: 1000,
+    skipCount: 0,
+  };
 
   // eslint-disable-next-line no-constant-condition
   while (true) {
-    const queryResult = await apolloClient.query<TokenSalesDto>({
-      query: queries.getAllTokenSales,
-      variables: {
-        count,
-        skipCount,
-      },
-    });
+    const sales = await helpers.listSales(
+      apolloClient,
+      queries.getAllTokenSales,
+      variables,
+      wildToken
+    );
 
-    if (queryResult.error) {
-      throw queryResult.error;
-    }
-
-    const queriedSales = queryResult.data.tokenSales.map((e) => {
-      return {
-        timestamp: e.timestamp,
-        tokenId: e.tokenId,
-        contract: e.contractAddress,
-        saleAmount: e.amount,
-        seller: e.seller.id,
-        buyer: e.buyer.id,
-      } as TokenSale;
-    });
-
-    for (const sale of queriedSales) {
+    for (const sale of sales) {
       if (!collection[sale.tokenId]) {
         collection[sale.tokenId] = [];
       }
@@ -49,10 +36,10 @@ export const listAllSales = async <T>(
      * So if we get that many there's probably more sales we need
      * to fetch. If we got back less, we can stop querying
      */
-    if (queriedSales.length < count) {
+    if (sales.length < variables.count) {
       break;
     }
-    skipCount += queriedSales.length;
+    variables.skipCount += sales.length;
   }
 
   return collection;
