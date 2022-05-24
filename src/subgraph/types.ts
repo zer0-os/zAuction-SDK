@@ -4,12 +4,15 @@ export interface AccountDto {
 
 export interface TokenSaleDto {
   id: string;
+  bidNonce: string;
   tokenId: string;
   contractAddress: string;
   amount: string;
   buyer: AccountDto;
   seller: AccountDto;
   timestamp: string;
+  paymentToken?: string;
+  topLevelDomainId: string;
 }
 
 export interface TokenSalesDto {
@@ -24,8 +27,20 @@ export interface TokenBuyNowSaleDto {
   tokenId: string;
   contractAddress: string;
   timestamp: string;
+  paymentToken?: string;
+  topLevelDomainId: string;
 }
 
 export interface TokenBuyNowSalesDto {
   domainTokenSolds: TokenBuyNowSaleDto[];
+}
+
+export interface ListAllSalesQueryOpts {
+  count: number;
+  skipCount: number;
+}
+
+export interface ListSalesQueryOpts {
+  contract: string;
+  tokenId: string;
 }

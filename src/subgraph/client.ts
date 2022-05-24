@@ -21,22 +21,22 @@ const createApolloClient = (
   return client;
 };
 
-export const createClient = (subgraphUri: string): SubgraphClient => {
+export const createClient = (subgraphUri: string, wildToken: string): SubgraphClient => {
   const apolloClient = createApolloClient(subgraphUri);
 
   const logger = getLogger("subgraph:client");
   const subgraphClient: SubgraphClient = {
     listSales: (contract: string, tokenId: string) => {
       logger.debug(`Get sales for domain: ${tokenId}`);
-      return actions.listSales(apolloClient, contract, tokenId);
+      return actions.listSales(apolloClient, contract, tokenId, wildToken);
     },
     listBuyNowSales: (contract: string, tokenId: string) => {
       logger.debug(`Get "buy now" sales for domain: ${tokenId}`);
-      return actions.listBuyNowSales(apolloClient, contract, tokenId);
+      return actions.listBuyNowSales(apolloClient, contract, tokenId, wildToken);
     },
     listAllSales: () => {
       logger.debug(`Get all sales`);
-      return actions.listAllSales(apolloClient);
+      return actions.listAllSales(apolloClient, wildToken);
     },
   };
 
