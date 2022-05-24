@@ -1,11 +1,11 @@
 import { ApolloClient, DocumentNode } from "@apollo/client/core";
-import { ListAllSalesVars, ListSalesVars, TokenSalesDto } from "../types";
+import { ListAllSalesQueryOpts, ListSalesQueryOpts, TokenSalesDto } from "../types";
 import { TokenSale } from "../../types";
 
 export const listSales = async <T>(
   apolloClient: ApolloClient<T>,
   query: DocumentNode,
-  variables: ListSalesVars | ListAllSalesVars,
+  variables: ListSalesQueryOpts | ListAllSalesQueryOpts,
   wildToken: string,
 ) => {
   const queryResult = await apolloClient.query<TokenSalesDto>({
