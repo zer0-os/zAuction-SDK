@@ -32,14 +32,7 @@ export interface PlaceBidActionParameters {
 export const placeBid = async (
   params: PlaceBidActionParameters
 ): Promise<void> => {
-  logger.trace(`Calling to place a bid by user ${params.bidder}`);
   params.statusCallback ? params.statusCallback(PlaceBidStatus.Encoding) : null;
-
-  const hub = await getZnsHubContract(
-    params.config.web3Provider,
-    params.config.znsHubAddress
-  );
-  const registrar = await hub.getRegistrarForDomain(params.bid.tokenId);
 
   const contract = await getZAuctionContract(
     params.config.web3Provider,
@@ -49,8 +42,14 @@ export const placeBid = async (
     params.bid.tokenId
   );
   logger.trace(
-    `for ${params.bid.bidAmount} of ERC20 token ${paymentToken} on domain ${params.bid.tokenId}`
+    `Calling to place a bid by user ${params.bidder} for ${params.bid.bidAmount} of ERC20 token ${paymentToken} on domain ${params.bid.tokenId}`
   );
+
+  const hub = await getZnsHubContract(
+    params.config.web3Provider,
+    params.config.znsHubAddress
+  );
+  const registrar = await hub.getRegistrarForDomain(params.bid.tokenId);
 
   let signableBid: Maybe<SignableBid>;
 

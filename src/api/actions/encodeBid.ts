@@ -16,7 +16,9 @@ export const encodeBid = async (
 ): Promise<SignableBid> => {
   const uri = `${apiUrl}/bid`;
 
-  logger.trace(`Calling to encode a bid at ${uri} with ${bidParams}`);
+  logger.trace(
+    `Encoding bid at ${uri} by ${bidParams.bidder} for amount ${bidParams.amount} of ERC20 token ${bidParams.bidToken}`
+  );
 
   const response = await makeApiCall<EncodeBidDto>(uri, "POST", {
     bidAmount: bidParams.amount,
