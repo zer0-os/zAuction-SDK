@@ -1,5 +1,4 @@
 import fetch from "cross-fetch";
-import { ethers } from "ethers";
 import { Bid } from "../../types";
 import { BidDto } from "../types";
 
@@ -56,12 +55,4 @@ export const convertBidDtoToBid = (bid: BidDto): Bid => {
   };
 
   return localBid;
-};
-
-export const calculateNftId = (contract: string, tokenId: string): string => {
-  const idString = contract + tokenId;
-  const idStringBytes = ethers.utils.toUtf8Bytes(idString);
-  const nftId = ethers.utils.keccak256(idStringBytes);
-
-  return nftId;
 };

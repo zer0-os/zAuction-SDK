@@ -9,6 +9,9 @@ import {
   Config,
 } from "../types";
 import { Maybe } from "../utilities";
+import { getLogger } from "../utilities";
+
+const logger = getLogger("actions:placeBid");
 
 type SignMessageFunction = (
   message: string | ethers.utils.Bytes
@@ -18,7 +21,7 @@ type SubmitBidFunction = (signedBid: SignedBid) => Promise<void>;
 
 export interface PlaceBidActionParameters {
   bid: NewBidParameters;
-  config: Config,
+  config: Config;
   bidder: string;
   encodeBid: EncodeBidFunction;
   signMessage: SignMessageFunction;
@@ -31,17 +34,25 @@ export const placeBid = async (
 ): Promise<void> => {
   params.statusCallback ? params.statusCallback(PlaceBidStatus.Encoding) : null;
 
+  const contract = await getZAuctionContract(
+    params.config.web3Provider,
+    params.config.zAuctionAddress
+  );
+  const paymentToken = await contract.getPaymentTokenForDomain(
+    params.bid.tokenId
+  );
+  logger.trace(
+    `Calling to place a bid by user ${params.bidder} for ${params.bid.bidAmount} of ERC20 token ${paymentToken} on domain ${params.bid.tokenId}`
+  );
+
   const hub = await getZnsHubContract(
     params.config.web3Provider,
     params.config.znsHubAddress
   );
   const registrar = await hub.getRegistrarForDomain(params.bid.tokenId);
-  
-  const contract = await getZAuctionContract(params.config.web3Provider, params.config.zAuctionAddress);
-  const paymentToken = await contract.getPaymentTokenForDomain(params.bid.tokenId);
 
   let signableBid: Maybe<SignableBid>;
-  
+
   const bidParams: BidParameters = {
     bidder: params.bidder,
     tokenId: params.bid.tokenId,
@@ -49,8 +60,8 @@ export const placeBid = async (
     amount: params.bid.bidAmount,
     startBlock: params.bid.startBlock ?? "0",
     expireBlock: params.bid.expireBlock ?? "9999999999",
-    bidToken: paymentToken
-  }
+    bidToken: paymentToken,
+  };
   try {
     signableBid = await params.encodeBid(bidParams);
   } catch (e) {
@@ -80,6 +91,10 @@ export const placeBid = async (
   } catch (e) {
     throw Error(`Failed to submit bid: ${e}`);
   }
+
+  logger.trace(
+    `Bid with bidNonce of ${signableBid.bid.bidNonce} submitted successfully`
+  );
 
   params.statusCallback
     ? params.statusCallback(PlaceBidStatus.Completed)

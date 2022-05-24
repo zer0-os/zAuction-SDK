@@ -2,6 +2,9 @@ import { ApolloClient } from "@apollo/client/core";
 import { TokenBuyNowSalesDto } from "../types";
 import * as queries from "../queries";
 import { TokenBuy } from "../../types";
+import { getLogger } from "../../utilities";
+
+const logger = getLogger("subgraph:actions:listBuyNowSales");
 
 export const listBuyNowSales = async <T>(
   apolloClient: ApolloClient<T>,
@@ -9,6 +12,7 @@ export const listBuyNowSales = async <T>(
   tokenId: string,
   wildToken: string
 ): Promise<TokenBuy[]> => {
+  logger.trace(`Querying "buy now" sales for domain with ID ${tokenId}`);
   const queryResult = await apolloClient.query<TokenBuyNowSalesDto>({
     query: queries.getBuyNowTokenSales,
     variables: {
@@ -35,5 +39,6 @@ export const listBuyNowSales = async <T>(
     return buy;
   });
 
+  logger.trace(`Found ${buys.length} buy now sales`)
   return buys;
 };

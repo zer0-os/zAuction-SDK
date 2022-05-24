@@ -1,6 +1,9 @@
 import { ApolloClient } from "@apollo/client/core";
 import { ListAllSalesQueryOpts } from "../types";
 import * as queries from "../queries";
+import { getLogger } from "../../utilities";
+
+const logger = getLogger("subgraph:actions:listAllSales");
 import { TokenSaleCollection } from "../../types";
 import * as helpers from "../helpers";
 
@@ -9,17 +12,20 @@ export const listAllSales = async <T>(
   wildToken: string
 ): Promise<TokenSaleCollection> => {
   const collection: TokenSaleCollection = {};
-  const variables: ListAllSalesQueryOpts = {
+  const opts: ListAllSalesQueryOpts = {
     count: 1000,
     skipCount: 0,
   };
 
   // eslint-disable-next-line no-constant-condition
+  let allSalesLength = 0;
   while (true) {
+    logger.trace(`Querying for ${opts.count} sales starting at ${opts.skipCount}`);
+
     const sales = await helpers.listSales(
       apolloClient,
       queries.getAllTokenSales,
-      variables,
+      opts,
       wildToken
     );
 
@@ -29,6 +35,7 @@ export const listAllSales = async <T>(
       }
 
       collection[sale.tokenId].push(sale);
+      allSalesLength++;
     }
 
     /**
@@ -36,11 +43,12 @@ export const listAllSales = async <T>(
      * So if we get that many there's probably more sales we need
      * to fetch. If we got back less, we can stop querying
      */
-    if (sales.length < variables.count) {
+    if (sales.length < opts.count) {
       break;
     }
-    variables.skipCount += sales.length;
+    opts.skipCount += sales.length;
   }
 
+  logger.trace(`Found ${allSalesLength} sales for all domains`)
   return collection;
 };

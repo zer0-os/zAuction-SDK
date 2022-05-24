@@ -7,6 +7,9 @@ import {
 } from "../contracts";
 import { IERC721, IZNSHub, ZAuction, ZAuctionV1 } from "../contracts/types";
 import { Bid, Config } from "../types";
+import { getLogger } from "../utilities";
+
+const logger = getLogger("actions:acceptBid");
 
 const verifyAccount = async (
   zAuction: ZAuction | ZAuctionV1,
@@ -34,6 +37,10 @@ export const acceptBid = async (
   signer: ethers.Signer,
   config: Config
 ): Promise<ethers.ContractTransaction> => {
+  logger.trace(
+    `Calling to accept a bid by user ${bid.bidder} with bidNonce of ${bid.bidNonce}`
+  );
+
   // If not explicitly v2 bid, then assume v1
   const isVersion2 = bid.version === "2.0";
 
@@ -64,6 +71,10 @@ export const acceptBid = async (
 
     if (bid.bidToken) {
       // v2.1 bid
+      logger.trace(
+        `v2.1 Bid: Payment token for domain ${bid.tokenId} is ${bid.bidToken}`
+      );
+
       const data = await zAuction.createBidV2(
         bid.bidNonce,
         bid.amount,
@@ -91,6 +102,9 @@ export const acceptBid = async (
       return tx;
     }
     // v2.0 bid
+    logger.trace(
+      `v2.0 Bid: Payment token for domain ${bid.tokenId} is ${config.wildTokenAddress}`
+    );
     const data = await zAuction.createBid(
       bid.bidNonce,
       bid.amount,
@@ -121,6 +135,9 @@ export const acceptBid = async (
     zAuctionAddress
   );
 
+  logger.trace(
+    `v1.0 Bid: Payment token for domain ${bid.tokenId} is ${config.wildTokenAddress}`
+  );
   const data = await zAuctionV1.createBid(
     bid.bidNonce,
     bid.amount,

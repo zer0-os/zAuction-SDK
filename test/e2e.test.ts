@@ -2,6 +2,12 @@ import { ethers } from "ethers";
 import * as dotenv from "dotenv";
 import { Web3Provider } from "@ethersproject/providers";
 import { expect } from "chai";
+import { getLogger } from "../src/utilities";
+
+const logger = getLogger("tests");
+// logger.level = 2 // log
+
+(global as any).setZAuctionSDKLogLevel = 5
 
 dotenv.config();
 
@@ -17,9 +23,7 @@ import {
 } from "../src";
 
 import { Bid } from "../src/api/types";
-import {
-  getZAuctionContract,
-} from "../src/contracts";
+import { getZAuctionContract } from "../src/contracts";
 
 describe("SDK test", () => {
   const registrarAddress = "0xa4F6C921f914ff7972D7C55c15f015419326e0Ca";
@@ -175,19 +179,21 @@ describe("SDK test", () => {
       version: "2.0",
     } as Bid;
 
-  // Successful tx hash
-  // 0xc709aed1859b6f1af5bb8e677f4ab34ea7f8897790f3673eb16fbff3b5d5da2d
-  //   const tx = await sdk.acceptBid(params, astroWallet);
-  //   console.log(tx.hash);
-  //   const receipt = await tx.wait(1);
-  //   console.log(receipt);
+    // Successful tx hash
+    // 0xc709aed1859b6f1af5bb8e677f4ab34ea7f8897790f3673eb16fbff3b5d5da2d
+    //   const tx = await sdk.acceptBid(params, astroWallet);
+    //   console.log(tx.hash);
+    //   const receipt = await tx.wait(1);
+    //   console.log(receipt);
   });
   it("Sets a buy now price", async () => {
-    const paymentToken = await sdk.getPaymentTokenForDomain(wilderPancakesDomain)
+    const paymentToken = await sdk.getPaymentTokenForDomain(
+      wilderPancakesDomain
+    );
     const params: BuyNowParams = {
       amount: ethers.utils.parseEther("0.02").toString(),
       tokenId: wilderPancakesDomain,
-      paymentToken: paymentToken
+      paymentToken: paymentToken,
     };
     // Successful tx hash
     // 0x5106cc98a780b231486b8e98eca93ade17b02b316b6eca4bad820366e0476c70
