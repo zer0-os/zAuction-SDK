@@ -44,8 +44,8 @@ export interface Instance {
     tokenId: string
   ) => Promise<ethers.BigNumber>;
   getZAuctionSpendAllowance: (
-    paymentTokenAddress: string,
-    account: string
+    account: string,
+    paymentTokenAddress: string
   ) => Promise<ethers.BigNumber>;
   getZAuctionLegacySpendAllowance: (
     account: string
