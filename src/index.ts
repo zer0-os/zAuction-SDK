@@ -214,8 +214,8 @@ export const createInstance = (config: Config): Instance => {
       return allowance;
     },
     getZAuctionSpendAllowance: async (
-      paymentToken: string,
-      account: string
+      account: string,
+      paymentToken: string
     ): Promise<ethers.BigNumber> => {
       const allowance = await actions.getPaymentTokenAllowance(
         account,
