@@ -1,5 +1,5 @@
 import { ApolloClient } from "@apollo/client/core";
-import { ListSalesQueryOpts } from "../types";
+import { ListSalesQueryOptions } from "../types";
 import * as queries from "../queries";
 import { TokenSale } from "../../types";
 import { getLogger } from "../../utilities";
@@ -16,7 +16,7 @@ export const listSales = async <T>(
 ): Promise<TokenSale[]> => {
   logger.trace(`Querying sales for domain with ID ${tokenId}`);
 
-  const opts: ListSalesQueryOpts = {
+  const options: ListSalesQueryOptions = {
     contract: contract.toLowerCase(),
     tokenId,
   };
@@ -24,7 +24,7 @@ export const listSales = async <T>(
   const sales = await helpers.listSales(
     apolloClient,
     queries.getTokenSalesForNftQuery,
-    opts,
+    options,
     wildToken
   );
 

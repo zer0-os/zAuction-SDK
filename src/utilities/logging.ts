@@ -1,20 +1,19 @@
-import * as consola from "consola";
+import { Consola, LogLevel }  from "consola";
 
-const logger = consola.default.create({
-  level: consola.LogLevel.Info,
-});
+// Default level is Info
+const logger = new Consola({level: 3});
 
-export const getLogger = (tag?: string): consola.Consola => {
+export const getLogger = (tag?: string): Consola => {
   if (tag) {
     return logger.withTag(tag);
   }
   return logger;
 };
 
-export const setLogLevel = (level?: consola.LogLevel) => {
+export const setLogLevel = (level?: LogLevel) => {
   if (level === undefined || typeof level != "number") {
-    console.log("provide a number");
-    Object.entries(consola.LogLevel).forEach(([key, value]) => {
+    console.log("Provide a number");
+    Object.entries(LogLevel).forEach(([key, value]) => {
       console.log(`${key}=${value}`);
     });
     return;
