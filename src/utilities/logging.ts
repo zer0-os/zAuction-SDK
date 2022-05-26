@@ -12,8 +12,8 @@ export const getLogger = (tag?: string): Consola => {
 
 export const setLogLevel = (level?: LogLevel) => {
   if (level === undefined || typeof level != "number") {
-    console.log("provide a number");
-    Object.entries(logger.level).forEach(([key, value]) => {
+    console.log("Provide a number");
+    Object.entries(LogLevel).forEach(([key, value]) => {
       console.log(`${key}=${value}`);
     });
     return;
