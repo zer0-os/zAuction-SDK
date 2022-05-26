@@ -6,8 +6,6 @@ import { getLogger } from "../src/utilities";
 
 const logger = getLogger("tests");
 
-(global as any).setZAuctionSDKLogLevel = 5;
-
 dotenv.config();
 
 import {
