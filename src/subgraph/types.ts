@@ -35,12 +35,12 @@ export interface TokenBuyNowSalesDto {
   domainTokenSolds: TokenBuyNowSaleDto[];
 }
 
-export interface ListAllSalesQueryOpts {
+export interface ListAllSalesQueryOptions {
   count: number;
   skipCount: number;
 }
 
-export interface ListSalesQueryOpts {
+export interface ListSalesQueryOptions {
   contract: string;
   tokenId: string;
 }

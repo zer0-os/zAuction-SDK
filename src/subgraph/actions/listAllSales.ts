@@ -1,5 +1,5 @@
 import { ApolloClient } from "@apollo/client/core";
-import { ListAllSalesQueryOpts } from "../types";
+import { ListAllSalesQueryOptions } from "../types";
 import * as queries from "../queries";
 import { getLogger } from "../../utilities";
 
@@ -12,7 +12,7 @@ export const listAllSales = async <T>(
   wildToken: string
 ): Promise<TokenSaleCollection> => {
   const collection: TokenSaleCollection = {};
-  const opts: ListAllSalesQueryOpts = {
+  const options: ListAllSalesQueryOptions = {
     count: 1000,
     skipCount: 0,
   };
@@ -20,12 +20,12 @@ export const listAllSales = async <T>(
   // eslint-disable-next-line no-constant-condition
   let allSalesLength = 0;
   while (true) {
-    logger.trace(`Querying for ${opts.count} sales starting at ${opts.skipCount}`);
+    logger.trace(`Querying for ${options.count} sales starting at ${options.skipCount}`);
 
     const sales = await helpers.listSales(
       apolloClient,
       queries.getAllTokenSales,
-      opts,
+      options,
       wildToken
     );
 
@@ -43,10 +43,10 @@ export const listAllSales = async <T>(
      * So if we get that many there's probably more sales we need
      * to fetch. If we got back less, we can stop querying
      */
-    if (sales.length < opts.count) {
+    if (sales.length < options.count) {
       break;
     }
-    opts.skipCount += sales.length;
+    options.skipCount += sales.length;
   }
 
   logger.trace(`Found ${allSalesLength} sales for all domains`)
