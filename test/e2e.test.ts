@@ -5,9 +5,8 @@ import { expect } from "chai";
 import { getLogger } from "../src/utilities";
 
 const logger = getLogger("tests");
-// logger.level = 2 // log
 
-(global as any).setZAuctionSDKLogLevel = 5
+(global as any).setZAuctionSDKLogLevel = 5;
 
 dotenv.config();
 
@@ -24,6 +23,7 @@ import {
 
 import { Bid } from "../src/api/types";
 import { getZAuctionContract } from "../src/contracts";
+import { assert } from "console";
 
 describe("SDK test", () => {
   const registrarAddress = "0xa4F6C921f914ff7972D7C55c15f015419326e0Ca";
@@ -67,7 +67,34 @@ describe("SDK test", () => {
   };
   const sdk = createInstance(config);
   let astroBidsArrayLength: number;
-
+  it("Logger works", async () => {
+    logger.log("Hello world");
+    assert(logger)
+  })
+  it("Checks allowance by paymentTokenAddress", async () => {
+    const allowance = await sdk.getZAuctionSpendAllowance(
+      astroTestAccount,
+      config.wildTokenAddress
+    );
+    expect(allowance).to.not.eq(ethers.BigNumber.from("0"));
+  });
+  it("Checks allowance through tokenId", async () => {
+    const allowance = await sdk.getZAuctionSpendAllowanceByDomain(
+      astroTestAccount,
+      wilderPancakesDomain
+    );
+    expect(allowance).to.not.eq(ethers.BigNumber.from("0"));
+  })
+  it("Checks allowance by bid ", async () => {
+    const bid = {
+      bidToken: config.wildTokenAddress
+    } as Bid
+    const allowance = await sdk.getZAuctionSpendAllowanceByBid(
+      astroTestAccount,
+      bid
+    );
+    expect(allowance).to.not.eq(ethers.BigNumber.from("0"));
+  })
   it("Lists sales for a specific domain", async () => {
     const sales: TokenSale[] = await sdk.listSales(wilderPancakesDomain);
   });

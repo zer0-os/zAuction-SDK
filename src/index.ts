@@ -232,7 +232,7 @@ export const createInstance = (config: Config): Instance => {
         account,
         config.wildTokenAddress,
         config.web3Provider,
-        config.zAuctionAddress
+        config.zAuctionLegacyAddress
       );
       return allowance;
     },
