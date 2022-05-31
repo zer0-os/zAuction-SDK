@@ -1,4 +1,4 @@
-import { TokenBidCollection } from "../../types";
+import { TokenBidCollection, TokenBidFilter } from "../../types";
 import { BidDto } from "../types";
 import { convertBidDtoToBid, makeApiCall } from "./helpers";
 
@@ -12,10 +12,12 @@ interface BidsBulkDto {
 
 export const listBidsForTokens = async (
   apiUrl: string,
-  tokenIds: string[]
+  tokenIds: string[],
+  filter?: TokenBidFilter
 ): Promise<TokenBidCollection> => {
   const bidCollection: TokenBidCollection = {};
-  const uri = `${apiUrl}/bids/list`;
+  let uri = `${apiUrl}/bids/list`;
+  uri = filter ? uri.concat(`?filter=${filter}`) : uri;
   logger.trace(`Calling ${uri} to get bids for ${tokenIds.length} domains`);
   const response = await makeApiCall<BidsBulkDto>(uri, "POST", {
     tokenIds,

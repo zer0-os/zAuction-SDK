@@ -16,7 +16,10 @@ export interface Instance {
   listSales: (tokenId: string) => Promise<TokenSale[]>;
   listBuyNowSales: (tokenId: string) => Promise<TokenBuy[]>;
   listAllSales: () => Promise<TokenSaleCollection>;
-  listBids: (tokenIds: string[]) => Promise<TokenBidCollection>;
+  listBids: (
+    tokenIds: string[],
+    filter?: TokenBidFilter
+  ) => Promise<TokenBidCollection>;
   listBidsByAccount: (account: string) => Promise<Bid[]>;
   placeBid: (
     params: NewBidParameters,
@@ -33,7 +36,7 @@ export interface Instance {
   ) => Promise<boolean>;
   isZAuctionLegacyApprovedToTransferNft: (
     account: string,
-    tokenId: string,
+    tokenId: string
   ) => Promise<boolean>;
   getZAuctionSpendAllowanceByBid: (
     account: string,
@@ -130,6 +133,11 @@ export interface TokenSaleCollection {
 export interface TokenBidCollection {
   [tokenId: string]: Bid[];
 }
+
+export type TokenBidFilter =
+  | "all"
+  | "active"
+  | "cancelled"
 
 export type PlaceBidStatusCallback = (status: PlaceBidStatus) => void;
 

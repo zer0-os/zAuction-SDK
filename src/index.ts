@@ -16,6 +16,7 @@ import {
   TokenBuy,
   TokenSaleCollection,
   TokenBidCollection,
+  TokenBidFilter,
 } from "./types";
 import {
   getERC721Contract,
@@ -71,9 +72,9 @@ export const createInstance = (config: Config): Instance => {
       );
       return tokenBuys;
     },
-    listBids: async (tokenIds: string[]): Promise<TokenBidCollection> => {
+    listBids: async (tokenIds: string[], filter?: TokenBidFilter): Promise<TokenBidCollection> => {
       const tokenBidCollection: TokenBidCollection =
-        await apiClient.listBidsForTokens(tokenIds);
+        await apiClient.listBidsForTokens(tokenIds, filter);
       return tokenBidCollection;
     },
     listBidsByAccount: async (account: string) => {
