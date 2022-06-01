@@ -101,21 +101,21 @@ describe("SDK test", () => {
     const sales: TokenSaleCollection = await sdk.listAllSales();
   });
   it("Lists bids and with filter as 'cancelled'", async () => {
-    const filter: TokenBidFilter = "cancelled";
+    const filter: TokenBidFilter = TokenBidFilter.Cancelled;
     const bids: TokenBidCollection = await sdk.listBids(
       [wilderPancakesDomain],
       filter
     );
   });
   it("Lists bids and with filter as 'active'", async () => {
-    const filter: TokenBidFilter = "active";
+    const filter: TokenBidFilter = TokenBidFilter.Active;
     const bids: TokenBidCollection = await sdk.listBids(
       [wilderPancakesDomain],
       filter
     );
   });
   it("Lists bids and with filter as 'all'", async () => {
-    const filter: TokenBidFilter = "all";
+    const filter: TokenBidFilter = TokenBidFilter.All;
     const bids: TokenBidCollection = await sdk.listBids(
       [wilderPancakesDomain],
       filter

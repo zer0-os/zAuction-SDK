@@ -134,10 +134,11 @@ export interface TokenBidCollection {
   [tokenId: string]: Bid[];
 }
 
-export type TokenBidFilter =
-  | "all"
-  | "active"
-  | "cancelled"
+export enum TokenBidFilter {
+  All,
+  Active,
+  Cancelled
+}
 
 export type PlaceBidStatusCallback = (status: PlaceBidStatus) => void;
 
