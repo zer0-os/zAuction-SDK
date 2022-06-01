@@ -72,7 +72,10 @@ export const createInstance = (config: Config): Instance => {
       );
       return tokenBuys;
     },
-    listBids: async (tokenIds: string[], filter?: TokenBidFilter): Promise<TokenBidCollection> => {
+    listBids: async (
+      tokenIds: string[],
+      filter?: TokenBidFilter
+    ): Promise<TokenBidCollection> => {
       const tokenBidCollection: TokenBidCollection =
         await apiClient.listBidsForTokens(tokenIds, filter);
       return tokenBidCollection;
@@ -253,14 +256,18 @@ export const createInstance = (config: Config): Instance => {
     },
     // Return the ERC20 token used for payment in the network that domain is a part of.
     // This could be either the network payment token or the default payment token
-    getPaymentTokenForDomain: async (tokenId: string): Promise<string> => {
+    getPaymentTokenForDomain: async (
+      domainTokenId: string
+    ): Promise<string> => {
       const contract = await getZAuctionContract(
         config.web3Provider,
         config.zAuctionAddress
       );
-      const paymentToken = await contract.getPaymentTokenForDomain(tokenId);
+      const paymentToken = await contract.getPaymentTokenForDomain(
+        domainTokenId
+      );
       logger.trace(
-        `Payment token for domain with ID ${tokenId} is ${paymentToken}`
+        `Payment token for domain with ID ${domainTokenId} is ${paymentToken}`
       );
       return paymentToken;
     },
@@ -389,10 +396,10 @@ export const createInstance = (config: Config): Instance => {
     },
 
     // IF no return value then that domain is not on sale
-    getBuyNowPrice: async (tokenId: string): Promise<BuyNowListing> => {
+    getBuyNowListing: async (tokenId: string): Promise<BuyNowListing> => {
       if (!tokenId) throw Error("Must provide a valid tokenId");
 
-      let contract = await getZAuctionContract(
+      const contract = await getZAuctionContract(
         config.web3Provider,
         config.zAuctionAddress
       );
@@ -402,14 +409,11 @@ export const createInstance = (config: Config): Instance => {
       const listing: BuyNowListing = await contract.priceInfo(tokenId);
 
       if (listing.price.eq("0")) {
-        contract = await getZAuctionContract(
-          config.web3Provider,
-          config.zAuctionLegacyAddress
+        throw Error(
+          `Domain with ID ${tokenId} is currently not listed for buyNow`
         );
-
-        const listing: BuyNowListing = await contract.priceInfo(tokenId);
-        return listing;
       }
+
       return listing;
     },
     setBuyNowPrice: async (

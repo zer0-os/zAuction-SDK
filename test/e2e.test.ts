@@ -1,8 +1,11 @@
 import { ethers } from "ethers";
 import * as dotenv from "dotenv";
 import { Web3Provider } from "@ethersproject/providers";
-import { expect } from "chai";
-import { getLogger, setLogLevel } from "../src/utilities";
+import { expect, use } from "chai";
+import { getLogger } from "../src/utilities";
+import * as chaiAsPromised from "chai-as-promised";
+
+use(chaiAsPromised.default);
 
 const logger = getLogger("tests");
 
@@ -33,6 +36,8 @@ describe("SDK test", () => {
     "0x6e35a7ecbf6b6368bb8d42ee9b3dcfc8404857635036e60196931d4458c07622";
   const happyDogsYayDomain =
     "0xef19e4b21819162b1083f981cf7330e784b8cd98b0a603bd5dd02e1fc5bc7fc4";
+  const wilderCatsDomain =
+    "0x617b3c878abfceb89eb62b7a24f393569c822946bbc9175c6c65a7d2647c5402";
 
   const provider = new ethers.providers.JsonRpcProvider(process.env.INFURA_URL);
 
@@ -123,6 +128,7 @@ describe("SDK test", () => {
   });
   it("Lists buyNow sales", async () => {
     const sales: TokenBuy[] = await sdk.listBuyNowSales(wilderPancakesDomain);
+    console.log(sales);
   });
   it("List bids through the API with no filter", async () => {
     const bids: TokenBidCollection = await sdk.listBids([wilderPancakesDomain]);
@@ -229,6 +235,16 @@ describe("SDK test", () => {
     //   console.log(tx.hash);
     //   const receipt = await tx.wait(1);
     //   console.log(receipt);
+  });
+  it("Gets a buy now listed for a token that has been listed", async () => {
+    const listing = await sdk.getBuyNowListing(wilderPancakesDomain);
+    console.log(listing.price.toString());
+  });
+  it("Fails when we try to get a buyNowListing for a domain that was not listed", async () => {
+    const listing = sdk.getBuyNowListing(wilderCatsDomain);
+    await expect(listing).to.be.rejectedWith(
+      `Domain with ID ${wilderCatsDomain} is currently not listed for buyNow`
+    );
   });
   it("Sets a buy now price", async () => {
     const paymentToken = await sdk.getPaymentTokenForDomain(
