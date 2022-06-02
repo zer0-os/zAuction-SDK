@@ -403,11 +403,27 @@ export const createInstance = (config: Config): Instance => {
         config.web3Provider,
         config.zAuctionAddress
       );
-      // getBuyNowPrice returns the listing because we also
-      // want to be able to confirm the holder is the domain owner
-      // in the zNS-SDK downstream
+
+      const hub = await getZnsHubContract(
+        config.web3Provider,
+        config.znsHubAddress
+      );
+
+      const registrarAddress = await hub.getRegistrarForDomain(tokenId);
+
+      const tokenContract = await getERC721Contract(
+        config.web3Provider,
+        registrarAddress
+      );
+      const owner = await tokenContract.ownerOf(tokenId);
+
       const listing: BuyNowListing = await contract.priceInfo(tokenId);
-    
+      if (listing.holder !== owner) {
+        throw Error(
+          `Domain with ID ${tokenId} has changed owners since this buyNow listing was created so it is invalid`
+        );
+      }
+
       if (listing.price.eq("0")) {
         throw Error(
           `Domain with ID ${tokenId} is currently not listed for buyNow`
@@ -419,8 +435,8 @@ export const createInstance = (config: Config): Instance => {
         const newListing: BuyNowListing = {
           holder: listing.holder,
           price: listing.price,
-          paymentToken: config.wildTokenAddress
-        }
+          paymentToken: config.wildTokenAddress,
+        };
         return newListing;
       }
 
