@@ -1,11 +1,11 @@
 import { ApolloClient } from "@apollo/client/core";
 import { ListAllSalesQueryOptions } from "../types";
-import * as queries from "../queries";
 import { getLogger } from "../../utilities";
+import { TokenSaleCollection } from "../../types";
+import * as queries from "../queries";
+import * as helpers from "../helpers";
 
 const logger = getLogger("subgraph:actions:listAllSales");
-import { TokenSaleCollection } from "../../types";
-import * as helpers from "../helpers";
 
 export const listAllSales = async <T>(
   apolloClient: ApolloClient<T>,
@@ -20,7 +20,9 @@ export const listAllSales = async <T>(
   // eslint-disable-next-line no-constant-condition
   let allSalesLength = 0;
   while (true) {
-    logger.trace(`Querying for ${options.count} sales starting at ${options.skipCount}`);
+    logger.trace(
+      `Querying for ${options.count} sales starting at ${options.skipCount}`
+    );
 
     const sales = await helpers.listSales(
       apolloClient,
@@ -49,6 +51,6 @@ export const listAllSales = async <T>(
     options.skipCount += sales.length;
   }
 
-  logger.trace(`Found ${allSalesLength} sales for all domains`)
+  logger.trace(`Found ${allSalesLength} sales for all domains`);
   return collection;
 };

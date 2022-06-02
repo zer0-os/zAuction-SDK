@@ -15,6 +15,7 @@ import {
   NewBidParameters,
   TokenBidCollection,
   TokenBuy,
+  TokenBuyNowListingCollection,
   TokenSale,
   TokenSaleCollection,
 } from "../src";
@@ -67,8 +68,8 @@ describe("SDK test", () => {
   let astroBidsArrayLength: number;
   it("Logger works", async () => {
     logger.log("Hello world");
-    assert(logger)
-  })
+    assert(logger);
+  });
   it("Checks allowance by paymentTokenAddress", async () => {
     const allowance = await sdk.getZAuctionSpendAllowance(
       astroTestAccount,
@@ -82,22 +83,26 @@ describe("SDK test", () => {
       wilderPancakesDomain
     );
     expect(allowance).to.not.eq(ethers.BigNumber.from("0"));
-  })
+  });
   it("Checks allowance by bid ", async () => {
     const bid = {
-      bidToken: config.wildTokenAddress
-    } as Bid
+      bidToken: config.wildTokenAddress,
+    } as Bid;
     const allowance = await sdk.getZAuctionSpendAllowanceByBid(
       astroTestAccount,
       bid
     );
     expect(allowance).to.not.eq(ethers.BigNumber.from("0"));
-  })
+  });
   it("Lists sales for a specific domain", async () => {
     const sales: TokenSale[] = await sdk.listSales(wilderPancakesDomain);
   });
   it("Lists all sales", async () => {
     const sales: TokenSaleCollection = await sdk.listAllSales();
+  });
+  it("Lists all buyNow listings", async () => {
+    const listings: TokenBuyNowListingCollection =
+      await sdk.listAllBuyNowListings();
   });
   it("Lists bids and confirms we are connected", async () => {
     const bids: Bid[] = await sdk.listBidsByAccount(astroTestAccount);

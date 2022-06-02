@@ -14,8 +14,9 @@ export interface Config {
 
 export interface Instance {
   listSales: (tokenId: string) => Promise<TokenSale[]>;
-  listBuyNowSales: (tokenId: string) => Promise<TokenBuy[]>;
   listAllSales: () => Promise<TokenSaleCollection>;
+  listAllBuyNowListings: () => Promise<TokenBuyNowListingCollection>;
+  listBuyNowSales: (tokenId: string) => Promise<TokenBuy[]>;
   listBids: (tokenIds: string[]) => Promise<TokenBidCollection>;
   listBidsByAccount: (account: string) => Promise<Bid[]>;
   placeBid: (
@@ -121,6 +122,16 @@ export interface TokenBuy {
   timestamp: string;
   paymentToken: string;
   topLevelDomainId: string;
+}
+
+export interface TokenBuyNowListing {
+  tokenId: string;
+  amount: string;
+  paymentToken: string;
+}
+
+export interface TokenBuyNowListingCollection {
+  [tokenId: string]: TokenBuyNowListing[];
 }
 
 export interface TokenSaleCollection {
