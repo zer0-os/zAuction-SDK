@@ -16,6 +16,7 @@ import {
   TokenBuy,
   TokenSaleCollection,
   TokenBidCollection,
+  TokenBuyNowListingCollection,
   TokenBidFilter,
 } from "./types";
 import {
@@ -59,6 +60,11 @@ export const createInstance = (config: Config): Instance => {
       const tokenSaleCollection: TokenSaleCollection =
         await subgraphClient.listAllSales();
       return tokenSaleCollection;
+    },
+    listAllBuyNowListings: async () => {
+      const tokenBuyNowListingCollection: TokenBuyNowListingCollection =
+        await subgraphClient.listAllBuyNowListings();
+      return tokenBuyNowListingCollection;
     },
     listBuyNowSales: async (tokenId: string): Promise<TokenBuy[]> => {
       const hub = await getZnsHubContract(

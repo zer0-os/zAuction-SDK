@@ -2,6 +2,16 @@ export interface AccountDto {
   id: string;
 }
 
+export interface BuyNowListingDto {
+  id: string; // Will be the tokenId
+  amount: string;
+  paymentToken: string;
+}
+
+export interface TokenBuyNowListingsDto {
+  buyNowListings: BuyNowListingDto[];
+}
+
 export interface TokenSaleDto {
   id: string;
   bidNonce: string;
@@ -39,6 +49,9 @@ export interface ListAllSalesQueryOptions {
   count: number;
   skipCount: number;
 }
+
+export interface ListAllBuyNowListingsQueryOptions
+  extends ListAllSalesQueryOptions {}
 
 export interface ListSalesQueryOptions {
   contract: string;

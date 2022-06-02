@@ -19,6 +19,7 @@ import {
   TokenBidCollection,
   TokenBidFilter,
   TokenBuy,
+  TokenBuyNowListingCollection,
   TokenSale,
   TokenSaleCollection,
 } from "../src";
@@ -104,6 +105,10 @@ describe("SDK test", () => {
   });
   it("Lists all sales", async () => {
     const sales: TokenSaleCollection = await sdk.listAllSales();
+  });
+  it("Lists all buyNow listings", async () => {
+    const listings: TokenBuyNowListingCollection =
+      await sdk.listAllBuyNowListings();
   });
   it("Lists bids and with filter as 'cancelled'", async () => {
     const filter: TokenBidFilter = TokenBidFilter.Cancelled;
@@ -239,10 +244,10 @@ describe("SDK test", () => {
     const listing = await sdk.getBuyNowListing(wilderPancakesDomain);
     expect(listing.price.toString()).to.not.eq(ethers.constants.HashZero)
   });
-  it("Fails when we try to get a buyNowListing for a domain that was not listed", async () => {
+  it("Fails when we try to get a buyNowListing for a domain where the owner has changed", async () => {
     const listing = sdk.getBuyNowListing(wilderCatsDomain);
     await expect(listing).to.be.rejectedWith(
-      `Domain with ID ${wilderCatsDomain} is currently not listed for buyNow`
+      `Domain with ID ${wilderCatsDomain} has changed owners since this buyNow listing was created so it is invalid`
     );
   });
   it("Sets a buy now price", async () => {
