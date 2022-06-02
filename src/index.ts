@@ -407,11 +407,21 @@ export const createInstance = (config: Config): Instance => {
       // want to be able to confirm the holder is the domain owner
       // in the zNS-SDK downstream
       const listing: BuyNowListing = await contract.priceInfo(tokenId);
-
+    
       if (listing.price.eq("0")) {
         throw Error(
           `Domain with ID ${tokenId} is currently not listed for buyNow`
         );
+      }
+
+      if (listing.paymentToken === ethers.constants.AddressZero) {
+        // Object is readonly, must make a new listing
+        const newListing: BuyNowListing = {
+          holder: listing.holder,
+          price: listing.price,
+          paymentToken: config.wildTokenAddress
+        }
+        return newListing;
       }
 
       return listing;

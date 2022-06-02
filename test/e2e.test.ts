@@ -128,7 +128,6 @@ describe("SDK test", () => {
   });
   it("Lists buyNow sales", async () => {
     const sales: TokenBuy[] = await sdk.listBuyNowSales(wilderPancakesDomain);
-    console.log(sales);
   });
   it("List bids through the API with no filter", async () => {
     const bids: TokenBidCollection = await sdk.listBids([wilderPancakesDomain]);
@@ -238,7 +237,7 @@ describe("SDK test", () => {
   });
   it("Gets a buy now listed for a token that has been listed", async () => {
     const listing = await sdk.getBuyNowListing(wilderPancakesDomain);
-    console.log(listing.price.toString());
+    expect(listing.price.toString()).to.not.eq(ethers.constants.HashZero)
   });
   it("Fails when we try to get a buyNowListing for a domain that was not listed", async () => {
     const listing = sdk.getBuyNowListing(wilderCatsDomain);
