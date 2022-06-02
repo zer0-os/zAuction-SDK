@@ -2,7 +2,7 @@ import { ethers } from "ethers";
 import * as dotenv from "dotenv";
 import { Web3Provider } from "@ethersproject/providers";
 import { expect } from "chai";
-import { getLogger, setLogLevel } from "../src/utilities";
+import { getLogger } from "../src/utilities";
 
 const logger = getLogger("tests");
 
