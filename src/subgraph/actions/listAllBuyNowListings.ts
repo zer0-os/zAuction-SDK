@@ -51,7 +51,6 @@ export const listAllBuyNowListings = async <T>(
       if(!collection[listing.tokenId]) {
         collection[listing.tokenId] = [];
       }
-      console.log(listing.amount)
       if (listing.amount !== "0") {
         collection[listing.tokenId].push(listing);
         allListingsLength++;
