@@ -1,4 +1,4 @@
-import { TokenBidCollection } from "../types";
+import { TokenBidCollection, TokenBidFilter } from "../types";
 import * as actions from "./actions";
 import { Bid, BidParameters, SignableBid, SignedBid } from "./types";
 import { getLogger } from "../utilities";
@@ -11,7 +11,7 @@ export interface ApiClient {
     cancelMessageSignature: string,
     bidMessageSignature: string
   ) => Promise<void>;
-  listBidsForTokens: (tokenIds: string[]) => Promise<TokenBidCollection>;
+  listBidsForTokens: (tokenIds: string[], filter?: TokenBidFilter) => Promise<TokenBidCollection>;
   listBidsByAccount: (account: string) => Promise<Bid[]>;
 }
 
@@ -41,9 +41,9 @@ export const createClient = (apiUri: string): ApiClient => {
         signedBidMessage
       );
     },
-    listBidsForTokens: (tokenIds: string[]): Promise<TokenBidCollection> => {
+    listBidsForTokens: (tokenIds: string[], filter?: TokenBidFilter): Promise<TokenBidCollection> => {
       logger.debug(`List bids for domains ${tokenIds}`);
-      return actions.listBidsForTokens(apiUri, tokenIds)
+      return actions.listBidsForTokens(apiUri, tokenIds, filter)
     },
     listBidsByAccount: (account: string): Promise<Bid[]> => {
       logger.debug(`List bids by account ${account}`);

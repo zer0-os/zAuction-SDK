@@ -14,6 +14,7 @@ import {
   createInstance,
   NewBidParameters,
   TokenBidCollection,
+  TokenBidFilter,
   TokenBuy,
   TokenBuyNowListingCollection,
   TokenSale,
@@ -104,18 +105,36 @@ describe("SDK test", () => {
     const listings: TokenBuyNowListingCollection =
       await sdk.listAllBuyNowListings();
   });
-  it("Lists bids and confirms we are connected", async () => {
-    const bids: Bid[] = await sdk.listBidsByAccount(astroTestAccount);
-    astroBidsArrayLength = bids.length;
+  it("Lists bids and with filter as 'cancelled'", async () => {
+    const filter: TokenBidFilter = TokenBidFilter.Cancelled;
+    const bids: TokenBidCollection = await sdk.listBids(
+      [wilderPancakesDomain],
+      filter
+    );
+  });
+  it("Lists bids and with filter as 'active'", async () => {
+    const filter: TokenBidFilter = TokenBidFilter.Active;
+    const bids: TokenBidCollection = await sdk.listBids(
+      [wilderPancakesDomain],
+      filter
+    );
+  });
+  it("Lists bids and with filter as 'all'", async () => {
+    const filter: TokenBidFilter = TokenBidFilter.All;
+    const bids: TokenBidCollection = await sdk.listBids(
+      [wilderPancakesDomain],
+      filter
+    );
   });
   it("Lists buyNow sales", async () => {
     const sales: TokenBuy[] = await sdk.listBuyNowSales(wilderPancakesDomain);
   });
-  it("List bids through the API", async () => {
+  it("List bids through the API with no filter", async () => {
     const bids: TokenBidCollection = await sdk.listBids([wilderPancakesDomain]);
   });
   it("Lists bids by account", async () => {
-    const bids: Bid[] = await sdk.listBidsByAccount(mainAccount);
+    const bids: Bid[] = await sdk.listBidsByAccount(astroTestAccount);
+    astroBidsArrayLength = bids.length;
   });
   it("Places a bid", async () => {
     const amount = ethers.utils.parseEther("0.0000001").toString();
