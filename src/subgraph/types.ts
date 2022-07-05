@@ -50,8 +50,7 @@ export interface ListAllSalesQueryOptions {
   skipCount: number;
 }
 
-export interface ListAllBuyNowListingsQueryOptions
-  extends ListAllSalesQueryOptions {}
+export type ListAllBuyNowListingsQueryOptions = ListAllSalesQueryOptions;
 
 export interface ListSalesQueryOptions {
   contract: string;

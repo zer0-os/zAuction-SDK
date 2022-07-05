@@ -1,2 +1,2 @@
 export type Maybe<T> = T | undefined;
-export * from "./logging"
+export * from "./logging";
