@@ -13,7 +13,9 @@ export const getBuyNowListing = async (
   tokenId: string,
   config: Config
 ): Promise<Maybe<BuyNowListing>> => {
-  if (!tokenId) throw Error("Must provide a valid tokenId");
+  if (!tokenId || tokenId === ethers.constants.HashZero) {
+    throw Error("Must provide a valid tokenId");
+  }
 
   const contract = await getZAuctionContract(
     config.web3Provider,

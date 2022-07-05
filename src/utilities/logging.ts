@@ -1,7 +1,8 @@
 import { Consola, LogLevel } from "consola";
 
-// Default level is Info
-const logger = new Consola({ level: 3 });
+// For details on logging levels
+// https://github.com/unjs/consola/blob/master/types/consola.d.ts
+const logger = new Consola({ level: LogLevel.Info });
 
 export const getLogger = (tag?: string): Consola => {
   if (tag) {
@@ -11,7 +12,7 @@ export const getLogger = (tag?: string): Consola => {
 };
 
 export const setLogLevel = (level?: LogLevel): void => {
-  if (level === undefined || typeof level != "number") {
+  if (!level || typeof level != "number") {
     console.log("Provide a number");
     Object.entries(LogLevel).forEach(([key, value]) => {
       console.log(`${key}=${value}`);
