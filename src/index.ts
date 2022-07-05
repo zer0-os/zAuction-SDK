@@ -26,7 +26,7 @@ import {
 } from "./contracts";
 import { IZNSHub } from "./contracts/types";
 import { approveDomainTransfer, approveSpender } from "./actions";
-import { getLogger } from "./utilities/";
+import { getLogger, Maybe } from "./utilities/";
 
 const logger = getLogger("zauction-sdk");
 
@@ -402,50 +402,13 @@ export const createInstance = (config: Config): Instance => {
     },
 
     // IF no return value then that domain is not on sale
-    getBuyNowListing: async (tokenId: string): Promise<BuyNowListing> => {
-      if (!tokenId) throw Error("Must provide a valid tokenId");
-
-      const contract = await getZAuctionContract(
-        config.web3Provider,
-        config.zAuctionAddress
+    getBuyNowListing: async (
+      tokenId: string
+    ): Promise<Maybe<BuyNowListing>> => {
+      const listing: Maybe<BuyNowListing> = await actions.getBuyNowListing(
+        tokenId,
+        config
       );
-
-      const hub = await getZnsHubContract(
-        config.web3Provider,
-        config.znsHubAddress
-      );
-
-      const registrarAddress = await hub.getRegistrarForDomain(tokenId);
-
-      const tokenContract = await getERC721Contract(
-        config.web3Provider,
-        registrarAddress
-      );
-      const owner = await tokenContract.ownerOf(tokenId);
-
-      const listing: BuyNowListing = await contract.priceInfo(tokenId);
-      if (listing.holder !== owner) {
-        throw Error(
-          `Domain with ID ${tokenId} has changed owners since this buyNow listing was created so it is invalid`
-        );
-      }
-
-      if (listing.price.eq("0")) {
-        throw Error(
-          `Domain with ID ${tokenId} is currently not listed for buyNow`
-        );
-      }
-
-      if (listing.paymentToken === ethers.constants.AddressZero) {
-        // Object is readonly, must make a new listing
-        const newListing: BuyNowListing = {
-          holder: listing.holder,
-          price: listing.price,
-          paymentToken: config.wildTokenAddress,
-        };
-        return newListing;
-      }
-
       return listing;
     },
     setBuyNowPrice: async (

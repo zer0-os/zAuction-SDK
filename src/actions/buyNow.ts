@@ -17,7 +17,7 @@ export const buyNow = async (
   params: BuyNowParams,
   signer: ethers.Signer,
   config: Config
-) => {
+): Promise<ethers.ContractTransaction> => {
   const buyer = await signer.getAddress();
 
   logger.trace(
@@ -91,7 +91,7 @@ export const buyNow = async (
 
   const allowance = await getPaymentTokenAllowance(
     buyer,
-    listing.paymentToken!,
+    listing.paymentToken,
     config.web3Provider,
     config.zAuctionAddress
   );

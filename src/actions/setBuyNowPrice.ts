@@ -1,5 +1,9 @@
 import { ethers } from "ethers";
-import { getERC721Contract, getZAuctionContract, getZnsHubContract } from "../contracts";
+import {
+  getERC721Contract,
+  getZAuctionContract,
+  getZnsHubContract,
+} from "../contracts";
 import { IZNSHub } from "../contracts/types";
 import { BuyNowParams } from "../types";
 
@@ -10,11 +14,8 @@ export const setBuyNowPrice = async (
   signer: ethers.Signer,
   znsHubAddress: string,
   zAuctionAddress: string
-) => {
-  const hub: IZNSHub = await getZnsHubContract(
-    signer,
-    znsHubAddress
-  );
+): Promise<ethers.ContractTransaction> => {
+  const hub: IZNSHub = await getZnsHubContract(signer, znsHubAddress);
   const domainContract = await hub.getRegistrarForDomain(params.tokenId);
 
   const nftContract = await getERC721Contract(signer, domainContract);
@@ -38,10 +39,7 @@ export const setBuyNowPrice = async (
     throw Error("Seller did not approve zAuction to transfer NFT");
   }
 
-  const contract = await getZAuctionContract(
-    signer,
-    zAuctionAddress
-  );
+  const contract = await getZAuctionContract(signer, zAuctionAddress);
 
   const listing = await contract.priceInfo(params.tokenId);
 
@@ -55,4 +53,4 @@ export const setBuyNowPrice = async (
     .connect(signer)
     .setBuyPrice(params.amount, params.tokenId);
   return tx;
-}
+};

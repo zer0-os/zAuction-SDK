@@ -1,7 +1,7 @@
-import { Consola, LogLevel }  from "consola";
+import { Consola, LogLevel } from "consola";
 
 // Default level is Info
-const logger = new Consola({level: 3});
+const logger = new Consola({ level: 3 });
 
 export const getLogger = (tag?: string): Consola => {
   if (tag) {
@@ -10,7 +10,7 @@ export const getLogger = (tag?: string): Consola => {
   return logger;
 };
 
-export const setLogLevel = (level?: LogLevel) => {
+export const setLogLevel = (level?: LogLevel): void => {
   if (level === undefined || typeof level != "number") {
     console.log("Provide a number");
     Object.entries(LogLevel).forEach(([key, value]) => {
@@ -22,4 +22,4 @@ export const setLogLevel = (level?: LogLevel) => {
   logger.level = level;
 };
 
-(global as any).setZAuctionSDKLogLevel = setLogLevel
+(global as any).setZAuctionSDKLogLevel = setLogLevel;

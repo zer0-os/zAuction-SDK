@@ -1,5 +1,6 @@
 import { ethers } from "ethers";
 import { Bid } from "./api/types";
+import { Maybe } from "./utilities";
 export { Bid };
 
 export interface Config {
@@ -93,7 +94,7 @@ export interface Instance {
     params: BuyNowParams,
     signer: ethers.Signer
   ) => Promise<ethers.ContractTransaction>;
-  getBuyNowListing: (tokenId: string) => Promise<BuyNowListing>;
+  getBuyNowListing: (tokenId: string) => Promise<Maybe<BuyNowListing>>;
   setBuyNowPrice: (
     params: BuyNowParams,
     signer: ethers.Signer
@@ -148,7 +149,7 @@ export interface TokenBidCollection {
 export enum TokenBidFilter {
   All,
   Active,
-  Cancelled
+  Cancelled,
 }
 
 export type PlaceBidStatusCallback = (status: PlaceBidStatus) => void;

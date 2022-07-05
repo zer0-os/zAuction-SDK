@@ -2,7 +2,7 @@ import { ethers } from "ethers";
 import * as dotenv from "dotenv";
 import { Web3Provider } from "@ethersproject/providers";
 import { expect, use } from "chai";
-import { getLogger } from "../src/utilities";
+import { getLogger, Maybe } from "../src/utilities";
 import * as chaiAsPromised from "chai-as-promised";
 
 use(chaiAsPromised.default);
@@ -12,6 +12,7 @@ const logger = getLogger("tests");
 dotenv.config();
 
 import {
+  BuyNowListing,
   BuyNowParams,
   Config,
   createInstance,
@@ -241,14 +242,16 @@ describe("SDK test", () => {
     //   console.log(receipt);
   });
   it("Gets a buy now listed for a token that has been listed", async () => {
-    const listing = await sdk.getBuyNowListing(wilderPancakesDomain);
-    expect(listing.price.toString()).to.not.eq(ethers.constants.HashZero)
-  });
-  it("Fails when we try to get a buyNowListing for a domain where the owner has changed", async () => {
-    const listing = sdk.getBuyNowListing(wilderCatsDomain);
-    await expect(listing).to.be.rejectedWith(
-      `Domain with ID ${wilderCatsDomain} has changed owners since this buyNow listing was created so it is invalid`
+    const listing: Maybe<BuyNowListing> = await sdk.getBuyNowListing(
+      wilderPancakesDomain
     );
+    if (listing) {
+      expect(listing.price.toString()).to.not.eq(ethers.constants.HashZero);
+    }
+  });
+  it("Returns undefined when we try to get a buyNowListing for a domain where the owner has changed", async () => {
+    const listing = await sdk.getBuyNowListing(wilderCatsDomain);
+    expect(listing).to.be.eq(undefined);
   });
   it("Sets a buy now price", async () => {
     const paymentToken = await sdk.getPaymentTokenForDomain(
