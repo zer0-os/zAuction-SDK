@@ -83,11 +83,18 @@ export const createInstance = (config: Config): Instance => {
       filter?: TokenBidFilter
     ): Promise<TokenBidCollection> => {
       const tokenBidCollection: TokenBidCollection =
-        await apiClient.listBidsForTokens(tokenIds, filter);
+        await apiClient.listBidsForTokens(
+          tokenIds,
+          config.wildTokenAddress,
+          filter
+        );
       return tokenBidCollection;
     },
     listBidsByAccount: async (account: string) => {
-      const bidsList: Bid[] = await apiClient.listBidsByAccount(account);
+      const bidsList: Bid[] = await apiClient.listBidsByAccount(
+        account,
+        config.wildTokenAddress
+      );
       return bidsList;
     },
     placeBid: async (

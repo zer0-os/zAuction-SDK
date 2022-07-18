@@ -34,11 +34,11 @@ export const listBuyNowSales = async <T>(
       buyer: e.buyer.id,
       timestamp: e.timestamp,
       paymentToken: e.paymentToken ?? wildToken,
-      topLevelDomainId: e.topLevelDomainId
-    }
+      topLevelDomainId: e.topLevelDomainId,
+    };
     return buy;
   });
 
-  logger.trace(`Found ${buys.length} buy now sales`)
+  logger.trace(`Found ${buys.length} buy now sales`);
   return buys;
 };
