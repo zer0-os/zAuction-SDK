@@ -19,6 +19,7 @@ export const listAllSales = async <T>(
 
   // eslint-disable-next-line no-constant-condition
   let allSalesLength = 0;
+  /* eslint-disable-next-line no-constant-condition */
   while (true) {
     logger.trace(
       `Querying for ${options.count} sales starting at ${options.skipCount}`

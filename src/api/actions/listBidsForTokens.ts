@@ -12,6 +12,7 @@ interface BidsBulkDto {
 
 export const listBidsForTokens = async (
   apiUrl: string,
+  wildTokenAddress: string,
   tokenIds: string[],
   filter?: TokenBidFilter
 ): Promise<TokenBidCollection> => {
@@ -25,10 +26,14 @@ export const listBidsForTokens = async (
 
   let totalBidsForDomains = 0;
   for (const [tokenId, bids] of Object.entries(response)) {
-    bidCollection[tokenId] = bids.map((e) => convertBidDtoToBid(e));
+    bidCollection[tokenId] = bids.map((e) =>
+      convertBidDtoToBid(e, wildTokenAddress)
+    );
     totalBidsForDomains += bids.length;
   }
-  logger.trace(`Found ${totalBidsForDomains} bids for $${tokenIds.length} domains`);
+  logger.trace(
+    `Found ${totalBidsForDomains} bids for $${tokenIds.length} domains`
+  );
 
   return bidCollection;
 };
