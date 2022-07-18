@@ -23,5 +23,4 @@ export const setLogLevel = (level?: LogLevel): void => {
   logger.level = level;
 };
 
-/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 (global as any).setZAuctionSDKLogLevel = setLogLevel;

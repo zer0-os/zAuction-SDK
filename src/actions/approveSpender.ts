@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { getERC20Contract } from "../contracts";
-import { IERC20 } from "../contracts/types";
+import { IERC20, } from "../contracts/types";
 import { getLogger } from "../utilities";
 
 const logger = getLogger("actions:approveSpender");
@@ -13,13 +13,8 @@ export const approveSpender = async (
 ): Promise<ethers.ContractTransaction> => {
   const signerAddress = await signer.getAddress();
 
-  const paymentToken: IERC20 = await getERC20Contract(
-    signer,
-    paymentTokenAddress
-  );
-  const tx = await paymentToken
-    .connect(signer)
-    .approve(zAuctionAddress, ethers.constants.MaxUint256);
+  const paymentToken: IERC20 = await getERC20Contract(signer, paymentTokenAddress);
+  const tx = await paymentToken.connect(signer).approve(zAuctionAddress, ethers.constants.MaxUint256);
   logger.trace(
     `User ${signerAddress} has approved zAuction to spend ${paymentToken}`
   );

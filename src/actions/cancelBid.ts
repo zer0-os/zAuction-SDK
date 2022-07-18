@@ -20,14 +20,19 @@ export const cancelBid = async (
   const encodedCancelMessage = await apiClient.encodeCancelBid(
     bid.signedMessage
   );
-  const signedCancelMessage = await signer.signMessage(encodedCancelMessage);
-
+  const signedCancelMessage = await signer.signMessage(
+    encodedCancelMessage
+  );
+  
   // Always cancel the bid through the API
   await apiClient.submitCancelBid(signedCancelMessage, bid.signedMessage);
 
   // If enabled, also cancel the bid with the zAuction smart contract
   if (cancelOnChain) {
-    const zAuction = await getZAuctionContract(signer, zAuctionAddress);
+    const zAuction = await getZAuctionContract(
+      signer,
+      zAuctionAddress
+    );
 
     const account = await signer.getAddress();
 

@@ -21,7 +21,6 @@ export const listAllBuyNowListings = async <T>(
   };
 
   let allListingsLength = 0;
-  /* eslint-disable-next-line no-constant-condition */
   while (true) {
     logger.trace(
       `Querying for ${options.count} buy now listings starting at ${options.skipCount}`
@@ -38,19 +37,18 @@ export const listAllBuyNowListings = async <T>(
       throw queryResult.error;
     }
 
-    const listings: TokenBuyNowListing[] = queryResult.data.buyNowListings.map(
-      (e) => {
+    const listings: TokenBuyNowListing[] =
+      queryResult.data.buyNowListings.map((e) => {
         const listing: TokenBuyNowListing = {
           tokenId: e.id,
           amount: e.amount,
           paymentToken: e.paymentToken ?? wildToken,
         };
         return listing;
-      }
-    );
+      });
 
     for (const listing of listings) {
-      if (!collection[listing.tokenId]) {
+      if(!collection[listing.tokenId]) {
         collection[listing.tokenId] = [];
       }
       if (listing.amount !== "0") {
@@ -59,11 +57,11 @@ export const listAllBuyNowListings = async <T>(
       }
     }
 
-    if (listings.length < options.count) {
+    if(listings.length < options.count) {
       break;
     }
   }
 
-  logger.trace(`Found ${allListingsLength} buy now listings`);
+  logger.trace(`Found ${allListingsLength} buy now listings`)
   return collection;
 };

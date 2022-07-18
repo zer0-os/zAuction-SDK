@@ -9,9 +9,7 @@ export const submitCancelMessage = async (
   signedBidMessage: string
 ): Promise<void> => {
   const uri = `${apiUrl}/bid/cancel`;
-  logger.trace(
-    `Calling ${uri} to submit cancelled bid with signed message${signedCancelMessage}}`
-  );
+  logger.trace(`Calling ${uri} to submit cancelled bid with signed message${signedCancelMessage}}`);
 
   const softFailMessage =
     "Already cancelled in the API but allowing execution to continue to cancel in the contract as well";

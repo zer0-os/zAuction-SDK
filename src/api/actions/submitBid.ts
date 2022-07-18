@@ -9,9 +9,7 @@ export const submitBid = async (
   signedBid: SignedBid
 ): Promise<void> => {
   const uri = `${apiUrl}/bids`;
-  logger.trace(
-    `Calling ${uri} to submit bid with bid nonce ${signedBid.bid.bidNonce}}`
-  );
+  logger.trace(`Calling ${uri} to submit bid with bid nonce ${signedBid.bid.bidNonce}}`);
 
   await makeApiCall(uri, "POST", {
     account: signedBid.bid.bidder,
@@ -23,6 +21,6 @@ export const submitBid = async (
     minimumBid: "0",
     startBlock: signedBid.bid.startBlock,
     expireBlock: signedBid.bid.expireBlock,
-    bidToken: signedBid.bid.bidToken,
+    bidToken: signedBid.bid.bidToken
   });
 };

@@ -20,11 +20,9 @@ export const getPaymentTokenAllowance = async (
     paymentTokenAddress
   );
   const allowance = await paymentToken.allowance(account, zAuctionAddress);
-
+  
   logger.trace(
-    `User ${account} has allowance of ${ethers.utils
-      .formatEther(allowance)
-      .toString()} for payment token ${paymentToken}`
+    `User ${account} has allowance of ${ethers.utils.formatEther(allowance).toString()} for payment token ${paymentToken}`
   );
   return allowance;
 };

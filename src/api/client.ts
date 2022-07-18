@@ -11,15 +11,8 @@ export interface ApiClient {
     cancelMessageSignature: string,
     bidMessageSignature: string
   ) => Promise<void>;
-  listBidsForTokens: (
-    tokenIds: string[],
-    wildTokenAddress: string,
-    filter?: TokenBidFilter
-  ) => Promise<TokenBidCollection>;
-  listBidsByAccount: (
-    account: string,
-    wildTokenAddress: string
-  ) => Promise<Bid[]>;
+  listBidsForTokens: (tokenIds: string[], filter?: TokenBidFilter) => Promise<TokenBidCollection>;
+  listBidsByAccount: (account: string) => Promise<Bid[]>;
 }
 
 export const createClient = (apiUri: string): ApiClient => {
@@ -34,44 +27,28 @@ export const createClient = (apiUri: string): ApiClient => {
       return actions.submitBid(apiUri, signedBid);
     },
     encodeCancelBid: async (signedBidMessage: string): Promise<string> => {
-      logger.debug(
-        `Encode to cancel a bid with signed message ${signedBidMessage}}`
-      );
-      return actions.encodeCancelMessage(apiUri, signedBidMessage);
+      logger.debug(`Encode to cancel a bid with signed message ${signedBidMessage}}`);
+      return actions.encodeCancelMessage(apiUri, signedBidMessage)
     },
     submitCancelBid: async (
       signedCancelMessage: string,
       signedBidMessage: string
     ): Promise<void> => {
-      logger.debug(
-        `Submit cancelled bid with signed message ${signedCancelMessage}`
-      );
+      logger.debug(`Submit cancelled bid with signed message ${signedCancelMessage}`);
       actions.submitCancelMessage(
         apiUri,
         signedCancelMessage,
         signedBidMessage
       );
     },
-    listBidsForTokens: (
-      tokenIds: string[],
-      wildTokenAddress: string,
-      filter?: TokenBidFilter
-    ): Promise<TokenBidCollection> => {
+    listBidsForTokens: (tokenIds: string[], filter?: TokenBidFilter): Promise<TokenBidCollection> => {
       logger.debug(`List bids for domains ${tokenIds}`);
-      return actions.listBidsForTokens(
-        apiUri,
-        wildTokenAddress,
-        tokenIds,
-        filter
-      );
+      return actions.listBidsForTokens(apiUri, tokenIds, filter)
     },
-    listBidsByAccount: (
-      account: string,
-      wildTokenAddress: string
-    ): Promise<Bid[]> => {
+    listBidsByAccount: (account: string): Promise<Bid[]> => {
       logger.debug(`List bids by account ${account}`);
-      return actions.listBidsForAccount(apiUri, account, wildTokenAddress);
-    },
+      return actions.listBidsForAccount(apiUri, account)
+    }
   };
 
   return apiClient;
