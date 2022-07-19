@@ -11,7 +11,7 @@ export const listSales = async <T>(
   query: DocumentNode,
   variables: ListSalesQueryOptions | ListAllSalesQueryOptions,
   wildToken: string
-) => {
+): Promise<TokenSale[]> => {
   const queryResult = await apolloClient.query<TokenSalesDto>({
     query: query,
     variables: variables,
