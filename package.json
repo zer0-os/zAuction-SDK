@@ -10,7 +10,8 @@
     "yarn": ">=1.15.2"
   },
   "files": [
-    "lib/"
+    "lib/",
+    "src/"
   ],
   "scripts": {
     "build": "tsc --build --verbose ./tsconfig.build.json",
