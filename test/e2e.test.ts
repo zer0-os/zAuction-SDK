@@ -62,13 +62,13 @@ describe("SDK test", () => {
 
   const config: Config = {
     // Rinkeby addresses
-    apiUri: "https://zauction-api-rinkeby.herokuapp.com/api",
+    apiUri: "https://zauction-api-goerli.herokuapp.com/api",
     subgraphUri:
-      "https://api.thegraph.com/subgraphs/name/zer0-os/zauction-rinkeby",
-    zAuctionAddress: "0xb2416Aed6f5439Ffa0eCCAaa2b643f3D9828f86B",
-    zAuctionLegacyAddress: "0x376030f58c76ECC288a4fce8F88273905544bC07",
-    wildTokenAddress: "0x3Ae5d499cfb8FB645708CC6DA599C90e64b33A79",
-    znsHubAddress: "0x90098737eB7C3e73854daF1Da20dFf90d521929a",
+      "https://api.thegraph.com/subgraphs/name/zer0-os/zauction-goerli",
+    zAuctionAddress: "0xdF0f9F007A38aD25E0c02959374f38719Af5fCf8",
+    zAuctionLegacyAddress: "0xeABfD3B80A38a95006899Ddf7e8d5F89A5dE6dF3",
+    wildTokenAddress: "0x0e46c45f8aca3f89Ad06F4a20E2BED1A12e4658C",
+    znsHubAddress: "0xce1fE2DA169C313Eb00a2bad25103D2B9617b5e1s",
     web3Provider: provider as Web3Provider,
   };
   const sdk = createInstance(config);
