@@ -30,10 +30,11 @@ import { getZAuctionContract } from "../src/contracts";
 import { assert } from "console";
 
 describe("SDK test", () => {
-  const registrarAddress = "0xa4F6C921f914ff7972D7C55c15f015419326e0Ca";
-  const zAuctionAddress = "0xb2416Aed6f5439Ffa0eCCAaa2b643f3D9828f86B";
-  const zAuctionLegacyAddress = "0x376030f58c76ECC288a4fce8F88273905544bC07";
+  // const registrarAddress = "0xa4F6C921f914ff7972D7C55c15f015419326e0Ca";
+  // const zAuctionAddress = "0xb2416Aed6f5439Ffa0eCCAaa2b643f3D9828f86B";
+  // const zAuctionLegacyAddress = "0x376030f58c76ECC288a4fce8F88273905544bC07";
 
+  // these are rinkeby values, will fail
   const wilderPancakesDomain =
     "0x6e35a7ecbf6b6368bb8d42ee9b3dcfc8404857635036e60196931d4458c07622";
   const happyDogsYayDomain =
@@ -43,25 +44,25 @@ describe("SDK test", () => {
 
   const provider = new ethers.providers.JsonRpcProvider(process.env.INFURA_URL);
 
-  const pk = process.env.MAIN_PRIVATE_KEY;
-  if (!pk) throw Error("no private key");
+  // const pk = process.env.MAIN_PRIVATE_KEY;
+  // if (!pk) throw Error("no private key");
 
   const pk2 = process.env.ASTRO_PRIVATE_KEY;
-  if (!pk2) throw Error("no seller private key");
+  if (!pk2) throw Error("no private key");
 
-  const pk3 = process.env.CPTD_PRIVATE_KEY;
-  if (!pk3) throw Error("no sirree");
+  // const pk3 = process.env.CPTD_PRIVATE_KEY;
+  // if (!pk3) throw Error("no private key");
 
-  const mainWallet = new ethers.Wallet(pk, provider);
+  // const mainWallet = new ethers.Wallet(pk, provider);
   const astroWallet = new ethers.Wallet(pk2, provider);
-  const cptdWallet = new ethers.Wallet(pk3, provider);
+  // const cptdWallet = new ethers.Wallet(pk3, provider);
 
   const mainAccount = "0xaE3153c9F5883FD2E78031ca2716520748c521dB";
   const astroTestAccount = "0x35888AD3f1C0b39244Bb54746B96Ee84A5d97a53";
   const cptdAccount = "0x7829Afa127494Ca8b4ceEF4fb81B78fEE9d0e471";
 
   const config: Config = {
-    // Rinkeby addresses
+    // Goerli addresses
     apiUri: "https://zauction-api-goerli.herokuapp.com/api",
     subgraphUri:
       "https://api.thegraph.com/subgraphs/name/zer0-os/zauction-goerli",
@@ -82,7 +83,7 @@ describe("SDK test", () => {
       astroTestAccount,
       config.wildTokenAddress
     );
-    expect(allowance).to.not.eq(ethers.BigNumber.from("0"));
+    expect(allowance.toString()).to.not.be("0");
   });
   it("Checks allowance through tokenId", async () => {
     const allowance = await sdk.getZAuctionSpendAllowanceByDomain(
