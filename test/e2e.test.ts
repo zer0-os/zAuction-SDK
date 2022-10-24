@@ -49,7 +49,6 @@ describe("SDK test", () => {
 
   const config: Config = {
     // Goerli addresses
-    // apiUri: "http://localhost:5000/api",
     apiUri: "https://zauction-api-goerli.herokuapp.com/api",
     subgraphUri:
       "https://api.thegraph.com/subgraphs/name/zer0-os/zauction-goerli",
